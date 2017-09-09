@@ -28,6 +28,9 @@ security:
             form_login:
                 login_path: login
                 check_path: login
+            logout:
+                path: logout
+                target: homepage
 
             # https://symfony.com/doc/current/security/form_login_setup.html
             #form_login: ~
@@ -35,3 +38,4 @@ security:
     access_control:
             - { path: ^/signup, roles: IS_AUTHENTICATED_ANONYMOUSLY }
             - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/homepage, roles: ROLE_USER }
