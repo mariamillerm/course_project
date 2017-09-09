@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{{ form_start(form, {'attr': {'class': 'form-signin'}}) }}
+    {{ form_row(form.username, {'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.plainPassword.first, {'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.plainPassword.second, {'attr': {'class': 'form-control'}}) }}
+
+    <button class="btn btn-lg btn-primary btn-block">Sign up</button>
+{{ form_end(form) }}
+{% endblock %}
