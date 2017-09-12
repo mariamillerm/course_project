@@ -62,6 +62,14 @@ class Article
     private $rating;
 
     /**
+     * Article constructor.
+     */
+    public function __construct()
+    {
+        $this->rating = 0;
+    }
+
+    /**
      * @return int
      */
     public function getId(): int
