@@ -3,29 +3,56 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\User;
+use Symfony\Bundle\TwigBundle\TwigEngine;
 
 class EmailSupport
 {
+    /**
+     * @var \Swift_Mailer
+     */
     private $mailer;
 
     /**
-     * EmailSupport constructor.
-     * @param \Swift_Mailer $mailer
+     * @var TwigEngine
      */
-    public function __construct(\Swift_Mailer $mailer)
+    private $templating;
+    /**
+     * @var string
+     */
+    private $from;
+
+    /**
+     * EmailSupport constructor.
+     *
+     * @param \Swift_Mailer $mailer
+     * @param TwigEngine $templating
+     * @param string $from
+     */
+    public function __construct(\Swift_Mailer $mailer, TwigEngine $templating, string $from)
     {
         $this->mailer = $mailer;
+        $this->templating = $templating;
+        $this->from = $from;
     }
 
+    /**
+     * @param User $user
+     */
     public function sendActivationEmail(User $user)
     {
         $message = (new \Swift_Message('NewsPortal Registration'))
-            ->setFrom('maria.melnik.a@google.com')
+            ->setFrom($this->from)
             ->setTo($user->getEmail())
-            ->setBody('Registration success!')
+            ->setBody(
+                $this->templating->render(
+                    'emails/confirmation.html.twig', [
+                        'name' => $user->getUsername(),
+                        'token' => $user->getConfirmationCode(),
+                    ]
+                ),
+                'text/html'
+            )
         ;
-//        var_dump($message);
-//        die();
 
         $this->mailer->send($message);
     }
