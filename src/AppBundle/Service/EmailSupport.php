@@ -3,6 +3,7 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\ConfirmationToken;
+use AppBundle\Entity\ResetToken;
 use AppBundle\Entity\User;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 
@@ -42,12 +43,35 @@ class EmailSupport
      */
     public function sendActivationEmail(User $user, ConfirmationToken $token)
     {
-        $message = (new \Swift_Message('NewsPortal Registration'))
+        $message = (new \Swift_Message('NewsPortal: Account Confirmation'))
             ->setFrom($this->from)
             ->setTo($user->getEmail())
             ->setBody(
                 $this->templating->render(
                     'emails/confirmation.html.twig', [
+                        'name' => $user->getUsername(),
+                        'token' => $token->getToken(),
+                    ]
+                ),
+                'text/html'
+            )
+        ;
+
+        $this->mailer->send($message);
+    }
+
+    /**
+     * @param User $user
+     * @param ResetToken $token
+     */
+    public function sendRecoveryEmail(User $user, ResetToken $token)
+    {
+        $message = (new \Swift_Message('NewsPortal: Reset Password'))
+            ->setFrom($this->from)
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->templating->render(
+                    'emails/reset_password.html.twig', [
                         'name' => $user->getUsername(),
                         'token' => $token->getToken(),
                     ]
