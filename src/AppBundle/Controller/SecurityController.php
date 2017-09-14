@@ -40,17 +40,17 @@ class SecurityController extends Controller
      */
     public function activateAccountAction(string $token)
     {
-        $doctrine = $this->getDoctrine();
-        $em = $doctrine->getManager();
-        $userRepository = $doctrine->getRepository(User::class);
-
-        $user = $userRepository->findOneBy([
-            'confirmationCode' => $token,
-        ]);
+        $em = $this->getDoctrine()->getManager();
+        $token = $em
+            ->getRepository(ConfirmationToken::class)
+            ->findOneBy([
+                'token' => $token,
+            ]);
+        $user = $token->getUser();
 
         if ($user !== null) {
             $user->setIsActive(true);
-
+            $em->remove($token);
             $em->flush();
 
             return $this->render('security/registration_success.html.twig', [
