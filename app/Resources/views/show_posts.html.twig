@@ -21,9 +21,9 @@
                     {% for post in posts %}
                         <div class="post-box col-lg-3 col-md-4 col-xs-6 thumb">
                             <h1><a href="{{ path('post', {'id': post.id}) }}">{{ post.title }}</a></h1>
-                            <p>{{ post.creator.username }}</p>
+                            <p>{{ post.author.username }}</p>
                             <time>{{ post.creationDate|date('h:m:s d M Y') }}</time>
-                            <p>{{ post.shortContent }}</p>
+                            <p>{{ post.summary }}</p>
                             {% if not post.image == null %}
                                 <div>
                                     <img src="{{ asset('images/' ~ post.image) }}">
