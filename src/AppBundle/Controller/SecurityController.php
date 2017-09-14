@@ -46,9 +46,9 @@ class SecurityController extends Controller
             ->findOneBy([
                 'token' => $token,
             ]);
-        $user = $token->getUser();
 
-        if ($user !== null) {
+        if ($token !== null) {
+            $user = $token->getUser();
             $user->setIsActive(true);
             $em->remove($token);
             $em->flush();
