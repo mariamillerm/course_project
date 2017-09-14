@@ -27,9 +27,24 @@ class ResetToken
     private $token;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="create_time", type="datetime")
+     */
+    private $tokenCreateTime;
+
+    /**
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\User")
      */
     private $user;
+
+    /**
+     * ResetToken constructor.
+     */
+    public function __construct()
+    {
+        $this->tokenCreateTime = new \DateTime();
+    }
 
     /**
      * @return int
@@ -75,6 +90,26 @@ class ResetToken
     public function setUser(User $user): ResetToken
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getTokenCreateTime(): \DateTime
+    {
+        return $this->tokenCreateTime;
+    }
+
+    /**
+     * @param \DateTime $tokenCreateTime
+     *
+     * @return ResetToken
+     */
+    public function setTokenCreateTime(\DateTime $tokenCreateTime): ResetToken
+    {
+        $this->tokenCreateTime = $tokenCreateTime;
 
         return $this;
     }
