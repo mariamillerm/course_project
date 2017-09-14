@@ -78,7 +78,4 @@ class ConfirmationToken
 
         return $this;
     }
-
-
-
 }

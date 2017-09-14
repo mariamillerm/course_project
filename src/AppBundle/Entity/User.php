@@ -61,13 +61,6 @@ class User implements UserInterface
     private $isActive;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="confirmation_code", type="string", length=50)
-     */
-    private $confirmationCode;
-
-    /**
      * User constructor.
      */
     public function __construct()
@@ -236,27 +229,6 @@ class User implements UserInterface
     public function setPlainPassword(string $plainPassword): User
     {
         $this->plainPassword = $plainPassword;
-
-        return $this;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getConfirmationCode(): string
-    {
-        return $this->confirmationCode;
-    }
-
-    /**
-     * @param string $confirmationCode
-     *
-     * @return User
-     */
-    public function setConfirmationCode(string $confirmationCode): User
-    {
-        $this->confirmationCode = $confirmationCode;
 
         return $this;
     }
