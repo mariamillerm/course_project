@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="custom-portal-container">
+            <div class="categories-container">
+                <div class="container-fluid">
+                    {% block category %}
+                    <h1>{{ 'categories'}}</h1>
+                    <ul>
+                        {% for category in categories %}
+                            <li><a href="{{ path('by_category', {'id': category.id}) }}">{{ category.name }}</a></li>
+                        {% endfor %}
+
+                    </ul>
+                    {% endblock %}
+                </div>
+            </div>
+            <div class="custom-post-container">
+                <div class="row">
+                    {% for post in posts %}
+                        <div class="post-box col-lg-3 col-md-4 col-xs-6 thumb">
+                            <h1><a href="{{ path('post', {'id': post.id}) }}">{{ post.title }}</a></h1>
+                            <p>{{ post.creator.username }}</p>
+                            <time>{{ post.creationDate|date('h:m:s d M Y') }}</time>
+                            <p>{{ post.shortContent }}</p>
+                            {% if not post.image == null %}
+                                <div>
+                                    <img src="{{ asset('images/' ~ post.image) }}">
+                                </div>
+                            {% endif %}
+                            <div class="post-footer">
+                                <a href="{{ path('post', {'id': post.id}) }}" class="btn btn-default">{{ 'read_more'}}</a>
+                                {% if is_granted('ROLE_MANAGER') %}
+                                    <a href="{{ path('remove', {'id': post.id}) }}" class="btn btn-default">
+                                        Delete post
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% block sortable %}
+            <div class="page-custom-header">
+                <p>Sort by</p>
+                {{ knp_pagination_sortable(posts, 'Id', 'post.id') }}
+                {{ knp_pagination_sortable(posts, 'Date', 'post.creationDate') }}
+            </div>
+        {% endblock %}
+        <form class="navbar-form navbar-fixed-top" role="search" action="{{ path('post_search') }}" method="post">
+            <div class="form-group">
+                <input type="search" name="query" class="form-control" placeholder="{{ 'search' }}" value="{% if searched is defined %}{{ searched }}{% endif %}">
+                <button type="submit" class="btn btn-default">{{ 'search' | trans }}</button>
+            </div>
+        </form>
+    </div>
+
+    {% block pagination %}
+    <div class="navigation">
+        {{ knp_pagination_render(posts) }}
+    </div>
+    {% endblock %}
+{% endblock %}
+
