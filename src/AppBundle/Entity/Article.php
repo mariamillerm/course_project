@@ -43,7 +43,7 @@ class Article
     /**
      * @var string
      *
-     * @ORM\Column(type="text", length=65535)
+     * @ORM\Column(type="text", length=300)
      */
     private $summary;
 
@@ -61,6 +61,12 @@ class Article
      */
     private $rating;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text", length=65535)
+     */
+    private $text;
     /**
      * Article constructor.
      */
@@ -193,6 +199,26 @@ class Article
     public function setRating($rating)
     {
         $this->rating = $rating;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    /**
+     * @param string $text
+     *
+     * @return Article
+     */
+    public function setText(string $text): Article
+    {
+        $this->text = $text;
 
         return $this;
     }
