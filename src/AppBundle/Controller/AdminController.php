@@ -86,10 +86,10 @@ class AdminController extends Controller
      */
     public function adminUserAction()
     {
-        return $this->render('ajax_users_show.html.twig');
+        return $this->render('users_show_ajax.html.twig');
     }
     /**
-     * @Route(path="/admin/ajax/users", name="admin_ajax_users_show")
+     * @Route(path="/admin/ajax/users", name="admin_users_show_ajax")
      */
     public function usersShowAction(Request $request)
     {
