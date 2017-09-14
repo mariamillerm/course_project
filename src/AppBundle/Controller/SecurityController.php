@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ConfirmationToken;
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
 use Symfony\Component\Routing\Annotation\Route;
@@ -81,15 +82,19 @@ class SecurityController extends Controller
             $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
             $user->setRole('ROLE_USER');
-            $user->setConfirmationCode(md5(openssl_random_pseudo_bytes(32)));
+
+            $userToken = new ConfirmationToken();
+            $userToken->setUser($user);
+            $userToken->setToken(md5(openssl_random_pseudo_bytes(32)));
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
+            $em->persist($userToken);
             $em->flush();
 
             $this
                 ->get('app.email_support')
-                ->sendActivationEmail($user);
+                ->sendActivationEmail($user, $userToken);
 
             return $this->redirectToRoute('homepage');
         }
