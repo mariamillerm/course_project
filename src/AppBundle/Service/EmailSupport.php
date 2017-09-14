@@ -2,6 +2,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\ConfirmationToken;
 use AppBundle\Entity\User;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 
@@ -37,8 +38,9 @@ class EmailSupport
 
     /**
      * @param User $user
+     * @param ConfirmationToken $token
      */
-    public function sendActivationEmail(User $user)
+    public function sendActivationEmail(User $user, ConfirmationToken $token)
     {
         $message = (new \Swift_Message('NewsPortal Registration'))
             ->setFrom($this->from)
@@ -47,7 +49,7 @@ class EmailSupport
                 $this->templating->render(
                     'emails/confirmation.html.twig', [
                         'name' => $user->getUsername(),
-                        'token' => $user->getConfirmationCode(),
+                        'token' => $token->getToken(),
                     ]
                 ),
                 'text/html'
