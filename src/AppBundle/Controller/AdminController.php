@@ -3,8 +3,8 @@
 namespace AppBundle\Controller;
 
 //use AppBundle\Entity\Post;
-//use AppBundle\Form\UserEdit;
 use AppBundle\Entity\User;
+use AppBundle\Form\UserEdit;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 //use Symfony\Component\HttpFoundation\Response;
@@ -71,8 +71,13 @@ class AdminController extends Controller
 
     /**
      * @Route(path="/admin/user/{id}/remove", name="user_remove", requirements={"id": "\d+"})
+     *
+     * @param User $user
+     * @param int $id
+     *
+     * @return RedirectResponse
      */
-    public function userRemoveAction(User $user, Request $request, $id)
+    public function userRemoveAction(User $user, int $id)
     {
         $em = $this->getDoctrine()->getManager();
         $at = $em->getRepository('AppBundle:ActivationToken')->findOneBy(
