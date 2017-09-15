@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\ConfirmationToken;
 use AppBundle\Entity\ResetToken;
 use AppBundle\Entity\User;
+use AppBundle\Form\ForgotPasswordType;
 use AppBundle\Form\ResetPasswordType;
 use AppBundle\Form\UserType;
 use Symfony\Component\Routing\Annotation\Route;
@@ -67,6 +68,69 @@ class SecurityController extends Controller
     }
 
     /**
+     * @Route("/reset_password", name="forgotPassword")
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function forgotPasswordAction(Request $request)
+    {
+        $user = new User();
+
+        $form = $this->createForm(ForgotPasswordType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            //TODO: put this in service
+            $em = $this->getDoctrine()->getManager();
+            $user = $form->getData();
+            $user = $em
+                ->getRepository(User::class)
+                ->findOneBy([
+                    'email' => $user->getEmail(),
+                ]);
+
+            $token = $em
+                ->getRepository(ResetToken::class)
+                ->findOneBy(['user' => $user]);
+            if ($token != null) {
+                $em->remove($token);
+                $em->flush();
+            }
+
+            $userToken = new ResetToken();
+            $userToken->setUser($user);
+            $userToken->setToken(md5(openssl_random_pseudo_bytes(32)));
+
+            $em->persist($userToken);
+            $em->flush();
+
+            $this
+                ->get('app.email_support')
+                ->sendRecoveryEmail($user, $userToken);
+
+            return $this->redirectToRoute('homepage');
+        }
+
+        $errors = $form->getErrors();
+        $error = $errors->current();
+
+        $message = null;
+
+        if ($error !== false) {
+            $message = $error->getMessage();
+        }
+
+        return $this->render(
+            'security/forgot_password.html.twig', [
+                'form' => $form->createView(),
+                'error' => $message,
+            ]
+        );
+    }
+
+    /**
      * @Route("reset_password/{token}", name="resetPassword")
      *
      * @param string $token
@@ -91,12 +155,12 @@ class SecurityController extends Controller
 
         //TODO: put this in service
         if ($token !== null) {
-            if ($interval->h <= 24) {
+            if ($interval->h >= 24) {
                 $em->remove($token);
                 $em->flush();
 
                 return $this->render('security/registration_success.html.twig', [
-                    'message' => 'Something is going wrong!',
+                    'message' => 'Something is going wrong there!',
                 ]);
             }
 
@@ -105,7 +169,7 @@ class SecurityController extends Controller
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
+                $password = $passwordEncoder->encodePassword($user, $user->getPassword());
                 $user->setPassword($password);
                 $em->remove($token);
                 $em->flush();
@@ -123,8 +187,7 @@ class SecurityController extends Controller
             }
 
             return $this->render(
-                'security/resetPassword.html.twig',
-                [
+                'emails/reset_password.html.twig', [
                     'form' => $form->createView(),
                     'error' => $message,
                 ]
