@@ -3,7 +3,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\ConfirmationToken;
+use AppBundle\Entity\ResetToken;
 use AppBundle\Entity\User;
+use AppBundle\Form\ResetPasswordType;
 use AppBundle\Form\UserType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -60,6 +62,77 @@ class SecurityController extends Controller
             //TODO: return status code(404)
             return $this->render('security/registration_success.html.twig', [
                 'message' => 'There is no such user!',
+            ]);
+        }
+    }
+
+    /**
+     * @Route("reset_password/{token}", name="resetPassword")
+     *
+     * @param string $token
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     *
+     * @return Response
+     */
+    public function resetPasswordAction(string $token, Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $token = $em
+            ->getRepository(ResetToken::class)
+            ->findOneBy([
+                'token' => $token,
+            ]);
+
+        //TODO: Create service for this
+        $date = $token->getTokenCreateTime();
+        $now = new \DateTime();
+        $interval = $now->diff($date);
+
+        //TODO: put this in service
+        if ($token !== null) {
+            if ($interval->h <= 24) {
+                $em->remove($token);
+                $em->flush();
+
+                return $this->render('security/registration_success.html.twig', [
+                    'message' => 'Something is going wrong!',
+                ]);
+            }
+
+            $user = $token->getUser();
+            $form = $this->createForm(ResetPasswordType::class, $user);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
+                $user->setPassword($password);
+                $em->remove($token);
+                $em->flush();
+
+                return $this->redirectToRoute('homepage');
+            }
+
+            $errors = $form->getErrors();
+            $error = $errors->current();
+
+            $message = null;
+
+            if ($error !== false) {
+                $message = $error->getMessage();
+            }
+
+            return $this->render(
+                'security/resetPassword.html.twig',
+                [
+                    'form' => $form->createView(),
+                    'error' => $message,
+                ]
+            );
+        } else {
+            //TODO: Return status code 404
+            return $this->render('security/registration_success.html.twig', [
+                    'message' => 'Something is going wrong!',
             ]);
         }
     }
