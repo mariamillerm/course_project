@@ -33,12 +33,6 @@ class Post
     private $title;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Category")
-     * @ORM\JoinColumn(name="category_id", referencedColumnName="id", onDelete="CASCADE")
-     */
-    private $category;
-
-    /**
      * @ORM\Column(type="text", length=65535)
      */
     private $summary;
