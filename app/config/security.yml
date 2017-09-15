@@ -16,7 +16,6 @@ security:
 
         main:
             anonymous: ~
-            http_basic: ~
             form_login:
                 login_path: login
                 check_path: login
@@ -25,7 +24,8 @@ security:
                 target: homepage
 
     access_control:
-            - { path: ^/signup, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-            - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-            - { path: ^/activate, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-            - { path: ^/, roles: ROLE_USER }
+        - { path: ^/signup, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/activate, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/reset_password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: ROLE_USER }
