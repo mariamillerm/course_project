@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller
+namespace AppBundle\Controller;
 
 use AppBundle\Entity\Post;
 use AppBundle\Form\UserEdit;
@@ -22,10 +22,10 @@ class AdminController extends Controller
     {
         return $this->render('admin_home.html.twig');
     }
+
     /**
      * @Route(path="/admin/posts", name="admin_posts")
      */
-
     public function postsAction()
     {
         return new RedirectResponse($this->generateUrl('homepage'));
@@ -56,7 +56,6 @@ class AdminController extends Controller
     /**
      * @Route(path="/admin/users_show", name="edit_users")
      */
-
     public function usersAction()
     {
     	$em = $this->getDoctrine()->getManager();
