@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\ManyToOne;
 
 /**
  * @ORM\Table(name="articles")
@@ -67,6 +68,15 @@ class Article
      * @ORM\Column(type="text", length=65535)
      */
     private $text;
+
+    /**
+     * @var Category
+     *
+     * Many Articles have One Category.
+     * @ManyToOne(targetEntity="Category", inversedBy="articles")
+     */
+    private $category;
+
     /**
      * Article constructor.
      */
@@ -219,6 +229,26 @@ class Article
     public function setText(string $text): Article
     {
         $this->text = $text;
+
+        return $this;
+    }
+
+    /**
+     * @return Category
+     */
+    public function getCategory(): Category
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param Category $category
+     *
+     * @return Article
+     */
+    public function setCategory(Category $category): Article
+    {
+        $this->category = $category;
 
         return $this;
     }
