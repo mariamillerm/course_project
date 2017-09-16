@@ -5,6 +5,8 @@ services:
             - '@mailer'
             - '@templating'
             - '%mailer_user%'
+    app.token_service:
+        class: AppBundle\Service\TokenService
 
     AppBundle\:
         resource: '../../src/AppBundle/*'
