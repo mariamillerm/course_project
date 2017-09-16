@@ -9,6 +9,8 @@ services:
         class: AppBundle\Service\FormErrors
     app.token_service:
         class: AppBundle\Service\TokenService
+        arguments:
+            - '@service_container'
     app.user_service:
         class: AppBundle\Service\UserService
         arguments:
