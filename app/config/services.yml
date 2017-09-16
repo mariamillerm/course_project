@@ -9,10 +9,10 @@ services:
         class: AppBundle\Service\FormErrors
     app.token_service:
         class: AppBundle\Service\TokenService
-#    app.user_service:
-#        class: AppBundle\Service\UserService
-#        arguments:
-#            - '@doctrine.orm.entity_manager'
+    app.user_service:
+        class: AppBundle\Service\UserService
+        arguments:
+            - '@service_container'
 
     AppBundle\:
         resource: '../../src/AppBundle/*'
