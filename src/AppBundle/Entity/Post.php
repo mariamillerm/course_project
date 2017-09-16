@@ -90,10 +90,6 @@ class Post
     {
         return $this->creationDate;
     }
-    public function getCategory()
-    {
-        return $this->category;
-    }
     public function getAuthor()
     {
         return $this->author;
@@ -124,12 +120,6 @@ class Post
     public function setCreationDate($creationDate)
     {
         $this->creationDate = $creationDate;
-
-        return $this;
-    }
-    public function setCategory(Category $category = null)
-    {
-        $this->category = $category;
 
         return $this;
     }
