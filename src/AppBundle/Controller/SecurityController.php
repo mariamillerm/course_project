@@ -212,14 +212,7 @@ class SecurityController extends Controller
             $user->setPassword($password);
             $user->setRole('ROLE_USER');
 
-            $token = $this->get('app.token_service')->createConfirmationToken($user);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->persist($token);
-            $em->flush();
-
-            $this->get('app.email_support')->sendActivationEmail($user, $token);
+            $this->get('app.user_service')->createUser($user);
 
             return $this->redirectToRoute('homepage');
         }
