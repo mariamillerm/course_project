@@ -5,10 +5,14 @@ services:
             - '@mailer'
             - '@templating'
             - '%mailer_user%'
-    app.user_service:
+    app.form_service:
         class: AppBundle\Service\FormErrors
     app.token_service:
         class: AppBundle\Service\TokenService
+#    app.user_service:
+#        class: AppBundle\Service\UserService
+#        arguments:
+#            - '@doctrine.orm.entity_manager'
 
     AppBundle\:
         resource: '../../src/AppBundle/*'

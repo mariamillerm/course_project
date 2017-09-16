@@ -22,12 +22,17 @@ class TokenService
         return $interval->h < 24;
     }
 
+    /**
+     * @param User $user
+     *
+     * @return ConfirmationToken
+     */
     public function createConfirmationToken(User $user)
     {
         $userToken = new ConfirmationToken();
         $userToken->setUser($user);
         $userToken->setToken(md5(openssl_random_pseudo_bytes(32)));
-        
+
         return $userToken;
     }
 }
