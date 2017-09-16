@@ -3,6 +3,7 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\ConfirmationToken;
+use AppBundle\Entity\ResetToken;
 use AppBundle\Entity\User;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -41,6 +42,23 @@ class UserService
 
     /**
      * @param User $user
+     *
+     * @return User|object
+     */
+    public function findUserByEmail(User $user)
+    {
+        $em = $this->container->get('doctrine')->getManager();
+        $user = $em
+            ->getRepository(User::class)
+            ->findOneBy([
+                'email' => $user->getEmail(),
+            ]);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
      * @param ConfirmationToken $token
      */
     private function insertDataInDB(User $user, ConfirmationToken $token)
@@ -49,6 +67,41 @@ class UserService
         $em->persist($user);
         $em->persist($token);
         $em->flush();
+    }
+
+    /**
+     * @param User $user
+     * @param ResetToken $token
+     */
+    public function resetUserPassword(User $user, ResetToken $token)
+    {
+        $password = $this
+            ->container
+            ->get('security.password_encoder')
+            ->encodePassword(
+                $user,
+                $user->getPassword()
+            );
+
+        $user->setPassword($password);
+        $this
+            ->container
+            ->get('app.token_service')
+            ->removeResetToken($token);
+    }
+
+    /**
+     * @param ConfirmationToken $token
+     */
+    public function activateUser(ConfirmationToken $token)
+    {
+        $user = $token->getUser();
+        $user->setIsActive(true);
+
+        $this
+            ->container
+            ->get('app.token_service')
+            ->removeConfirmationToken($token);
     }
 
     /**
