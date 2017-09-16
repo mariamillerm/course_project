@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-
 class SecurityController extends Controller
 {
     /**
@@ -148,14 +147,9 @@ class SecurityController extends Controller
                 'token' => $token,
             ]);
 
-        //TODO: Create service for this
-        $date = $token->getTokenCreateTime();
-        $now = new \DateTime();
-        $interval = $now->diff($date);
-
         //TODO: put this in service
         if ($token !== null) {
-            if ($interval->h >= 24) {
+            if (!$this->get('app.token_service')->isResetTokenActive($token)) {
                 $em->remove($token);
                 $em->flush();
 
@@ -214,41 +208,27 @@ class SecurityController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            //TODO: put this in service
             $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
             $user->setRole('ROLE_USER');
 
-            $userToken = new ConfirmationToken();
-            $userToken->setUser($user);
-            $userToken->setToken(md5(openssl_random_pseudo_bytes(32)));
+            $token = $this->get('app.token_service')->createConfirmationToken($user);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
-            $em->persist($userToken);
+            $em->persist($token);
             $em->flush();
 
-            $this
-                ->get('app.email_support')
-                ->sendActivationEmail($user, $userToken);
+            $this->get('app.email_support')->sendActivationEmail($user, $token);
 
             return $this->redirectToRoute('homepage');
-        }
-
-        $errors = $form->getErrors();
-        $error = $errors->current();
-
-        $message = null;
-
-        if ($error !== false) {
-            $message = $error->getMessage();
         }
 
         return $this->render(
             'security/signup.html.twig',
             [
                 'form' => $form->createView(),
-                'error' => $message,
+                'error' => $this->get('app.form_service')->getFormErrorMessage($form),
             ]
         );
     }
