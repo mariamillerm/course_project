@@ -197,21 +197,16 @@ class SecurityController extends Controller
     /**
      * @Route("/signup", name="signup")
      * @param Request $request
-     * @param UserPasswordEncoderInterface $passwordEncoder
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function signupAction(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function signupAction(Request $request)
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
-            $user->setPassword($password);
-            $user->setRole('ROLE_USER');
-
             $this->get('app.user_service')->createUser($user);
 
             return $this->redirectToRoute('homepage');
