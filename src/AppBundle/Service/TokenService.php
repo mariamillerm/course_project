@@ -47,7 +47,7 @@ class TokenService
      */
     public function setResetTokenToUser(User $user)
     {
-        $this->container->get('app.token_service')->deleteOldResetToken($user);
+        $this->deleteOldResetToken($user);
         $userToken = $this->createResetToken($user);
         $this->insertResetTokenInDB($userToken);
 
