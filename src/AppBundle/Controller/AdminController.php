@@ -40,7 +40,7 @@ class AdminController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('AppBundle:User')->find($user);
-        $form = $this->createForm(UserEdit::class, ['role' => $user->getRole()[0]]);
+        $form = $this->createForm(UserEdit::class, ['role' => $user->getRoles()[0]]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
