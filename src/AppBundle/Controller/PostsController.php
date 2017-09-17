@@ -1,4 +1,4 @@
-<<?php 
+<?php 
 
 namespace AppBundle\Controller;
 
@@ -21,9 +21,20 @@ class PostsController extends Controller
         $post->setRating($post->getRating() + 1);
         $em->persist($post);
         $em->flush();
+
         return $this->render('show_post.html.twig', array(
             'post' => $post,
         ));
+    }
+
+    /**
+     * @Route(path="/add", name="add_post")
+     */
+
+    public function addPostAction(request $request)
+    {
+        $post = new Post();
+
     }
 
     /**
@@ -40,11 +51,13 @@ class PostsController extends Controller
             $q->setQuery($keywordQuery);
             $posts = $finder->find($q);
             dump($posts);
+            
             return $this->render('search.html.twig', array(
                 'posts' => $posts,
                 'searched' => $query,
             ));
         }
+
         return $this->redirectToRoute('homepage');
     }
 
@@ -55,6 +68,7 @@ class PostsController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $posts = $em->getRepository('AppBundle:Post')->findBy(['category' => $id]);
+
         return $this->render('show_posts_by_category.html.twig', array(
             'posts' => $posts,
         ));
