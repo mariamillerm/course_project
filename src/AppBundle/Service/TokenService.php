@@ -90,6 +90,23 @@ class TokenService
     }
 
     /**
+     * @param int $id
+     */
+    public function deleteConfirmationToken(int $id)
+    {
+        $em = $this->container->get('doctrine')->getManager();
+        $token = $em
+            ->getRepository(ConfirmationToken::class)
+            ->findOneBy(
+                ['user' => $id]
+            );
+
+        if ($token !== null) {
+            $this->removeConfirmationToken($token);
+        }
+    }
+
+    /**
      * @param ConfirmationToken $token
      */
     public function removeConfirmationToken(ConfirmationToken $token)
