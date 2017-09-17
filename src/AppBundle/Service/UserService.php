@@ -145,6 +145,19 @@ class UserService
 
     /**
      * @param User $user
+     * @param int $id
+     */
+    public function deleteUser(User $user, int $id)
+    {
+        $this->container->get('app.token_service')->deleteConfirmationToken($id);
+
+        $em = $this->container->get('doctrine')->getManager();
+        $em->remove($user);
+        $em->flush();
+    }
+
+    /**
+     * @param User $user
      */
     public function createUser(User $user)
     {
