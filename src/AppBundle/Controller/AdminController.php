@@ -40,7 +40,7 @@ class AdminController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('AppBundle:User')->find($user);
-        $form = $this->createForm(UserEdit::class, array('role' => $user->getRole()[0]));
+        $form = $this->createForm(UserEdit::class, ['role' => $user->getRole()[0]]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -49,10 +49,10 @@ class AdminController extends Controller
             $em->flush();
             return new RedirectResponse($this->generateUrl('edit_users'));
         }
-        return $this->render('user_edit.html.twig', array(
+        return $this->render('user_edit.html.twig', [
             'form' => $form->createView(),
             'username' => $user->getUsername(),
-        ));
+        ]);
     }
 
     /**
@@ -61,10 +61,13 @@ class AdminController extends Controller
     public function usersAction()
     {
     	$em = $this->getDoctrine()->getManager();
-        $users = $em->getRepository('AppBundle:User')->findAll();
-        return $this->render('users_show.html.twig', array(
+        $users = $em
+            ->getRepository(User::class)
+            ->findAll();
+
+        return $this->render('users_show.html.twig', [
             'users' => $users,
-        ));
+        ]);
     }
 
     /**
@@ -161,7 +164,7 @@ class AdminController extends Controller
             foreach ($result as $user) {
                 $response[] = [$user->getId(), $user->getUsername(), $user->getRole()[0]];
             }
-            
+
             return new JsonResponse([
                 'data' => $response,
                 'pages' => $pages
