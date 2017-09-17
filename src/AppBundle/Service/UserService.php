@@ -41,6 +41,19 @@ class UserService
     }
 
     /**
+     * @return array
+     */
+    public function getAllUsers()
+    {
+        $em = $this->container->get('doctrine')->getManager();
+        $users = $em
+            ->getRepository(User::class)
+            ->findAll();
+
+        return $users;
+    }
+
+    /**
      * @param User $user
      *
      * @return User|object
