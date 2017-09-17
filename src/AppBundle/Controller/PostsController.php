@@ -21,6 +21,7 @@ class PostsController extends Controller
         $post->setRating($post->getRating() + 1);
         $em->persist($post);
         $em->flush();
+
         return $this->render('show_post.html.twig', array(
             'post' => $post,
         ));
@@ -64,5 +65,4 @@ class PostsController extends Controller
             'posts' => $posts,
         ));
     }
-
 }
