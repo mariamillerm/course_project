@@ -38,17 +38,25 @@ class AdminController extends Controller
      */
     public function userAction(User $user, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository('AppBundle:User')->find($user);
-        $form = $this->createForm(UserEdit::class, ['role' => $user->getRoles()[0]]);
+        $this->get('app.user_service')->findUser($user);
 
+        $form = $this
+            ->createForm(UserEdit::class, [
+                'role' => $user->getRoles()[0]
+            ]);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setRole($form->get('role')->getData());
-            $em->persist($user);
-            $em->flush();
+            $this
+                ->get('app.user_service')
+                ->changeUserRole(
+                    $user,
+                    $form->get('role')->getData()
+                );
+
             return new RedirectResponse($this->generateUrl('edit_users'));
         }
+
         return $this->render('user_edit.html.twig', [
             'form' => $form->createView(),
             'username' => $user->getUsername(),
