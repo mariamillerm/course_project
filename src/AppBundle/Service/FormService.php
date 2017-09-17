@@ -4,7 +4,7 @@ namespace AppBundle\Service;
 
 use Symfony\Component\Form\Form;
 
-class FormErrors
+class FormService
 {
     public function getFormErrorMessage(Form $form)
     {
