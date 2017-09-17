@@ -15,7 +15,7 @@ class AdminController extends Controller
     /**
      * @Route(path="/admin", name="admin_home")
      */
-    public function homeAction()
+    public function adminAction()
     {
         return $this->render('admin_home.html.twig');
     }
@@ -30,8 +30,10 @@ class AdminController extends Controller
 
     /**
      * @Route(path="/admin/users/{id}", name="admin_user", requirements={"id": "\d+"})
+     *
      * @param User $user
      * @param Request $request
+     *
      * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function userAction(User $user, Request $request)
@@ -82,6 +84,7 @@ class AdminController extends Controller
         $em->remove($at);
         $em->remove($user);
         $em->flush();
+
         return $this->redirectToRoute('admin_users');
     }
 
@@ -95,7 +98,9 @@ class AdminController extends Controller
 
     /**
      * @Route(path="/admin/ajax/users", name="admin_users_show_ajax")
+     *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function usersShowAction(Request $request)
@@ -118,6 +123,7 @@ class AdminController extends Controller
                 'sortable' => ['id', 'username'],
                 'filterable' => ['role']
             ];
+
             return new JsonResponse($response);
         } else {
             $em = $this->getDoctrine()->getManager();
@@ -155,6 +161,7 @@ class AdminController extends Controller
             foreach ($result as $user) {
                 $response[] = [$user->getId(), $user->getUsername(), $user->getRole()[0]];
             }
+            
             return new JsonResponse([
                 'data' => $response,
                 'pages' => $pages
