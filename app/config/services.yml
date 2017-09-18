@@ -5,6 +5,16 @@ services:
             - '@mailer'
             - '@templating'
             - '%mailer_user%'
+    app.form_service:
+        class: AppBundle\Service\FormErrors
+    app.token_service:
+        class: AppBundle\Service\TokenService
+        arguments:
+            - '@service_container'
+    app.user_service:
+        class: AppBundle\Service\UserService
+        arguments:
+            - '@service_container'
 
     AppBundle\:
         resource: '../../src/AppBundle/*'

@@ -1,19 +1,19 @@
-<?php 
+<?php
 
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Post;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Elastica\Query\QueryString;
-use Elastica\Query;
 
 class PostsController extends Controller
 {
-	/**
+    /**
      * @Route(path="/posts/{id}", requirements={"id": "\d+"}, name="post")
+     *
+     * @param Post $post
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function postAction(Post $post)
     {
@@ -28,41 +28,33 @@ class PostsController extends Controller
     }
 
     /**
-     * @Route(path="/add", name="add_post")
-     */
-
-    public function addPostAction(request $request)
-    {
-        $post = new Post();
-
-    }
-
-    /**
      * @Route(path="/search", name="post_search")
      */
-    public function searchAction(Request $request)
+    public function searchAction()//Request $request)
     {
-        $query = $request->request->get('query');
-        if ($query) {
-            $finder = $this->get('fos_elastica.finder.search.posts');
-            $keywordQuery = new QueryString();
-            $keywordQuery->setQuery('*'.$query.'*');
-            $q = new Query();
-            $q->setQuery($keywordQuery);
-            $posts = $finder->find($q);
-            dump($posts);
-            
-            return $this->render('search.html.twig', array(
-                'posts' => $posts,
-                'searched' => $query,
-            ));
-        }
-
+//        $query = $request->request->get('query');
+//        if ($query) {
+//            $finder = $this->get('fos_elastica.finder.search.posts');
+//            $keywordQuery = new QueryString();
+//            $keywordQuery->setQuery('*'.$query.'*');
+//            $q = new Query();
+//            $q->setQuery($keywordQuery);
+//            $posts = $finder->find($q);
+//            dump($posts);
+//            return $this->render('search.html.twig', array(
+//                'posts' => $posts,
+//                'searched' => $query,
+//            ));
+//        }
         return $this->redirectToRoute('homepage');
     }
 
     /**
      * @Route(path="/posts/category/{id}", name="by_category")
+     *
+     * @param $id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function showByCategory($id)
     {

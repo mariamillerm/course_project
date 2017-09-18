@@ -2,16 +2,13 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Post;
-use AppBundle\Form\UserEdit;
 use AppBundle\Entity\User;
+use AppBundle\Form\UserEdit;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
 
 class AdminController extends Controller
 {
@@ -33,6 +30,9 @@ class AdminController extends Controller
 
     /**
      * @Route(path="/admin/users/{id}", name="admin_user", requirements={"id": "\d+"})
+     * @param User $user
+     * @param Request $request
+     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function userAction(User $user, Request $request)
     {
@@ -67,8 +67,13 @@ class AdminController extends Controller
 
     /**
      * @Route(path="/admin/user/{id}/remove", name="user_remove", requirements={"id": "\d+"})
+     *
+     * @param User $user
+     * @param int $id
+     *
+     * @return RedirectResponse
      */
-    public function userRemoveAction(User $user, Request $request, $id)
+    public function userRemoveAction(User $user, int $id)
     {
         $em = $this->getDoctrine()->getManager();
         $at = $em->getRepository('AppBundle:ActivationToken')->findOneBy(
@@ -87,8 +92,11 @@ class AdminController extends Controller
     {
         return $this->render('users_show_ajax.html.twig');
     }
+
     /**
      * @Route(path="/admin/ajax/users", name="admin_users_show_ajax")
+     * @param Request $request
+     * @return JsonResponse
      */
     public function usersShowAction(Request $request)
     {
