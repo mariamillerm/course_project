@@ -33,12 +33,6 @@ class Post
     private $title;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Category")
-     * @ORM\JoinColumn(name="category_id", referencedColumnName="id", onDelete="CASCADE")
-     */
-    private $category;
-
-    /**
      * @ORM\Column(type="text", length=65535)
      */
     private $summary;
@@ -96,10 +90,6 @@ class Post
     {
         return $this->creationDate;
     }
-    public function getCategory()
-    {
-        return $this->category;
-    }
     public function getAuthor()
     {
         return $this->author;
@@ -130,12 +120,6 @@ class Post
     public function setCreationDate($creationDate)
     {
         $this->creationDate = $creationDate;
-
-        return $this;
-    }
-    public function setCategory(Category $category = null)
-    {
-        $this->category = $category;
 
         return $this;
     }

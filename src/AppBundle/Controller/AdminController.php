@@ -1,31 +1,28 @@
 <?php
 
-namespace AppBundle\Controller
+namespace AppBundle\Controller;
 
-use AppBundle\Entity\Post;
-use AppBundle\Form\UserEdit;
 use AppBundle\Entity\User;
+use AppBundle\Form\UserEdit;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
 
 class AdminController extends Controller
 {
     /**
      * @Route(path="/admin", name="admin_home")
      */
-    public function homeAction()
+    public function adminAction()
     {
         return $this->render('admin_home.html.twig');
     }
+
     /**
      * @Route(path="/admin/posts", name="admin_posts")
      */
-
     public function postsAction()
     {
         return new RedirectResponse($this->generateUrl('homepage'));
@@ -33,51 +30,61 @@ class AdminController extends Controller
 
     /**
      * @Route(path="/admin/users/{id}", name="admin_user", requirements={"id": "\d+"})
+     *
+     * @param User $user
+     * @param Request $request
+     *
+     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function userAction(User $user, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository('AppBundle:User')->find($user);
-        $form = $this->createForm(UserEdit::class, array('role' => $user->getRole()[0]));
+        $this->get('app.user_service')->findUser($user);
 
+        $form = $this
+            ->createForm(UserEdit::class, [
+                'role' => $user->getRoles()[0]
+            ]);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setRole($form->get('role')->getData());
-            $em->persist($user);
-            $em->flush();
+            $this
+                ->get('app.user_service')
+                ->changeUserRole(
+                    $user,
+                    $form->get('role')->getData()
+                );
+
             return new RedirectResponse($this->generateUrl('edit_users'));
         }
-        return $this->render('user_edit.html.twig', array(
+
+        return $this->render('user_edit.html.twig', [
             'form' => $form->createView(),
             'username' => $user->getUsername(),
-        ));
+        ]);
     }
 
     /**
      * @Route(path="/admin/users_show", name="edit_users")
      */
-
     public function usersAction()
     {
-    	$em = $this->getDoctrine()->getManager();
-        $users = $em->getRepository('AppBundle:User')->findAll();
-        return $this->render('users_show.html.twig', array(
-            'users' => $users,
-        ));
+    	return $this->render('users_show.html.twig', [
+            'users' => $this->get('app.user_service')->getAllUsers(),
+        ]);
     }
 
     /**
      * @Route(path="/admin/user/{id}/remove", name="user_remove", requirements={"id": "\d+"})
+     *
+     * @param User $user
+     * @param int $id
+     *
+     * @return RedirectResponse
      */
-    public function userRemoveAction(User $user, Request $request, $id)
+    public function userRemoveAction(User $user, int $id)
     {
-        $em = $this->getDoctrine()->getManager();
-        $at = $em->getRepository('AppBundle:ActivationToken')->findOneBy(
-            ['user' => $id]
-        );
-        $em->remove($at);
-        $em->remove($user);
-        $em->flush();
+        $this->get('app.user_service')->deleteUser($user, $id);
+
         return $this->redirectToRoute('admin_users');
     }
 
@@ -88,8 +95,13 @@ class AdminController extends Controller
     {
         return $this->render('users_show_ajax.html.twig');
     }
+
     /**
      * @Route(path="/admin/ajax/users", name="admin_users_show_ajax")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
     public function usersShowAction(Request $request)
     {
@@ -111,6 +123,7 @@ class AdminController extends Controller
                 'sortable' => ['id', 'username'],
                 'filterable' => ['role']
             ];
+
             return new JsonResponse($response);
         } else {
             $em = $this->getDoctrine()->getManager();
@@ -148,6 +161,7 @@ class AdminController extends Controller
             foreach ($result as $user) {
                 $response[] = [$user->getId(), $user->getUsername(), $user->getRole()[0]];
             }
+
             return new JsonResponse([
                 'data' => $response,
                 'pages' => $pages
