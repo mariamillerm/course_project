@@ -2,8 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\ConfirmationToken;
-use AppBundle\Entity\ResetToken;
 use AppBundle\Entity\User;
 use AppBundle\Form\ForgotPasswordType;
 use AppBundle\Form\ResetPasswordType;
