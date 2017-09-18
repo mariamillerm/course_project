@@ -38,12 +38,9 @@ class AdminController extends Controller
      */
     public function userAction(User $user, Request $request)
     {
-        $this->get('app.user_service')->findUser($user);
-
-        $form = $this
-            ->createForm(UserEdit::class, [
-                'role' => $user->getRoles()[0]
-            ]);
+        $form = $this->createForm(UserEdit::class, [
+            'role' => $user->getRoles()[0]
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
