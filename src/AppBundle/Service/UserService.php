@@ -72,21 +72,6 @@ class UserService
 
     /**
      * @param User $user
-     *
-     * @return User|object
-     */
-    public function findUser(User $user)
-    {
-        $em = $this->container->get('doctrine')->getManager();
-        $user = $em
-            ->getRepository(User::class)
-            ->find($user);
-
-        return $user;
-    }
-
-    /**
-     * @param User $user
      * @param string $role
      */
     public function changeUserRole(User $user, string $role)
