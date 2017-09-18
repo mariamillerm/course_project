@@ -82,6 +82,7 @@ class AdminController extends Controller
         $em->remove($at);
         $em->remove($user);
         $em->flush();
+        
         return $this->redirectToRoute('admin_users');
     }
 
@@ -118,6 +119,7 @@ class AdminController extends Controller
                 'sortable' => ['id', 'username'],
                 'filterable' => ['role']
             ];
+
             return new JsonResponse($response);
         } else {
             $em = $this->getDoctrine()->getManager();
