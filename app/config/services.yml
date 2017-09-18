@@ -6,7 +6,7 @@ services:
             - '@templating'
             - '%mailer_user%'
     app.form_service:
-        class: AppBundle\Service\FormErrors
+        class: AppBundle\Service\FormService
     app.token_service:
         class: AppBundle\Service\TokenService
         arguments:

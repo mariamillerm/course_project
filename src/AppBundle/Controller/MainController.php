@@ -11,7 +11,7 @@ class MainController extends Controller
     /**
      * @Route("/", name="homepage")
      */
-    public function adminAction()
+    public function homepageAction()
     {
         return new Response('<html><body>Homepage!</body></html>');
     }

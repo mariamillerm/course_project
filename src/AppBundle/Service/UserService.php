@@ -41,6 +41,19 @@ class UserService
     }
 
     /**
+     * @return array
+     */
+    public function getAllUsers()
+    {
+        $em = $this->container->get('doctrine')->getManager();
+        $users = $em
+            ->getRepository(User::class)
+            ->findAll();
+
+        return $users;
+    }
+
+    /**
      * @param User $user
      *
      * @return User|object
@@ -55,6 +68,32 @@ class UserService
             ]);
 
         return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return User|object
+     */
+    public function findUser(User $user)
+    {
+        $em = $this->container->get('doctrine')->getManager();
+        $user = $em
+            ->getRepository(User::class)
+            ->find($user);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     * @param string $role
+     */
+    public function changeUserRole(User $user, string $role)
+    {
+        $em = $this->container->get('doctrine')->getManager();
+        $user->setRole($role);
+        $em->flush();
     }
 
     /**
@@ -102,6 +141,19 @@ class UserService
             ->container
             ->get('app.token_service')
             ->removeConfirmationToken($token);
+    }
+
+    /**
+     * @param User $user
+     * @param int $id
+     */
+    public function deleteUser(User $user, int $id)
+    {
+        $this->container->get('app.token_service')->deleteConfirmationToken($id);
+
+        $em = $this->container->get('doctrine')->getManager();
+        $em->remove($user);
+        $em->flush();
     }
 
     /**
