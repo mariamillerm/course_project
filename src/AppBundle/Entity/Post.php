@@ -62,6 +62,11 @@ class Post
     private $similarPosts;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $rating;
+
+    /**
      * Post constructor.
      */
     public function __construct()
@@ -143,6 +148,22 @@ class Post
     function __toString()
     {
         return $this->getTitle();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRating()
+    {
+        return $this->rating;
+    }
+
+    /**
+     * @param mixed $rating
+     */
+    public function setRating($rating)
+    {
+        $this->rating = $rating;
     }
 
     /**

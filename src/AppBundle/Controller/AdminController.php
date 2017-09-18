@@ -83,8 +83,19 @@ class AdminController extends Controller
      */
     public function userRemoveAction(User $user, int $id)
     {
+<<<<<<< HEAD
+        $em = $this->getDoctrine()->getManager();
+        $at = $em->getRepository('AppBundle:ActivationToken')->findOneBy(
+            ['user' => $id]
+        );
+        $em->remove($at);
+        $em->remove($user);
+        $em->flush();
+        
+=======
         $this->get('app.user_service')->deleteUser($user, $id);
 
+>>>>>>> 8cb0293a07cade35d2fcd5716a80f00e6f45df55
         return $this->redirectToRoute('admin_users');
     }
 
