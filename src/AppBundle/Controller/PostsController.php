@@ -28,6 +28,14 @@ class PostsController extends Controller
     }
 
     /**
+     * @Route("/posts", name="allPosts")
+     */
+    public function postsAction()
+    {
+        return $this->render('show_posts.html.twig');
+    }
+
+    /**
      * @Route(path="/search", name="post_search")
      */
     public function searchAction()//Request $request)
