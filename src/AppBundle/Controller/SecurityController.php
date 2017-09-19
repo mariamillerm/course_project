@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ConfirmationToken;
+use AppBundle\Entity\ResetToken;
 use AppBundle\Entity\User;
 use AppBundle\Form\ForgotPasswordType;
 use AppBundle\Form\ResetPasswordType;
@@ -16,6 +18,7 @@ class SecurityController extends Controller
 {
     /**
      * @Route("/login", name="login")
+     *
      * @param AuthenticationUtils $authUtils
      *
      * @return Response
@@ -32,23 +35,36 @@ class SecurityController extends Controller
     }
 
     /**
-     * @Route("/activate/{token}", name="activate")
-     * @param string $token
+     * @Route("/activate/{hash}", name="activate")
+     *
+     * @param string $hash
      *
      * @return Response
      */
-    public function activateAccountAction(string $token)
+    public function activateAccountAction(string $hash)
     {
-        $token = $this->get('app.token_service')->findConfirmationToken($token);
+        $em = $this->getDoctrine()->getManager();
+
+        /**
+         * @var ConfirmationToken|null $token
+         */
+        $token = $this
+            ->getDoctrine()
+            ->getRepository(ConfirmationToken::class)
+            ->findOneByHash($hash);
 
         if ($token !== null) {
-            $this->get('app.user_service')->activateUser($token);
+            $user = $token->getUser();
+            $user->setIsActive(true);
+
+            $em->remove($token);
+            $em->flush();
 
             return $this->render('security/registration_success.html.twig', [
                 'message' => 'Your account is confirmed. Please, login.',
             ]);
         } else {
-            //TODO: return status code(404)
+            // @TODO return status code(404)
             return $this->render('security/registration_success.html.twig', [
                 'message' => 'There is no such user!',
             ]);
@@ -60,103 +76,153 @@ class SecurityController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return Response
      */
     public function forgotPasswordAction(Request $request)
     {
         $user = new User();
         $form = $this->createForm(ForgotPasswordType::class, $user);
-        $form->handleRequest($request);
 
+        $em = $this->getDoctrine()->getManager();
+        $tokenService = $this->get('app.token_service');
+
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->get('app.user_service')->findUserByEmail($form->getData());
+            $user = $em
+                ->getRepository(User::class)
+                ->findOneByEmail($form->get('email')->getData());
 
             if ($user === null) {
                 return $this->render('security/registration_success.html.twig', [
+                    // @TODO Update message
                     'message' => 'Something is going wrong there!',
                 ]);
             }
 
-            $this->get('app.token_service')->setResetTokenToUser($user);
+            $token = new ResetToken($user, $tokenService->generateToken());
+
+            $em->persist($token);
+            $em->flush();
+
+            $this->get('app.email_support')->sendRecoveryEmail($user, $token);
 
             return $this->redirectToRoute('homepage');
+        }
+
+        $error = $form->getErrors()->current();
+        $message = null;
+        if ($error !== false) {
+            $message = $error->getMessage();
         }
 
         return $this->render(
             'security/forgot_password.html.twig', [
                 'form' => $form->createView(),
-                'error' => $this->get('app.form_service')->getFormErrorMessage($form),
+                'error' => $message,
             ]
         );
     }
 
     /**
-     * @Route("reset_password/{token}", name="resetPassword")
+     * @Route("reset_password/{hash}", name="resetPassword")
      *
-     * @param string $token
+     * @param string $hash
      * @param Request $request
      *
      * @return Response
      */
-    public function resetPasswordAction(string $token, Request $request)
+    public function resetPasswordAction(string $hash, Request $request)
     {
-        $token = $this->get('app.token_service')->findResetToken($token);
+        $em = $this->getDoctrine()->getManager();
+
+        /**
+         * @var ResetToken $token
+         */
+        $token = $em->getRepository(ResetToken::class)->findOneByHash($hash);
 
         if ($token !== null) {
-            if ($this->get('app.token_service')->isResetTokenDisabled($token)) {
+            if ($token->isDisabled()) {
+                $em->remove($token);
+                $em->flush();
 
                 return $this->render('security/registration_success.html.twig', [
-                    'message' => 'Something is going wrong there!',
+                    'message' => 'Token isn\'t alive! Please, repeat \'forgot password\' procedure.',
                 ]);
             }
 
             $user = $token->getUser();
             $form = $this->createForm(ResetPasswordType::class, $user);
-            $form->handleRequest($request);
 
+            $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $this->get('app.user_service')->resetUserPassword($user, $token);
+                $user->setPlainPassword($form->get('password')->getData());
+                $this->get('app.user_service')->encodePassword($user);
+                $em->remove($token);
+                $em->flush();
 
                 return $this->redirectToRoute('homepage');
+            }
+
+            $error = $form->getErrors()->current();
+            $message = null;
+            if ($error !== false) {
+                $message = $error->getMessage();
             }
 
             return $this->render(
                 'security/reset_password_type.html.twig', [
                     'form' => $form->createView(),
-                    'error' => $this->get('app.form_service')->getFormErrorMessage($form),
+                    'error' => $message,
                 ]
             );
         } else {
             //TODO: Return status code 404
             return $this->render('security/registration_success.html.twig', [
-                    'message' => 'Something is going wrong!',
+                    'message' => 'Whoops. There is no such reset token!',
             ]);
         }
     }
 
     /**
      * @Route("/signup", name="signup")
+     *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function signupAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
 
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->get('app.user_service')->createUser($user);
+            $tokenService = $this->get('app.token_service');
+
+            $this->get('app.user_service')->encodePassword($user);
+            $token = new ConfirmationToken($user, $tokenService->generateToken());
+
+            $em->persist($user);
+            $em->persist($token);
+            $em->flush();
+
+            $this->get('app.email_support')->sendActivationEmail($user, $token);
 
             return $this->redirectToRoute('homepage');
+        }
+
+        $error = $form->getErrors()->current();
+        $message = null;
+        if ($error !== false) {
+            $message = $error->getMessage();
         }
 
         return $this->render(
             'security/signup.html.twig',
             [
                 'form' => $form->createView(),
-                'error' => $this->get('app.form_service')->getFormErrorMessage($form),
+                'error' => $message,
             ]
         );
     }
