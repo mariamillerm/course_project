@@ -24,11 +24,6 @@ class UserEdit extends AbstractType
             ->add('submit', SubmitType::class);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
-    {
-
-    }
-
     public function getName()
     {
         return 'app_bundle_user_edit';
