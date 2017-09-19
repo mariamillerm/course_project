@@ -91,6 +91,16 @@ class AdminController extends Controller
     	return $this->render('users_show.html.twig', [
             'users' => $users,
         ]);
+
+    /**
+     * @var $paginator \Knp\Component\Pager\Paginator
+     */
+        $paginator  = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 10)
+        );
     }
 
     /**
