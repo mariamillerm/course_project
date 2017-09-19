@@ -83,8 +83,8 @@ class PostsController extends Controller
             ->getRepository('AppBundle:Post')
             ->findByCategory($category);
 
-        return $this->render('show_posts_by_category.html.twig', array(
+        return $this->render('show_posts_by_category.html.twig', [
             'posts' => $posts,
-        ));
+        ]);
     }
 }
