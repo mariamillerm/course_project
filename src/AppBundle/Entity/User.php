@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
+    // @TODO UniqueConstraint
     /**
      * @var int
      *
@@ -66,6 +67,15 @@ class User implements UserInterface
     public function __construct()
     {
         $this->isActive = false;
+        $this->role = 'ROLE_USER';
+    }
+
+    /**
+     * @return string
+     */
+    public function getRole(): string
+    {
+        return $this->role;
     }
 
     /**
@@ -113,7 +123,7 @@ class User implements UserInterface
      *
      * @return string The username
      */
-    public function getUsername():? string
+    public function getUsername(): ?string
     {
         return $this->username;
     }
@@ -140,7 +150,7 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getEmail():? string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -216,7 +226,7 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getPlainPassword():? string
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
