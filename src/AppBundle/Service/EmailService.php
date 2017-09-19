@@ -7,7 +7,7 @@ use AppBundle\Entity\ResetToken;
 use AppBundle\Entity\User;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 
-class EmailSupport
+class EmailService
 {
     /**
      * @var \Swift_Mailer
@@ -24,7 +24,7 @@ class EmailSupport
     private $from;
 
     /**
-     * EmailSupport constructor.
+     * EmailService constructor.
      *
      * @param \Swift_Mailer $mailer
      * @param TwigEngine $templating
@@ -50,7 +50,7 @@ class EmailSupport
                 $this->templating->render(
                     'emails/confirmation.html.twig', [
                         'name' => $user->getUsername(),
-                        'token' => $token->getToken(),
+                        'hash' => $token->getHash(),
                     ]
                 ),
                 'text/html'
@@ -73,7 +73,7 @@ class EmailSupport
                 $this->templating->render(
                     'emails/reset_password.html.twig', [
                         'name' => $user->getUsername(),
-                        'token' => $token->getToken(),
+                        'hash' => $token->getHash(),
                     ]
                 ),
                 'text/html'
