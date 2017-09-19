@@ -13,6 +13,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Post
 {
+    // @TODO Remove setters
+    // @TODO Update constructor
+    // @TODO UniqueConstraint
+
     /**
      * @var string
      *
@@ -35,7 +39,7 @@ class Post
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Empty title")
+     * @Assert\NotBlank(message="post.title.empty")
      */
     private $title;
 
@@ -57,7 +61,6 @@ class Post
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $author;
 
@@ -68,11 +71,18 @@ class Post
      * @Assert\DateTime()
      */
     private $creationDate;
+
+    /**
+     * @var Category
+     *
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="posts")
+     */
+    private $category;
     
     /**
      * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="Post")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Post")
      * @ORM\JoinTable(name="similarPosts")
      * @Assert\Count(min=0, max=5)
      */
@@ -260,25 +270,38 @@ class Post
      */
     public function addSimilarPost(Post $similarPost)
     {
-        $this->similarPosts[] = $similarPost;
+        $this->similarPosts->add($similarPost);
 
         return $this;
     }
 
     /**
-     * @param Post $similarPost
+     * @TODO PHPDoc clear method
      */
-    public function removeSimilarPost(Post $similarPost)
+    public function clearSimilarPosts(): void
     {
-        $this->similarPosts->removeElement($similarPost);
+        $this->similarPosts->clear();
     }
 
     /**
-     * @return string
+     * @return Category
      */
-    function __toString()
+    public function getCategory(): Category
     {
-        return $this->getTitle();
+        return $this->category;
     }
+
+    /**
+     * @param Category $category
+     *
+     * @return Post
+     */
+    public function setCategory(Category $category): Post
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
 
 }
