@@ -1,20 +1,20 @@
 services:
     app.email_support:
-        class: AppBundle\Service\EmailSupport
+        class: AppBundle\Service\EmailService
         arguments:
             - '@mailer'
             - '@templating'
             - '%mailer_user%'
-    app.form_service:
-        class: AppBundle\Service\FormService
+
     app.token_service:
         class: AppBundle\Service\TokenService
         arguments:
-            - '@service_container'
+            - '@doctrine'
+
     app.user_service:
         class: AppBundle\Service\UserService
         arguments:
-            - '@service_container'
+            - '@security.password_encoder'
 
     AppBundle\:
         resource: '../../src/AppBundle/*'
