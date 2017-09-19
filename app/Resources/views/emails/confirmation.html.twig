@@ -9,7 +9,7 @@
                     <h1 class="cover-heading">Hi, {{ name }}. Please, confirm your account.</h1>
                     <p class="lead">In order to continue working on the site, you need to confirm the account. Please, click on the link below.</p>
                     <p class="lead">
-                        <a href="{{ url('activate', {'token': token}) }}" class="btn btn-lg btn-secondary">Confirm</a>
+                        <a href="{{ url('activate', {'hash': hash}) }}" class="btn btn-lg btn-secondary">Confirm</a>
                     </p>
                 </div>
 
