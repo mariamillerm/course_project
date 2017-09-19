@@ -9,13 +9,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminController extends Controller
 {
     /**
      * @Route(path="/admin", name="admin_home")
      */
-    public function adminAction()
+    public function homeAction()
     {
         return $this->render('admin_home.html.twig');
     }
@@ -25,31 +26,30 @@ class AdminController extends Controller
      */
     public function postsAction()
     {
+        // @TODO Show posts
         return new RedirectResponse($this->generateUrl('homepage'));
     }
 
     /**
-     * @Route(path="/admin/users/{id}", name="admin_user", requirements={"id": "\d+"})
+     * @Route(path="/admin/users/{user}", name="admin_user", requirements={"user": "\d+"})
      *
      * @param User $user
      * @param Request $request
      *
-     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function userAction(User $user, Request $request)
     {
+        // @TODO Remove form, use AJaX
         $form = $this->createForm(UserEdit::class, [
-            'role' => $user->getRoles()[0]
+            'role' => $user->getRole()
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this
-                ->get('app.user_service')
-                ->changeUserRole(
-                    $user,
-                    $form->get('role')->getData()
-                );
+            $user->setRole($form->get('role')->getData());
+
+            $this->getDoctrine()->getManager()->flush();
 
             return new RedirectResponse($this->generateUrl('edit_users'));
         }
@@ -65,32 +65,31 @@ class AdminController extends Controller
      */
     public function usersAction()
     {
+        // @TODO Pagination
+        // @TODO Remove render
+        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+
     	return $this->render('users_show.html.twig', [
-            'users' => $this->get('app.user_service')->getAllUsers(),
+            'users' => $users,
         ]);
     }
 
     /**
-     * @Route(path="/admin/user/{id}/remove", name="user_remove", requirements={"id": "\d+"})
+     * @Route(path="/admin/user/{user}/remove", name="user_remove", requirements={"user": "\d+"})
      *
      * @param User $user
-     * @param int $id
      *
-     * @return RedirectResponse
+     * @return Response
      */
-    public function userRemoveAction(User $user, int $id)
+    public function removeUserAction(User $user)
     {
-        $this->get('app.user_service')->deleteUser($user, $id);
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($user);
+        $em->flush();
 
-        return $this->redirectToRoute('admin_users');
-    }
-
-    /**
-     * @Route(path="/admin/users", name="admin_users")
-     */
-    public function adminUserAction()
-    {
-        return $this->render('users_show_ajax.html.twig');
+        return $this->json([
+            'status' => 'Removed',
+        ], 200);
     }
 
     /**
@@ -98,13 +97,14 @@ class AdminController extends Controller
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return Response
      */
     public function usersShowAction(Request $request)
     {
+        // @TODO TODO
         $page = $request->get('page');
         $rows = $request->get('rows');
-        if ($request->getQueryString() == '') {
+        if ($request->getQueryString() === '') {
             $response = [
                 'cols' => [
                     [
@@ -127,36 +127,37 @@ class AdminController extends Controller
             $repository= $em->getRepository('AppBundle:User');
             dump($request->get('sortField'));
             dump($request->get('field'));
-            if (($request->get('sortField')!=null) && ($request->get('field')==null)) {
-                if ($request->get('order')=='true') {
-                    $order='ASC';
+            if (($request->get('sortField') !== null) && ($request->get('field') === null)) {
+                if ($request->get('order') === 'true') {
+                    $order = 'ASC';
                 } else {
-                    $order='DESC';
+                    $order = 'DESC';
                 }
 
                 $pages = ceil(count($repository->createQueryBuilder('u')
-                    ->orderBy('u.'.$request->get('sortField'), $order)
+                    ->orderBy('u.' . $request->get('sortField'), $order)
                     ->getQuery()->getResult())/$rows);
 
                 $result = $repository->createQueryBuilder('u')
-                    ->orderBy('u.'.$request->get('sortField'), $order)
+                    ->orderBy('u.' . $request->get('sortField'), $order)
                     ->getQuery()->getResult();
-            } else if (($request->get('field')!=null) && ($request->get('sortField')==null)) {
+            } else if (($request->get('field') !== null) && ($request->get('sortField') === null)) {
                 $pages = ceil(count($em->getRepository('AppBundle:User')->findAll()) / $rows);
                 $result = $repository->createQueryBuilder('u')
                     ->where('u.' . $request->get('field') . ' LIKE :pattern')
-                    ->setParameter('pattern', '%' .$request->get('pattern') . '%')
-                    ->getQuery()->getResult();
+                    ->setParameter('pattern', '%' . $request->get('pattern') . '%')
+                    ->getQuery()
+                    ->getResult();
             } else {
-                $pages=ceil(count($repository->findAll())/$rows);
+                $pages = ceil(count($repository->findAll()) / $rows);
                 $result = $repository->createQueryBuilder('u');
-                $result=$result->setFirstResult(($page - 1) * $rows)
+                $result = $result->setFirstResult(($page - 1) * $rows)
                     ->setMaxResults($rows)->getQuery()->getResult();
             }
 
-            $response=[];
+            $response = [];
             foreach ($result as $user) {
-                $response[] = [$user->getId(), $user->getUsername(), $user->getRole()[0]];
+                $response[] = [$user->getId(), $user->getUsername(), $user->getRole()];
             }
 
             return new JsonResponse([
