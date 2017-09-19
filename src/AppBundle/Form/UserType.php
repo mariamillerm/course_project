@@ -9,6 +9,8 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class UserType extends AbstractType
 {
@@ -26,6 +28,14 @@ class UserType extends AbstractType
                 'first_options' => ['label' => 'Password'],
                 'second_options' => ['label' => 'Repeat Password'],
             ]);
+            ->add('role', ChoiceType::class, [
+                'choices' => [
+                    'user' => 'ROLE_USER',
+                    'manager' => 'ROLE_MANAGER',
+                    'admin' => 'ROLE_ADMIN',
+                ],
+            ])
+            ->add('submit', SubmitType::class);
     }
 
     /**
@@ -45,4 +55,5 @@ class UserType extends AbstractType
     {
         return 'app_bundle_user_type';
     }
+
 }
