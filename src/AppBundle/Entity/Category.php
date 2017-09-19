@@ -2,7 +2,7 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\OneToMany;
  */
 class Category
 {
+    // @TODO UniqueConstraint
     /**
      * @var int
      *
@@ -30,36 +31,40 @@ class Category
     private $name;
 
     /**
-     * @var Category
-     *
      * One Category has Many Categories.
-     * @OneToMany(targetEntity="Category", mappedBy="parent")
+     *
+     * @var Collection
+     *
+     * @OneToMany(targetEntity="AppBundle\Entity\Category", mappedBy="parent")
      */
     private $children;
 
     /**
+     * Many Categories have One Category.
+     *
      * @var Category
      *
-     * Many Categories have One Category.
-     * @ManyToOne(targetEntity="Category", inversedBy="children")
+     * @ManyToOne(targetEntity="AppBundle\Entity\Category", inversedBy="children")
      */
     private $parent;
 
     /**
-     * @var Article
+     * One Category has Many Posts.
      *
-     * One Category has Many Articles.
-     * @OneToMany(targetEntity="Article", mappedBy="category")
+     * @var Post
+     *
+     * @OneToMany(targetEntity="AppBundle\Entity\Post", mappedBy="category")
      */
-    private $articles;
+    private $posts;
 
     /**
      * Category constructor.
+     *
+     * @param string $name
      */
-    public function __construct()
+    public function __construct(string $name)
     {
-        $this->articles = new ArrayCollection();
-        $this->children = new ArrayCollection();
+        $this->name = $name;
     }
 
     /**
@@ -76,38 +81,6 @@ class Category
     public function getName(): string
     {
         return $this->name;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return Category
-     */
-    public function setName(string $name): Category
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return Category[]
-     */
-    public function getChildren(): array
-    {
-        return [$this->children];
-    }
-
-    /**
-     * @param Category $children
-     *
-     * @return Category
-     */
-    public function setChildren(Category $children): Category
-    {
-        $this->children = $children;
-
-        return $this;
     }
 
     /**
@@ -131,24 +104,18 @@ class Category
     }
 
     /**
-     * @return Article[]
+     * @return Post[]
      */
-    public function getArticles(): array
+    public function getPosts(): array
     {
-        return [$this->articles];
+        return $this->posts->toArray();
     }
 
     /**
-     * @param Article $articles
-     *
-     * @return Category
+     * @return Category[]
      */
-    public function setArticles(Article $articles)
+    public function getChildren(): array
     {
-        $this->articles = $articles;
-
-        return $this;
+        return $this->children->toArray();
     }
-
-
 }
