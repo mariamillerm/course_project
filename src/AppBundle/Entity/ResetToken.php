@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ResetToken
 {
+    // @TODO UniqueConstraint
     /**
      * @var int
      *
@@ -24,26 +25,33 @@ class ResetToken
      *
      * @ORM\Column(type="string", length=255, unique=true)
      */
-    private $token;
+    private $hash;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="create_time", type="datetime")
+     * @ORM\Column(type="datetime")
      */
-    private $tokenCreateTime;
+    private $creationTime;
 
     /**
+     * @var User
+     *
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\User")
      */
     private $user;
 
     /**
      * ResetToken constructor.
+     *
+     * @param User   $user
+     * @param string $hash
      */
-    public function __construct()
+    public function __construct(User $user, string $hash)
     {
-        $this->tokenCreateTime = new \DateTime();
+        $this->creationTime = new \DateTime();
+        $this->user = $user;
+        $this->hash = $hash;
     }
 
     /**
@@ -57,21 +65,9 @@ class ResetToken
     /**
      * @return string
      */
-    public function getToken(): string
+    public function getHash(): string
     {
-        return $this->token;
-    }
-
-    /**
-     * @param string $token
-     *
-     * @return ResetToken
-     */
-    public function setToken(string $token): ResetToken
-    {
-        $this->token = $token;
-
-        return $this;
+        return $this->hash;
     }
 
     /**
@@ -83,34 +79,21 @@ class ResetToken
     }
 
     /**
-     * @param User $user
-     *
-     * @return ResetToken
-     */
-    public function setUser(User $user): ResetToken
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
      * @return \DateTime
      */
-    public function getTokenCreateTime(): \DateTime
+    public function getCreationTime(): \DateTime
     {
-        return $this->tokenCreateTime;
+        return $this->creationTime;
     }
 
     /**
-     * @param \DateTime $tokenCreateTime
-     *
-     * @return ResetToken
+     * @return bool
      */
-    public function setTokenCreateTime(\DateTime $tokenCreateTime): ResetToken
+    public function isDisabled(): bool
     {
-        $this->tokenCreateTime = $tokenCreateTime;
+        $now = new \DateTime();
+        $interval = $now->diff($this->creationTime);
 
-        return $this;
+        return $interval->h >= 24;
     }
 }

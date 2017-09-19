@@ -5,11 +5,12 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="confirm_tokens")
+ * @ORM\Table(name="confirmation_tokens")
  * @ORM\Entity()
  */
 class ConfirmationToken
 {
+    // @TODO UniqueConstraint
     /**
      * @var int
      *
@@ -24,12 +25,26 @@ class ConfirmationToken
      *
      * @ORM\Column(type="string", length=255, unique=true)
      */
-    private $token;
+    private $hash;
 
     /**
+     * @var User
+     *
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\User")
      */
     private $user;
+
+    /**
+     * ConfirmationToken constructor.
+     *
+     * @param User $user
+     * @param string $hash
+     */
+    public function __construct(User $user, string $hash)
+    {
+        $this->hash = $hash;
+        $this->user = $user;
+    }
 
     /**
      * @return int
@@ -42,21 +57,9 @@ class ConfirmationToken
     /**
      * @return string
      */
-    public function getToken(): string
+    public function getHash(): string
     {
-        return $this->token;
-    }
-
-    /**
-     * @param string $token
-     *
-     * @return ConfirmationToken
-     */
-    public function setToken(string $token): ConfirmationToken
-    {
-        $this->token = $token;
-
-        return $this;
+        return $this->hash;
     }
 
     /**
@@ -65,17 +68,5 @@ class ConfirmationToken
     public function getUser(): User
     {
         return $this->user;
-    }
-
-    /**
-     * @param User $user
-     *
-     * @return ConfirmationToken
-     */
-    public function setUser(User $user): ConfirmationToken
-    {
-        $this->user = $user;
-
-        return $this;
     }
 }
