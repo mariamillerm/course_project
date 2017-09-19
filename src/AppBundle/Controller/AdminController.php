@@ -29,7 +29,12 @@ class AdminController extends Controller
     {
         // @TODO Show posts
 
-        return new RedirectResponse($this->generateUrl('show_posts'));
+        $posts = $this->getDoctrine()->getRepository(Post::class)->findAll();
+
+        return $this->render('show_posts.html.twig', [
+            'posts' => $posts,
+        ]);
+
     }
 
     /**
@@ -95,7 +100,7 @@ class AdminController extends Controller
     /**
      * @var $paginator \Knp\Component\Pager\Paginator
      */
-        $paginator  = $this->get('knp_paginator');
+        $paginator = $this->get('knp_paginator');
         $result = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
