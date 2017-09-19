@@ -11,6 +11,11 @@ services:
         arguments:
             - '@doctrine'
 
+    app.user_provider:
+        class: AppBundle\Security\User\UserProvider
+        arguments:
+            - '@doctrine'
+
     app.user_service:
         class: AppBundle\Service\UserService
         arguments:
