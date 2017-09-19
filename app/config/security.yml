@@ -4,10 +4,8 @@ security:
             algorithm: bcrypt
 
     providers:
-        our_db_provider:
-            entity:
-                class: AppBundle:User
-                property: email
+        user_provider:
+            id: app.user_provider
 
     firewalls:
         dev:
@@ -15,6 +13,7 @@ security:
             security: false
 
         main:
+            provider: user_provider
             anonymous: ~
             form_login:
                 login_path: login
