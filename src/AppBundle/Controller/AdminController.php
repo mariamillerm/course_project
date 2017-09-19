@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 
 class AdminController extends Controller
 {
@@ -27,7 +28,8 @@ class AdminController extends Controller
     public function postsAction()
     {
         // @TODO Show posts
-        return new RedirectResponse($this->generateUrl('homepage'));
+
+        return new RedirectResponse($this->generateUrl('show_posts'));
     }
 
     /**
@@ -60,12 +62,29 @@ class AdminController extends Controller
         ]);
     }
 
+        /**
+     * @Route(path="/admin/user/{user}/edit", name="user_edit", requirements={"user": "\d+"})
+     *
+     * @param User $user
+     *
+     * @return Response
+     */
+    public function editUserAction(User $user)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->edit($user);
+        $em->flush();
+
+        return $this->json([
+            'status' => 'Changed',
+        ], 200);
+    }
+
     /**
-     * @Route(path="/admin/users_show", name="edit_users")
+     * @Route(path="/admin/users_show", name="users_show")
      */
     public function usersAction()
     {
-        // @TODO Pagination
         // @TODO Remove render
         $users = $this->getDoctrine()->getRepository(User::class)->findAll();
 
@@ -75,25 +94,25 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route(path="/admin/user/{user}/remove", name="user_remove", requirements={"user": "\d+"})
+     * @Route(path="/admin/user/{user}/block", name="user_block", requirements={"user": "\d+"})
      *
      * @param User $user
      *
      * @return Response
      */
-    public function removeUserAction(User $user)
+    public function blockUserAction(User $user)
     {
         $em = $this->getDoctrine()->getManager();
-        $em->remove($user);
-        $em->flush();
+        $em->block($user);
 
         return $this->json([
-            'status' => 'Removed',
+            'status' => 'Blocked',
         ], 200);
     }
 
+
     /**
-     * @Route(path="/admin/ajax/users", name="admin_users_show_ajax")
+     * @Route(path="/admin/users/ajax", name="admin_users_show_ajax")
      *
      * @param Request $request
      *
@@ -101,6 +120,13 @@ class AdminController extends Controller
      */
     public function usersShowAction(Request $request)
     {
+        /** 
+        *@var \Doctrine\ORM\EntityRepository $repository 
+        *
+        */
+        $repository = $this->getDoctrine()->getRepository('AppBundle:User');
+        $queryBuilder = $repository->createQueryBuilder('u');
+
         // @TODO TODO
         $page = $request->get('page');
         $rows = $request->get('rows');
