@@ -35,45 +35,4 @@ class UserService
             );
         $user->setPassword($password);
     }
-//
-//    /**
-//     * @param User $user
-//     * @param ResetToken $token
-//     */
-//    public function resetUserPassword(User $user, ResetToken $token)
-//    {
-//        $password = $this
-//            ->container
-//            ->get('security.password_encoder')
-//            ->encodePassword(
-//                $user,
-//                $user->getPassword()
-//            );
-//
-//        $user->setPassword($password);
-//        $this
-//            ->container
-//            ->get('app.token_service')
-//            ->removeResetToken($token);
-//    }
-//
-//    /**
-//     * @param User $user
-//     */
-//    public function createUser(User $user)
-//    {
-//        $this->prepareUser($user);
-//
-//        $token = $this
-//            ->container
-//            ->get('app.token_service')
-//            ->createConfirmationToken($user);
-//
-//        $this->insertDataInDB($user, $token);
-//
-//        $this
-//            ->container
-//            ->get('app.email_support')
-//            ->sendActivationEmail($user, $token);
-//    }
 }
