@@ -280,10 +280,6 @@ class Post
     public function clearSimilarPosts(): void
     {
         reset($similarPost);
-<<<<<<< HEAD
-=======
-//        echo current($similarPosts)
->>>>>>> 90160e7063ea061499543f16324e953e1e7b6ca1
     }
 
     /**
