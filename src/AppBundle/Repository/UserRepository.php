@@ -11,6 +11,9 @@ class UserRepository extends EntityRepository
      * @param string $username
      *
      * @return User|null
+     *
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findUser(string $username): ?User
     {
