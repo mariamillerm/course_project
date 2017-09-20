@@ -2,9 +2,7 @@
 
 namespace AppBundle\Form;
 
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -21,13 +19,13 @@ class CategoryType extends AbstractType{
 		$builder
 		    ->add('name', TextType::class)
             ->add('save', SubmitType::class, [
-             'attr'      => ['class' => 'button-link save'],
-             'label'     => 'Save'
+                'attr'      => ['class' => 'button-link save'],
+                'label'     => 'Save',
             ])
             ->add('delete', SubmitType::class, [
-            'attr'      => ['class' => 'button-link delete'],
-            'label'     => 'Delete'
-             ]);
+                'attr'      => ['class' => 'button-link delete'],
+                'label'     => 'Delete',
+            ]);
 
 	}
 
