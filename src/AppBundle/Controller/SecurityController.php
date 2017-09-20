@@ -208,7 +208,9 @@ class SecurityController extends Controller
             $em = $this->getDoctrine()->getManager();
 
             $user = new User();
-            $form = $this->createForm(UserType::class, $user);
+            $form = $this
+                ->createForm(UserType::class, $user)
+                ->remove('role');
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
