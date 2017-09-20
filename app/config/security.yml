@@ -28,7 +28,6 @@ security:
         - { path: ^/activate, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reset_password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/posts, roles: ROLE_USER }
         - { path: ^/, roles: ROLE_USER }
 
     role_hierarchy:
