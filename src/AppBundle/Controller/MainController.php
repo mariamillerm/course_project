@@ -29,7 +29,7 @@ class MainController extends Controller
      */
     public function homepageAction(int $page = 1)
     {
-        return new Response($page);
+        return $this->render('main/homepage.html.twig');
     }
 
     /**
@@ -156,7 +156,6 @@ class MainController extends Controller
     /**
      * @Route(
      *     "/category",
-     *     methods={"POST"},
      *     name="create_category"
      * )
      *
