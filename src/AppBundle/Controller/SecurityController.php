@@ -5,8 +5,6 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\ConfirmationToken;
 use AppBundle\Entity\ResetToken;
 use AppBundle\Entity\User;
-use AppBundle\Form\ForgotPasswordType;
-use AppBundle\Form\ResetPasswordType;
 use AppBundle\Form\UserType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -89,7 +87,11 @@ class SecurityController extends Controller
     public function forgotPasswordAction(Request $request)
     {
         $user = new User();
-        $form = $this->createForm(ForgotPasswordType::class, $user);
+        $form = $this
+            ->createForm(UserType::class, $user)
+            ->remove('role')
+            ->remove('username')
+            ->remove('plainPassword');
 
         $em = $this->getDoctrine()->getManager();
         $tokenService = $this->get('app.token_service');
@@ -132,7 +134,7 @@ class SecurityController extends Controller
     }
 
     /**
-     * @Route("reset/{hash}", name="resetPassword")
+     * @Route("/reset/{hash}", name="resetPassword")
      *
      * @param string $hash
      * @param Request $request
@@ -160,11 +162,15 @@ class SecurityController extends Controller
             }
 
             $user = $token->getUser();
-            $form = $this->createForm(ResetPasswordType::class, $user);
+            $form = $this
+                ->createForm(UserType::class, $user)
+                ->remove('username')
+                ->remove('email')
+                ->remove('role');
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $user->setPlainPassword($form->get('password')->getData());
+                $user->setPlainPassword($form->get('plainPassword')->getData());
                 $this->get('app.user_service')->encodePassword($user);
                 $em->remove($token);
                 $em->flush();
