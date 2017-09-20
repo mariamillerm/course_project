@@ -21,10 +21,8 @@ class CategoryType extends AbstractType{
 		    ->add('category', TextType::class)
             ->add('parent', EntityType::class, [
                   'class' => 'AppBundle:Category',
-                  'choice_label' => function ($category) {
-                  
-                  return $category->getParent();
-            }])
+                  'choice_label' => 'parent',
+            ])
             ->add('save', SubmitType::class, array(
              'attr'      => array('class' => 'button-link save'),
              'label'     => 'Save'
