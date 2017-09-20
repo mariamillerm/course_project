@@ -162,6 +162,8 @@ class SecurityController extends Controller
             }
 
             $user = $token->getUser();
+            //TODO Solve this problem
+            $user->setPlainPassword('');
             $form = $this
                 ->createForm(UserType::class, $user)
                 ->remove('username')
@@ -170,7 +172,6 @@ class SecurityController extends Controller
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $user->setPlainPassword($form->get('plainPassword')->getData());
                 $this->get('app.user_service')->encodePassword($user);
                 $em->remove($token);
                 $em->flush();
