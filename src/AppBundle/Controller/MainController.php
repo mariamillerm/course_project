@@ -90,7 +90,7 @@ class MainController extends Controller
                 $message = $error->getMessage();
             }
 
-            return $this->render(':main:category_create.html.twig', [
+            return $this->render(':main:post_create.html.twig', [
                 'form' => $form->createView(),
                 'error' => $message,
             ]);
@@ -111,12 +111,52 @@ class MainController extends Controller
      * )
      *
      * @param Post $post
+     * @param Request $request
      *
      * @return Response
      */
-    public function editPostAction(Post $post)
+    public function editPostAction(Post $post, Request $request)
     {
-        return new Response('Edit post' . $post->getId());
+        $hasAccess = $this
+            ->get('security.authorization_checker')
+            ->isGranted('ROLE_MANAGER');
+        if ($hasAccess) {
+            $em = $this->getDoctrine()->getManager();
+            $form = $this
+                ->createForm(PostType::class, $post);
+
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                if ($form->get('save')->isClicked()) {
+                    $em->flush();
+
+                    //TODO Right route
+                    return $this->redirectToRoute('homepage');
+                } else {
+                    $em->remove($post);
+                    $em->flush();
+
+                    //TODO Right route
+                    return $this->redirectToRoute('homepage');
+                }
+            }
+
+            $error = $form->getErrors()->current();
+            $message = null;
+            if ($error !== false) {
+                $message = $error->getMessage();
+            }
+
+            return $this->render(':main:post_edit.html.twig', [
+                'form' => $form->createView(),
+                'error' => $message,
+            ]);
+        } else {
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_FORBIDDEN,
+                'status_text' => 'You don\'t have permissions to do this!',
+            ]);
+        }
     }
 
     /**
