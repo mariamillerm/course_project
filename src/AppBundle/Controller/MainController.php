@@ -95,7 +95,10 @@ class MainController extends Controller
                 'error' => $message,
             ]);
         } else {
-            return $this->redirectToRoute('homepage');
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_FORBIDDEN,
+                'status_text' => 'You don\'t have permissions to do this!',
+            ]);
         }
     }
 
@@ -231,7 +234,10 @@ class MainController extends Controller
                 'error' => $message,
             ]);
         } else {
-            return $this->redirectToRoute('homepage');
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_FORBIDDEN,
+                'status_text' => 'You don\'t have permissions to do this!',
+            ]);
         }
     }
 
@@ -262,9 +268,15 @@ class MainController extends Controller
                 return $this->redirectToRoute('homepage');
             }
 
-            return $this->redirectToRoute('homepage');
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_BAD_REQUEST,
+                'status_text' => 'There is no such category!',
+            ]);
         } else {
-            return $this->redirectToRoute('homepage');
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_FORBIDDEN,
+                'status_text' => 'You don\'t have permissions to do this!',
+            ]);
         }
     }
 
@@ -296,11 +308,13 @@ class MainController extends Controller
                     $category->setName($form->get('name')->getData());
                     $em->flush();
 
+                    //TODO Right route
                     return $this->redirectToRoute('homepage');
                 } else {
                     $em->remove($category);
                     $em->flush();
 
+                    //TODO Right route
                     return $this->redirectToRoute('homepage');
                 }
             }
@@ -316,7 +330,10 @@ class MainController extends Controller
                 'error' => $message,
             ]);
         } else {
-            return $this->redirectToRoute('homepage');
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_FORBIDDEN,
+                'status_text' => 'You don\'t have permissions to do this!',
+            ]);
         }
     }
 }
