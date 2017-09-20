@@ -9,14 +9,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="posts")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PostRepository")
  */
 class Post
 {
     // @TODO Remove setters
     // @TODO Update constructor
     // @TODO UniqueConstraint
-
     /**
      * @var string
      *
