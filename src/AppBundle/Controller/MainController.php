@@ -47,7 +47,13 @@ class MainController extends Controller
      */
     public function postAction(Post $post)
     {
-        return new Response($post->getId());
+        $em = $this->getDoctrine()->getManager();
+        $post->addRating();
+        $em->flush();
+
+        return $this->render(':main:show_post.html.twig', [
+            'post' => $post,
+        ]);
     }
 
     /**
@@ -159,22 +165,22 @@ class MainController extends Controller
         }
     }
 
-    /**
-     * @Route(
-     *     "/post/{id}/delete",
-     *     methods={"GET"},
-     *     name="delete_post",
-     *     requirements={"id": "\d+"}
-     * )
-     *
-     * @param Post $post
-     *
-     * @return Response
-     */
-    public function deletePostAction(Post $post)
-    {
-        return new Response('Delete post' . $post->getId());
-    }
+//    /**
+//     * @Route(
+//     *     "/post/{id}/delete",
+//     *     methods={"GET"},
+//     *     name="delete_post",
+//     *     requirements={"id": "\d+"}
+//     * )
+//     *
+//     * @param Post $post
+//     *
+//     * @return Response
+//     */
+//    public function deletePostAction(Post $post)
+//    {
+//        return new Response('Delete post' . $post->getId());
+//    }
 
     /**
      * @Route(
