@@ -25,13 +25,20 @@ class SecurityController extends Controller
      */
     public function loginAction(AuthenticationUtils $authUtils)
     {
-        $error = $authUtils->getLastAuthenticationError();
-        $lastUsername = $authUtils->getLastUsername();
+        $hasAccess = $this
+            ->get('security.authorization_checker')
+            ->isGranted('IS_AUTHENTICATED_FULLY');
+        if ($hasAccess) {
+            return $this->redirectToRoute('homepage');
+        } else {
+            $error = $authUtils->getLastAuthenticationError();
+            $lastUsername = $authUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error' => $error,
-        ]);
+            return $this->render(':security:login.html.twig', [
+                'last_username' => $lastUsername,
+                'error' => $error,
+            ]);
+        }
     }
 
     /**
@@ -41,7 +48,7 @@ class SecurityController extends Controller
      *
      * @return Response
      */
-    public function activateAccountAction(string $hash)
+    public function activateAction(string $hash)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -60,19 +67,20 @@ class SecurityController extends Controller
             $em->remove($token);
             $em->flush();
 
-            return $this->render('security/registration_success.html.twig', [
-                'message' => 'Your account is confirmed. Please, login.',
+            return $this->render(':security:login.html.twig', [
+                'last_username' => $user->getEmail(),
+                'message' => 'account.confirmed',
             ]);
         } else {
-            // @TODO return status code(404)
-            return $this->render('security/registration_success.html.twig', [
-                'message' => 'There is no such user!',
-            ]);
+            // TODO error page with message "Invalid token"
+            return $this->render(':security:registration_success.html.twig', [
+                'message' => 'token.invalid',
+            ])->setStatusCode(Response::HTTP_BAD_REQUEST);
         }
     }
 
     /**
-     * @Route("/reset_password", name="forgotPassword")
+     * @Route("/forgot", name="forgotPassword")
      *
      * @param Request $request
      *
@@ -93,10 +101,10 @@ class SecurityController extends Controller
                 ->findOneByEmail($form->get('email')->getData());
 
             if ($user === null) {
-                return $this->render('security/registration_success.html.twig', [
-                    // @TODO Update message
-                    'message' => 'Something is going wrong there!',
-                ]);
+                // TODO Error page
+                return $this->render(':security:registration_success.html.twig', [
+                    'message' => 'user.not_found',
+                ])->setStatusCode(Response::HTTP_NOT_FOUND);
             }
 
             $token = new ResetToken($user, $tokenService->generateToken());
@@ -116,7 +124,7 @@ class SecurityController extends Controller
         }
 
         return $this->render(
-            'security/forgot_password.html.twig', [
+            ':security:forgot.html.twig', [
                 'form' => $form->createView(),
                 'error' => $message,
             ]
@@ -124,7 +132,7 @@ class SecurityController extends Controller
     }
 
     /**
-     * @Route("reset_password/{hash}", name="resetPassword")
+     * @Route("reset/{hash}", name="resetPassword")
      *
      * @param string $hash
      * @param Request $request
@@ -145,8 +153,9 @@ class SecurityController extends Controller
                 $em->remove($token);
                 $em->flush();
 
-                return $this->render('security/registration_success.html.twig', [
-                    'message' => 'Token isn\'t alive! Please, repeat \'forgot password\' procedure.',
+                // TODO Error page
+                return $this->render(':security:registration_success.html.twig', [
+                    'message' => 'token.expired',
                 ]);
             }
 
@@ -169,17 +178,15 @@ class SecurityController extends Controller
                 $message = $error->getMessage();
             }
 
-            return $this->render(
-                'security/reset_password_type.html.twig', [
-                    'form' => $form->createView(),
-                    'error' => $message,
-                ]
-            );
-        } else {
-            //TODO: Return status code 404
-            return $this->render('security/registration_success.html.twig', [
-                    'message' => 'Whoops. There is no such reset token!',
+            return $this->render(':security:reset_password.html.twig', [
+                'form' => $form->createView(),
+                'error' => $message,
             ]);
+        } else {
+            // TODO Error page
+            return $this->render(':security:registration_success.html.twig', [
+                'message' => 'token.not_found',
+            ])->setStatusCode(Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -192,39 +199,44 @@ class SecurityController extends Controller
      */
     public function signupAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $tokenService = $this->get('app.token_service');
-
-            $this->get('app.user_service')->encodePassword($user);
-            $token = new ConfirmationToken($user, $tokenService->generateToken());
-
-            $em->persist($user);
-            $em->persist($token);
-            $em->flush();
-
-            $this->get('app.email_support')->sendActivationEmail($user, $token);
-
+        $hasAccess = $this
+            ->get('security.authorization_checker')
+            ->isGranted('IS_AUTHENTICATED_FULLY');
+        if ($hasAccess) {
             return $this->redirectToRoute('homepage');
-        }
+        } else {
+            $em = $this->getDoctrine()->getManager();
 
-        $error = $form->getErrors()->current();
-        $message = null;
-        if ($error !== false) {
-            $message = $error->getMessage();
-        }
+            $user = new User();
+            $form = $this->createForm(UserType::class, $user);
 
-        return $this->render(
-            'security/signup.html.twig',
-            [
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $tokenService = $this->get('app.token_service');
+
+                $this->get('app.user_service')->encodePassword($user);
+                $token = new ConfirmationToken($user, $tokenService->generateToken());
+
+                $em->persist($user);
+                $em->persist($token);
+                $em->flush();
+
+                $this->get('app.email_support')->sendActivationEmail($user, $token);
+
+                return $this->redirectToRoute('homepage');
+            }
+
+            $error = $form->getErrors()->current();
+            $message = null;
+            if ($error !== false) {
+                $message = $error->getMessage();
+            }
+
+            return $this->render('security/signup.html.twig', [
                 'form' => $form->createView(),
                 'error' => $message,
-            ]
-        );
+            ]);
+        }
     }
 
 }
