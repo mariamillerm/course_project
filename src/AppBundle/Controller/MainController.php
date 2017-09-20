@@ -57,11 +57,46 @@ class MainController extends Controller
      *     name="create_post"
      * )
      *
+     * @param Request $request
+     *
      * @return Response
      */
-    public function createPostAction()
+    public function createPostAction(Request $request)
     {
-        return new Response('Post creation');
+        $hasAccess = $this
+            ->get('security.authorization_checker')
+            ->isGranted('ROLE_MANAGER');
+        if ($hasAccess) {
+            $em = $this->getDoctrine()->getManager();
+
+            $post = new Post();
+            $form = $this
+                ->createForm(PostType::class, $post)
+                //TODO Create PostType like CategoryType
+                ->remove('delete');
+
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $post->setAuthor($this->getUser());
+                $em->persist($post);
+                $em->flush();
+
+                return $this->redirectToRoute('homepage');
+            }
+
+            $error = $form->getErrors()->current();
+            $message = null;
+            if ($error !== false) {
+                $message = $error->getMessage();
+            }
+
+            return $this->render(':main:category_create.html.twig', [
+                'form' => $form->createView(),
+                'error' => $message,
+            ]);
+        } else {
+            return $this->redirectToRoute('homepage');
+        }
     }
 
     /**
@@ -157,7 +192,6 @@ class MainController extends Controller
     /**
      * @Route(
      *     "/category",
-     *
      *     name="create_category"
      * )
      *
@@ -217,7 +251,7 @@ class MainController extends Controller
     {
         $hasAccess = $this
             ->get('security.authorization_checker')
-            ->isGranted('IS_AUTHENTICATED_FULLY');
+            ->isGranted('ROLE_MANAGER');
         if ($hasAccess) {
             $em = $this->getDoctrine()->getManager();
 
@@ -252,19 +286,22 @@ class MainController extends Controller
             ->get('security.authorization_checker')
             ->isGranted('ROLE_MANAGER');
         if ($hasAccess) {
+            $em = $this->getDoctrine()->getManager();
             $form = $this
                 ->createForm(CategoryType::class, $category);
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 if ($form->get('save')->isClicked()) {
-                    $em = $this->getDoctrine()->getManager();
                     $category->setName($form->get('name')->getData());
                     $em->flush();
 
                     return $this->redirectToRoute('homepage');
                 } else {
-                    return $this->redirectToRoute('delete_category', [$category]);
+                    $em->remove($category);
+                    $em->flush();
+
+                    return $this->redirectToRoute('homepage');
                 }
             }
 
