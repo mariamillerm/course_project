@@ -27,7 +27,10 @@ class SecurityController extends Controller
             ->get('security.authorization_checker')
             ->isGranted('IS_AUTHENTICATED_FULLY');
         if ($hasAccess) {
-            return $this->redirectToRoute('homepage');
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_BAD_GATEWAY,
+                'status_text' => 'You are already in system!',
+            ]);
         } else {
             $error = $authUtils->getLastAuthenticationError();
             $lastUsername = $authUtils->getLastUsername();
@@ -70,10 +73,10 @@ class SecurityController extends Controller
                 'message' => 'account.confirmed',
             ]);
         } else {
-            // TODO error page with message "Invalid token"
-            return $this->render(':security:registration_success.html.twig', [
-                'message' => 'token.invalid',
-            ])->setStatusCode(Response::HTTP_BAD_REQUEST);
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_BAD_REQUEST,
+                'status_text' => 'Invalid token! Token has already been used or has not been found.',
+            ]);
         }
     }
 
@@ -103,10 +106,10 @@ class SecurityController extends Controller
                 ->findOneByEmail($form->get('email')->getData());
 
             if ($user === null) {
-                // TODO Error page
-                return $this->render(':security:registration_success.html.twig', [
-                    'message' => 'user.not_found',
-                ])->setStatusCode(Response::HTTP_NOT_FOUND);
+                return $this->render(':errors:error.html.twig', [
+                    'status_code' => Response::HTTP_BAD_REQUEST,
+                    'status_text' => 'There is no user with such email!',
+                ]);
             }
 
             $token = new ResetToken($user, $tokenService->generateToken());
@@ -155,9 +158,9 @@ class SecurityController extends Controller
                 $em->remove($token);
                 $em->flush();
 
-                // TODO Error page
-                return $this->render(':security:registration_success.html.twig', [
-                    'message' => 'token.expired',
+                return $this->render(':errors:error.html.twig', [
+                    'status_code' => Response::HTTP_REQUEST_TIMEOUT,
+                    'status_text' => 'The token was deleted. Retry the password recovery request.',
                 ]);
             }
 
@@ -190,10 +193,10 @@ class SecurityController extends Controller
                 'error' => $message,
             ]);
         } else {
-            // TODO Error page
-            return $this->render(':security:registration_success.html.twig', [
-                'message' => 'token.not_found',
-            ])->setStatusCode(Response::HTTP_BAD_REQUEST);
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_BAD_REQUEST,
+                'status_text' => 'Token not found!',
+            ]);
         }
     }
 
