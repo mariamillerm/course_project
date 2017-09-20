@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Post;
+use AppBundle\Form\CategoryType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -131,7 +132,7 @@ class MainController extends Controller
 
     /**
      * @Route(
-     *     path="/category/{category}",
+     *     path="/category/{category}/posts",
      *     methods={"GET"},
      *     name="category_posts",
      *     requirements={"category": "\d+"}
@@ -156,14 +157,51 @@ class MainController extends Controller
     /**
      * @Route(
      *     "/category",
+<<<<<<< HEAD
+=======
+     *
+>>>>>>> 90160e7063ea061499543f16324e953e1e7b6ca1
      *     name="create_category"
      * )
      *
+     * @param Request $request
+     *
      * @return Response
      */
-    public function createCategoryAction()
+    public function createCategoryAction(Request $request)
     {
-        return new Response('Category creation');
+        $hasAccess = $this
+            ->get('security.authorization_checker')
+            ->isGranted('ROLE_MANAGER');
+        if ($hasAccess) {
+            $em = $this->getDoctrine()->getManager();
+
+            $category = new Category('');
+            $form = $this
+                ->createForm(CategoryType::class, $category)
+                ->remove('delete');
+
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em->persist($category);
+                $em->flush();
+
+                return $this->redirectToRoute('homepage');
+            }
+
+            $error = $form->getErrors()->current();
+            $message = null;
+            if ($error !== false) {
+                $message = $error->getMessage();
+            }
+
+            return $this->render(':main:category_create.html.twig', [
+                'form' => $form->createView(),
+                'error' => $message,
+            ]);
+        } else {
+            return $this->redirectToRoute('homepage');
+        }
     }
 
     /**
@@ -180,23 +218,71 @@ class MainController extends Controller
      */
     public function deleteCategoryAction(Category $category)
     {
-        return new Response('Delete category' . $category->getId());
+        $hasAccess = $this
+            ->get('security.authorization_checker')
+            ->isGranted('IS_AUTHENTICATED_FULLY');
+        if ($hasAccess) {
+            $em = $this->getDoctrine()->getManager();
+
+            if ($category !== null) {
+                $em->remove($category);
+                $em->flush();
+
+                return $this->redirectToRoute('homepage');
+            }
+
+            return $this->redirectToRoute('homepage');
+        } else {
+            return $this->redirectToRoute('homepage');
+        }
     }
 
     /**
      * @Route(
      *     "/category/{category}",
-     *     methods={"POST"},
      *     name="edit_category",
      *     requirements={"category": "\d+"}
      * )
      *
      * @param Category $category
+     * @param Request $request
      *
      * @return Response
      */
-    public function editCategoryAction(Category $category)
+    public function editCategoryAction(Category $category, Request $request)
     {
-        return new Response('Edit category' . $category->getId());
+        $hasAccess = $this
+            ->get('security.authorization_checker')
+            ->isGranted('ROLE_MANAGER');
+        if ($hasAccess) {
+            $form = $this
+                ->createForm(CategoryType::class, $category);
+
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                if ($form->get('save')->isClicked()) {
+                    $em = $this->getDoctrine()->getManager();
+                    $category->setName($form->get('name')->getData());
+                    $em->flush();
+
+                    return $this->redirectToRoute('homepage');
+                } else {
+                    return $this->redirectToRoute('delete_category', [$category]);
+                }
+            }
+
+            $error = $form->getErrors()->current();
+            $message = null;
+            if ($error !== false) {
+                $message = $error->getMessage();
+            }
+
+            return $this->render(':main:category_edit.html.twig', [
+                'form' => $form->createView(),
+                'error' => $message,
+            ]);
+        } else {
+            return $this->redirectToRoute('homepage');
+        }
     }
 }
