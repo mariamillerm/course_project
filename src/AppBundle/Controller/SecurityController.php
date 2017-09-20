@@ -241,7 +241,7 @@ class SecurityController extends Controller
                 $message = $error->getMessage();
             }
 
-            return $this->render('security/signup.html.twig', [
+            return $this->render(':security:signup.html.twig', [
                 'form' => $form->createView(),
                 'error' => $message,
             ]);
