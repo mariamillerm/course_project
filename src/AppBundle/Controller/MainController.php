@@ -157,10 +157,7 @@ class MainController extends Controller
     /**
      * @Route(
      *     "/category",
-<<<<<<< HEAD
-=======
      *
->>>>>>> 90160e7063ea061499543f16324e953e1e7b6ca1
      *     name="create_category"
      * )
      *
