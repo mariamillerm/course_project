@@ -35,7 +35,7 @@ class MainController extends Controller
 
     /**
      * @Route(
-     *     "/post/{id}",
+     *     "/posts/{id}",
      *     methods={"GET"},
      *     name="post",
      *     requirements={"id": "\d+"}
@@ -287,44 +287,44 @@ class MainController extends Controller
         }
     }
 
-    /**
-     * @Route(
-     *     "/category/{category}/delete",
-     *     methods={"GET"},
-     *     name="delete_category",
-     *     requirements={"category": "\d+"}
-     * )
-     *
-     * @param Category $category
-     *
-     * @return Response
-     */
-    public function deleteCategoryAction(Category $category)
-    {
-        $hasAccess = $this
-            ->get('security.authorization_checker')
-            ->isGranted('ROLE_MANAGER');
-        if ($hasAccess) {
-            $em = $this->getDoctrine()->getManager();
-
-            if ($category !== null) {
-                $em->remove($category);
-                $em->flush();
-
-                return $this->redirectToRoute('homepage');
-            }
-
-            return $this->render(':errors:error.html.twig', [
-                'status_code' => Response::HTTP_BAD_REQUEST,
-                'status_text' => 'There is no such category!',
-            ]);
-        } else {
-            return $this->render(':errors:error.html.twig', [
-                'status_code' => Response::HTTP_FORBIDDEN,
-                'status_text' => 'You don\'t have permissions to do this!',
-            ]);
-        }
-    }
+//    /**
+//     * @Route(
+//     *     "/category/{category}/delete",
+//     *     methods={"GET"},
+//     *     name="delete_category",
+//     *     requirements={"category": "\d+"}
+//     * )
+//     *
+//     * @param Category $category
+//     *
+//     * @return Response
+//     */
+//    public function deleteCategoryAction(Category $category)
+//    {
+//        $hasAccess = $this
+//            ->get('security.authorization_checker')
+//            ->isGranted('ROLE_MANAGER');
+//        if ($hasAccess) {
+//            $em = $this->getDoctrine()->getManager();
+//
+//            if ($category !== null) {
+//                $em->remove($category);
+//                $em->flush();
+//
+//                return $this->redirectToRoute('homepage');
+//            }
+//
+//            return $this->render(':errors:error.html.twig', [
+//                'status_code' => Response::HTTP_BAD_REQUEST,
+//                'status_text' => 'There is no such category!',
+//            ]);
+//        } else {
+//            return $this->render(':errors:error.html.twig', [
+//                'status_code' => Response::HTTP_FORBIDDEN,
+//                'status_text' => 'You don\'t have permissions to do this!',
+//            ]);
+//        }
+//    }
 
     /**
      * @Route(
