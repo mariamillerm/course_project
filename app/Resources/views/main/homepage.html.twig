@@ -13,12 +13,14 @@
              </div>
         </div>
 {% block category %}
-     <div class="sidebar_categories">
-         <h1>Categories</h1>
-        {% for Category in categories %}
-             <ul>{{ Category.name }}</ul>
-             <li>{{ Category.child }}</li>
-         {% endfor %}
+    <div class="sidebar_categories">
+        <h1>Categories</h1>
+        {% for category in categories %}
+             <ul>{{ category.name }}</ul>
+             {% for child in category.children %}
+             	<li>{{ child }}</li>
+             {% endfor %}
+        {% endfor %}
      </div>
 {% endblock category%}
 <div class="content">
