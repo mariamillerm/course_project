@@ -1,10 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
 {{ form_start(form, {'attr': {'class': 'form-signin'}}) }}
     {{ form_row(form.username, {'attr': {'class': 'form-control'}}) }}
     {{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
     {{ form_row(form.plainPassword.first, {'attr': {'class': 'form-control'}}) }}
     {{ form_row(form.plainPassword.second, {'attr': {'class': 'form-control'}}) }}
 {{ form_end(form) }}
+
+    <span>Already has an account? <a href="{{ path('login') }}">Log in</a></span>
+
 {% endblock %}

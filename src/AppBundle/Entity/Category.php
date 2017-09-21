@@ -59,12 +59,9 @@ class Category
 
     /**
      * Category constructor.
-     *
-     * @param string $name
      */
-    public function __construct(string $name)
+    public function __construct()
     {
-        $this->name = $name;
     }
 
     /**

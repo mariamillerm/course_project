@@ -98,3 +98,24 @@ header{
 	padding-left: 1065px;
 	padding-top: 5px;
 }
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+
+ .btn {
+     border-radius: 3px;
+ }
+
+ .btn-action {
+     background-color: #2e3234;
+     color: #ffffff;
+     font-family: 'Source Sans Pro', sans-serif;
+     font-size: medium;
+ }
+
+ .form-control:focus {
+     box-shadow: 0 1px 0 #cb0016 inset, 0 -1px 0 #cb0016 inset, 1px 0 0 #cb0016 inset, -1px 0 0 #cb0016 inset, 0 0 5px rgba(255,0,0,0.6);
+     border: thick;
+ }

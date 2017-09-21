@@ -100,6 +100,8 @@ class Post
     public function __construct()
     {
         $this->similarPosts = new ArrayCollection();
+        $this->creationDate = new \DateTime();
+        $this->rating = 0;
     }
 
     /**
@@ -251,13 +253,11 @@ class Post
     }
 
     /**
-     * @param int $rating
-     *
      * @return Post
      */
-    public function setRating(int $rating): Post
+    public function addRating(): Post
     {
-        $this->rating = $rating;
+        $this->rating += 1;
 
         return $this;
     }

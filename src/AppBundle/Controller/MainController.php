@@ -35,7 +35,7 @@ class MainController extends Controller
 
     /**
      * @Route(
-     *     "/post/{id}",
+     *     "/posts/{id}",
      *     methods={"GET"},
      *     name="post",
      *     requirements={"id": "\d+"}
@@ -47,7 +47,13 @@ class MainController extends Controller
      */
     public function postAction(Post $post)
     {
-        return new Response($post->getId());
+        $em = $this->getDoctrine()->getManager();
+        $post->addRating();
+        $em->flush();
+
+        return $this->render(':main:show_post.html.twig', [
+            'post' => $post,
+        ]);
     }
 
     /**
@@ -57,11 +63,49 @@ class MainController extends Controller
      *     name="create_post"
      * )
      *
+     * @param Request $request
+     *
      * @return Response
      */
-    public function createPostAction()
+    public function createPostAction(Request $request)
     {
-        return new Response('Post creation');
+        $hasAccess = $this
+            ->get('security.authorization_checker')
+            ->isGranted('ROLE_MANAGER');
+        if ($hasAccess) {
+            $em = $this->getDoctrine()->getManager();
+
+            $post = new Post();
+            $form = $this
+                ->createForm(PostType::class, $post)
+                //TODO Create PostType like CategoryType
+                ->remove('delete');
+
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $post->setAuthor($this->getUser());
+                $em->persist($post);
+                $em->flush();
+
+                return $this->redirectToRoute('homepage');
+            }
+
+            $error = $form->getErrors()->current();
+            $message = null;
+            if ($error !== false) {
+                $message = $error->getMessage();
+            }
+
+            return $this->render(':main:post_create.html.twig', [
+                'form' => $form->createView(),
+                'error' => $message,
+            ]);
+        } else {
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_FORBIDDEN,
+                'status_text' => 'You don\'t have permissions to do this!',
+            ]);
+        }
     }
 
     /**
@@ -73,30 +117,70 @@ class MainController extends Controller
      * )
      *
      * @param Post $post
+     * @param Request $request
      *
      * @return Response
      */
-    public function editPostAction(Post $post)
+    public function editPostAction(Post $post, Request $request)
     {
-        return new Response('Edit post' . $post->getId());
+        $hasAccess = $this
+            ->get('security.authorization_checker')
+            ->isGranted('ROLE_MANAGER');
+        if ($hasAccess) {
+            $em = $this->getDoctrine()->getManager();
+            $form = $this
+                ->createForm(PostType::class, $post);
+
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                if ($form->get('save')->isClicked()) {
+                    $em->flush();
+
+                    //TODO Right route
+                    return $this->redirectToRoute('homepage');
+                } else {
+                    $em->remove($post);
+                    $em->flush();
+
+                    //TODO Right route
+                    return $this->redirectToRoute('homepage');
+                }
+            }
+
+            $error = $form->getErrors()->current();
+            $message = null;
+            if ($error !== false) {
+                $message = $error->getMessage();
+            }
+
+            return $this->render(':main:post_edit.html.twig', [
+                'form' => $form->createView(),
+                'error' => $message,
+            ]);
+        } else {
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_FORBIDDEN,
+                'status_text' => 'You don\'t have permissions to do this!',
+            ]);
+        }
     }
 
-    /**
-     * @Route(
-     *     "/post/{id}/delete",
-     *     methods={"GET"},
-     *     name="delete_post",
-     *     requirements={"id": "\d+"}
-     * )
-     *
-     * @param Post $post
-     *
-     * @return Response
-     */
-    public function deletePostAction(Post $post)
-    {
-        return new Response('Delete post' . $post->getId());
-    }
+//    /**
+//     * @Route(
+//     *     "/post/{id}/delete",
+//     *     methods={"GET"},
+//     *     name="delete_post",
+//     *     requirements={"id": "\d+"}
+//     * )
+//     *
+//     * @param Post $post
+//     *
+//     * @return Response
+//     */
+//    public function deletePostAction(Post $post)
+//    {
+//        return new Response('Delete post' . $post->getId());
+//    }
 
     /**
      * @Route(
@@ -157,7 +241,6 @@ class MainController extends Controller
     /**
      * @Route(
      *     "/category",
-     *
      *     name="create_category"
      * )
      *
@@ -173,7 +256,7 @@ class MainController extends Controller
         if ($hasAccess) {
             $em = $this->getDoctrine()->getManager();
 
-            $category = new Category('');
+            $category = new Category();
             $form = $this
                 ->createForm(CategoryType::class, $category)
                 ->remove('delete');
@@ -197,42 +280,51 @@ class MainController extends Controller
                 'error' => $message,
             ]);
         } else {
-            return $this->redirectToRoute('homepage');
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_FORBIDDEN,
+                'status_text' => 'You don\'t have permissions to do this!',
+            ]);
         }
     }
 
-    /**
-     * @Route(
-     *     "/category/{category}/delete",
-     *     methods={"GET"},
-     *     name="delete_category",
-     *     requirements={"category": "\d+"}
-     * )
-     *
-     * @param Category $category
-     *
-     * @return Response
-     */
-    public function deleteCategoryAction(Category $category)
-    {
-        $hasAccess = $this
-            ->get('security.authorization_checker')
-            ->isGranted('IS_AUTHENTICATED_FULLY');
-        if ($hasAccess) {
-            $em = $this->getDoctrine()->getManager();
-
-            if ($category !== null) {
-                $em->remove($category);
-                $em->flush();
-
-                return $this->redirectToRoute('homepage');
-            }
-
-            return $this->redirectToRoute('homepage');
-        } else {
-            return $this->redirectToRoute('homepage');
-        }
-    }
+//    /**
+//     * @Route(
+//     *     "/category/{category}/delete",
+//     *     methods={"GET"},
+//     *     name="delete_category",
+//     *     requirements={"category": "\d+"}
+//     * )
+//     *
+//     * @param Category $category
+//     *
+//     * @return Response
+//     */
+//    public function deleteCategoryAction(Category $category)
+//    {
+//        $hasAccess = $this
+//            ->get('security.authorization_checker')
+//            ->isGranted('ROLE_MANAGER');
+//        if ($hasAccess) {
+//            $em = $this->getDoctrine()->getManager();
+//
+//            if ($category !== null) {
+//                $em->remove($category);
+//                $em->flush();
+//
+//                return $this->redirectToRoute('homepage');
+//            }
+//
+//            return $this->render(':errors:error.html.twig', [
+//                'status_code' => Response::HTTP_BAD_REQUEST,
+//                'status_text' => 'There is no such category!',
+//            ]);
+//        } else {
+//            return $this->render(':errors:error.html.twig', [
+//                'status_code' => Response::HTTP_FORBIDDEN,
+//                'status_text' => 'You don\'t have permissions to do this!',
+//            ]);
+//        }
+//    }
 
     /**
      * @Route(
@@ -252,19 +344,24 @@ class MainController extends Controller
             ->get('security.authorization_checker')
             ->isGranted('ROLE_MANAGER');
         if ($hasAccess) {
+            $em = $this->getDoctrine()->getManager();
             $form = $this
                 ->createForm(CategoryType::class, $category);
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 if ($form->get('save')->isClicked()) {
-                    $em = $this->getDoctrine()->getManager();
                     $category->setName($form->get('name')->getData());
                     $em->flush();
 
+                    //TODO Right route
                     return $this->redirectToRoute('homepage');
                 } else {
-                    return $this->redirectToRoute('delete_category', [$category]);
+                    $em->remove($category);
+                    $em->flush();
+
+                    //TODO Right route
+                    return $this->redirectToRoute('homepage');
                 }
             }
 
@@ -279,7 +376,10 @@ class MainController extends Controller
                 'error' => $message,
             ]);
         } else {
-            return $this->redirectToRoute('homepage');
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_FORBIDDEN,
+                'status_text' => 'You don\'t have permissions to do this!',
+            ]);
         }
     }
 }
