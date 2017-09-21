@@ -2,17 +2,16 @@
     {#{{ pagination.getTotalItemCount }}#}
 {#</div>#}
 <table>
-    {#<tr>#}
-        {#<th>{{ knp_pagination_sortable(pagination, 'Id', 'p.id') }}</th>#}
-        {#<th{% if pagination.isSorted('a.Title') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Title', 'a.title') }}</th>#}
-        {#<th>{{ knp_pagination_sortable(pagination, 'Release', ['p.creationDate', 'p.time']) }}</th>#}
-    {#</tr>#}
+    <tr>
+        <th>{{ knp_pagination_sortable(pagination, 'Release', ['p.creationDate', 'p.creationDate']) }}</th>
+        <th>{{ knp_pagination_sortable(pagination, 'Rating', ['p.rating', 'p.rating']) }}</th>
+    </tr>
 
     {% for post in pagination %}
         <tr {% if loop.index is odd %}class="color"{% endif %}>
             <td>{{ post.id }}</td>
             <td>{{ post.title }}</td>
-            <td>{{ post.creationDate | date('Y-m-d') }}</td>
+            <td>{{ post.creationDate | date('h:m:s d M Y') }}</td>
         </tr>
     {% endfor %}
 </table>
