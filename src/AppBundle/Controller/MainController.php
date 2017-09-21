@@ -5,8 +5,12 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Post;
 use AppBundle\Form\CategoryType;
+use AppBundle\Form\PostType;
+use Doctrine\ORM\EntityRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Response;
 use Elastica\Query;
 use Elastica\Query\QueryString;
@@ -25,17 +29,28 @@ class MainController extends Controller
      * )
      *
      * @param int $page
+     * @param Request $request
      *
      * @return Response
      */
-    public function homepageAction(int $page = 1)
+    public function homepageAction(int $page = 1, Request $request)
     {
-        return $this->render('main/homepage.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $query = $em->getRepository(Post::class)->getPostsQuery();
+
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            10/*limit per page*/
+        );
+
+        return $this->render(':main:show_posts.html.twig', array('pagination' => $pagination));
     }
 
     /**
      * @Route(
-     *     "/posts/{id}",
+     *     "/post/{id}",
      *     methods={"GET"},
      *     name="post",
      *     requirements={"id": "\d+"}
@@ -59,7 +74,7 @@ class MainController extends Controller
     /**
      * @Route(
      *     "/post",
-     *     methods={"POST"},
+     *     methods={"GET", "POST"},
      *     name="create_post"
      * )
      *
@@ -78,8 +93,10 @@ class MainController extends Controller
             $post = new Post();
             $form = $this
                 ->createForm(PostType::class, $post)
-                //TODO Create PostType like CategoryType
-                ->remove('delete');
+                ->remove('creationDate')
+                ->add('save', SubmitType::class, [
+                    'label' => 'post.create'
+                ]);;
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
@@ -110,8 +127,8 @@ class MainController extends Controller
 
     /**
      * @Route(
-     *     "/post/{id}",
-     *     methods={"POST"},
+     *     "/post/{id}/edit",
+     *     methods={"GET", "POST"},
      *     name="edit_post",
      *     requirements={"id": "\d+"}
      * )
@@ -129,22 +146,16 @@ class MainController extends Controller
         if ($hasAccess) {
             $em = $this->getDoctrine()->getManager();
             $form = $this
-                ->createForm(PostType::class, $post);
+                ->createForm(PostType::class, $post)
+                ->add('edit', SubmitType::class)
+                ->remove('creationDate');
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                if ($form->get('save')->isClicked()) {
-                    $em->flush();
+                $em->flush();
 
-                    //TODO Right route
-                    return $this->redirectToRoute('homepage');
-                } else {
-                    $em->remove($post);
-                    $em->flush();
-
-                    //TODO Right route
-                    return $this->redirectToRoute('homepage');
-                }
+                //TODO Right route
+                return $this->redirectToRoute('homepage');
             }
 
             $error = $form->getErrors()->current();
@@ -165,22 +176,37 @@ class MainController extends Controller
         }
     }
 
-//    /**
-//     * @Route(
-//     *     "/post/{id}/delete",
-//     *     methods={"GET"},
-//     *     name="delete_post",
-//     *     requirements={"id": "\d+"}
-//     * )
-//     *
-//     * @param Post $post
-//     *
-//     * @return Response
-//     */
-//    public function deletePostAction(Post $post)
-//    {
-//        return new Response('Delete post' . $post->getId());
-//    }
+    /**
+     * @Route(
+     *     "/post/{id}/delete",
+     *     methods={"GET"},
+     *     name="delete_post",
+     *     requirements={"id": "\d+"}
+     * )
+     *
+     * @param Post $post
+     *
+     * @return Response
+     */
+    public function deletePostAction(Post $post)
+    {
+        $hasAccess = $this
+            ->get('security.authorization_checker')
+            ->isGranted('ROLE_MANAGER');
+        if ($hasAccess) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($post);
+            $em->flush();
+
+            //TODO Right route
+            return $this->redirectToRoute('homepage');
+        } else {
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_FORBIDDEN,
+                'status_text' => 'You don\'t have permissions to do this!',
+            ]);
+        }
+    }
 
     /**
      * @Route(
@@ -241,6 +267,7 @@ class MainController extends Controller
     /**
      * @Route(
      *     "/category",
+     *     methods={"GET", "POST"},
      *     name="create_category"
      * )
      *
@@ -259,7 +286,15 @@ class MainController extends Controller
             $category = new Category();
             $form = $this
                 ->createForm(CategoryType::class, $category)
-                ->remove('delete');
+                ->remove('parent')
+                ->add('parent', EntityType::class, [
+                    'class' => 'AppBundle\Entity\Category',
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('c')
+                            ->orderBy('c.name', 'ASC');
+                    },
+                    'choice_label' => 'name',
+                ]);
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
@@ -287,48 +322,41 @@ class MainController extends Controller
         }
     }
 
-//    /**
-//     * @Route(
-//     *     "/category/{category}/delete",
-//     *     methods={"GET"},
-//     *     name="delete_category",
-//     *     requirements={"category": "\d+"}
-//     * )
-//     *
-//     * @param Category $category
-//     *
-//     * @return Response
-//     */
-//    public function deleteCategoryAction(Category $category)
-//    {
-//        $hasAccess = $this
-//            ->get('security.authorization_checker')
-//            ->isGranted('ROLE_MANAGER');
-//        if ($hasAccess) {
-//            $em = $this->getDoctrine()->getManager();
-//
-//            if ($category !== null) {
-//                $em->remove($category);
-//                $em->flush();
-//
-//                return $this->redirectToRoute('homepage');
-//            }
-//
-//            return $this->render(':errors:error.html.twig', [
-//                'status_code' => Response::HTTP_BAD_REQUEST,
-//                'status_text' => 'There is no such category!',
-//            ]);
-//        } else {
-//            return $this->render(':errors:error.html.twig', [
-//                'status_code' => Response::HTTP_FORBIDDEN,
-//                'status_text' => 'You don\'t have permissions to do this!',
-//            ]);
-//        }
-//    }
+    /**
+     * @Route(
+     *     "/category/{category}/delete",
+     *     methods={"GET"},
+     *     name="delete_category",
+     *     requirements={"category": "\d+"}
+     * )
+     *
+     * @param Category $category
+     *
+     * @return Response
+     */
+    public function deleteCategoryAction(Category $category)
+    {
+        $hasAccess = $this
+            ->get('security.authorization_checker')
+            ->isGranted('ROLE_MANAGER');
+        if ($hasAccess) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($category);
+            $em->flush();
+
+            return $this->redirectToRoute('homepage');
+        } else {
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_FORBIDDEN,
+                'status_text' => 'You don\'t have permissions to do this!',
+            ]);
+        }
+    }
 
     /**
      * @Route(
      *     "/category/{category}",
+     *     methods={"GET", "POST"},
      *     name="edit_category",
      *     requirements={"category": "\d+"}
      * )
@@ -346,23 +374,17 @@ class MainController extends Controller
         if ($hasAccess) {
             $em = $this->getDoctrine()->getManager();
             $form = $this
-                ->createForm(CategoryType::class, $category);
+                ->createForm(CategoryType::class, $category, [
+                'categoryName' =>$category->getName(),
+                ]);
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                if ($form->get('save')->isClicked()) {
-                    $category->setName($form->get('name')->getData());
-                    $em->flush();
+                $category->setName($form->get('name')->getData());
+                $em->flush();
 
-                    //TODO Right route
-                    return $this->redirectToRoute('homepage');
-                } else {
-                    $em->remove($category);
-                    $em->flush();
-
-                    //TODO Right route
-                    return $this->redirectToRoute('homepage');
-                }
+                //TODO Right route
+                return $this->redirectToRoute('homepage');
             }
 
             $error = $form->getErrors()->current();
