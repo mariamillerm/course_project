@@ -233,9 +233,23 @@ class MainController extends Controller
             ->getRepository(Post::class)
             ->findByCategory($category);
 
-        return $this->render('show_posts_by_category.html.twig', [
-            'posts' => $posts,
+        return $this->render('main/homepage.html.twig', [
+            'posts' => $posts->getResult()
+            //'posts' => $posts,
         ]);
+    }
+
+    /**
+     * @Route(path="/categories", methods={"GET"}, name="categories")
+     */
+    public function categoryListAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository('AppBundle:Category')->findAll();
+        
+        return $this->render('main/homepage.html.twig', array(
+            'categories' => $categories
+        ));
     }
 
     /**
