@@ -120,4 +120,16 @@ class Category
     {
         return $this->children->toArray();
     }
+
+        /**
+     * @param Category $child
+     *
+     * @return string
+     */
+     public function __toString(){
+        
+        return $this->name;
+    }
 }
+
+
