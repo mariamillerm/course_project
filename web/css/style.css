@@ -101,6 +101,11 @@
      font-size: medium;
  }
 
+ .btn-action:hover {
+     background-color: #060606;
+     color: #ffffff;
+ }
+
  .btn-logout {
     margin: 10px 0;
     font-size: 16px;

@@ -17,3 +17,6 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
+
+    latest_execution_file: var/latest_execution.yml
+    tasks_file: var/tasks.txt

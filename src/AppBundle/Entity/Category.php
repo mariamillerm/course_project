@@ -58,13 +58,6 @@ class Category
     private $posts;
 
     /**
-     * Category constructor.
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * @param string $name
      *
      * @return Category
@@ -87,7 +80,7 @@ class Category
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -95,7 +88,7 @@ class Category
     /**
      * @return Category
      */
-    public function getParent(): Category
+    public function getParent(): ?Category
     {
         return $this->parent;
     }

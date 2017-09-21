@@ -62,11 +62,19 @@ class User implements UserInterface
     private $isActive;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $isSubscribed;
+
+    /**
      * User constructor.
      */
     public function __construct()
     {
         $this->isActive = false;
+        $this->isSubscribed = false;
         $this->role = 'ROLE_USER';
     }
 
@@ -239,6 +247,26 @@ class User implements UserInterface
     public function setPlainPassword(string $plainPassword): User
     {
         $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSubscribed(): bool
+    {
+        return $this->isSubscribed;
+    }
+
+    /**
+     * @param bool $isSubscribed
+     *
+     * @return User
+     */
+    public function setIsSubscribed(bool $isSubscribed): User
+    {
+        $this->isSubscribed = $isSubscribed;
 
         return $this;
     }

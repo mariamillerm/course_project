@@ -21,6 +21,12 @@ services:
         arguments:
             - '@security.password_encoder'
 
+    app.latest_execution_service:
+        class: AppBundle\Service\LatestExecutionService
+        arguments:
+            - '@kitpages_semaphore.manager'
+            - '%latest_execution_file%'
+
     AppBundle\:
         resource: '../../src/AppBundle/*'
         exclude: '../../src/AppBundle/{Entity,Repository,Tests}'

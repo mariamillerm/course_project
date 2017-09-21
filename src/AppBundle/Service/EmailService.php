@@ -3,6 +3,7 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\ConfirmationToken;
+use AppBundle\Entity\Post;
 use AppBundle\Entity\ResetToken;
 use AppBundle\Entity\User;
 use Symfony\Bundle\TwigBundle\TwigEngine;
@@ -18,6 +19,7 @@ class EmailService
      * @var TwigEngine
      */
     private $templating;
+
     /**
      * @var string
      */
@@ -54,8 +56,7 @@ class EmailService
                     ]
                 ),
                 'text/html'
-            )
-        ;
+            );
 
         $this->mailer->send($message);
     }
@@ -77,9 +78,18 @@ class EmailService
                     ]
                 ),
                 'text/html'
-            )
-        ;
+            );
 
         $this->mailer->send($message);
+    }
+
+    /**
+     * @param User   $user
+     * @param Post[] $posts
+     */
+    public function sendNewsEmail(User $user, array $posts)
+    {
+        //TODO implement news email
+//        $this->mailer->send($message);
     }
 }
