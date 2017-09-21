@@ -5,10 +5,15 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Table(name="posts")
+ * @ORM\Table(
+ *     name="posts",
+ *     uniqueConstraints={
+ *      @UniqueConstraint(name="search_idx", columns={"name", "email"})
+ * })
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PostRepository")
  */
 class Post

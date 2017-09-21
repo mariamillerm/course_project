@@ -6,9 +6,14 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
- * @ORM\Table(name="categories")
+ * @ORM\Table(
+ *     name="categories",
+ *     uniqueConstraints={
+ *      @UniqueConstraint(name="search_idx", columns={"name"})
+ * })
  * @ORM\Entity()
  */
 class Category
