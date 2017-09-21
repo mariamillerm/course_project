@@ -1,10 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Login page
+   Login page
 {% endblock %}
 
 {% block body %}
+    <header>
+        ItraNEWS!
+    </header>
     <div class="container">
         {% if error is defined and error is not null %}
             <div class="alert alert-danger">{{ error.messageKey }}</div>
@@ -23,10 +26,13 @@
 
             <button class="btn btn-lg btn-danger btn-block" style="margin-top: 5px">Sign in</button>
         </form>
+        <div class="buttons">
 
         <a class="btn btn-sm btn-action btn-block" href="{{ path('forgotPassword') }}">Forgot password?</a>
 
         <a class="btn btn-sm btn-action btn-block" href="{{ path('signup') }}">Sign up</a>
+        </div>
+
     </div>
 
 {% endblock body %}

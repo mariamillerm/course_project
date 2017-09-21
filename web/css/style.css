@@ -1,11 +1,102 @@
  body{
-     background-color: #FFFFF0;
- }
+     background-color: #FFF;
+}
 
  .form-signin {
   max-width: 330px;
   padding: 15px;
   margin: 0 auto;
+}
+
+.buttons{
+  width: 100%;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.container_logout{
+	overflow: visible;
+	text-align: center;
+	float: right;
+}
+
+.t {
+  float: left;
+}
+
+.header{
+    color: #343434;
+    font-weight: normal;
+    font-family: "Segoe UI";  
+    font-size: 39px;
+    line-height: 62px;
+    text-indent: 2.6em;
+    height: 80px;
+    width: 1170px;
+    float: right;
+    border-bottom-width: 7px; 
+    border-bottom-style: ridge; 
+    border-bottom-color: #2E3234; 
+}
+
+.auth{
+	float: left;
+    margin: 20px 0;
+    font-size: 18px;
+    font-family: Times;
+}
+
+.logout_button {
+  float: right;
+  margin: 5px 0;
+}
+
+.container_logout{
+	overflow: visible;
+	width: 100%;
+	padding-left: 1100px; 
+	padding-right: 30px;
+  float: right;
+}
+
+.sidebar_categories{
+	width: 200px; 
+	background: #2E3234;
+    bottom: 0; 
+    position: absolute;
+    overflow: auto; 
+    color: #F5FFFA;
+    height: 100%;
+}
+
+/*.sidebar_news{
+	width: 400px; 
+	background: #ECF5E4; 
+    top: 124px; 
+    bottom: 0; 
+    border-left: 1px solid #231F20;
+    overflow: visible;
+    padding-left: 1080px; 
+    position: absolute;
+    border-radius: 0 10px 0 10px;
+    text-align: center;
+    float: right;
+}*/
+
+.content{
+	background: #fff;
+	width: 60%;
+	left: 220px;
+	top: 108px;
+    overflow: auto; 
+    position: absolute;
+	border-radius: 0 10px 0 10px;
+	border: 1px solid #231F20;
+}
+
+.navbar-form {
+	padding-left: 1065px;
+	padding-top: 15px;
 }
 
 .form-signin .form-signin-heading,
@@ -27,6 +118,14 @@
  .btn-action:hover {
      background-color: #060606;
      color: #ffffff;
+ }
+
+ .btn-logout {
+    margin: 10px 0;
+    font-size: 16px;
+    font-family: Times;
+    background-color: #cb0016;
+    color: #ffffff;
  }
 
  .form-control:focus {
