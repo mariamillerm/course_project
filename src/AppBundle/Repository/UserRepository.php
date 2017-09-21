@@ -28,6 +28,23 @@ class UserRepository extends EntityRepository
     }
 
     /**
+     * @param User $user
+     *
+     * @return bool
+     */
+    public function isUnique(User $user): bool
+    {
+        $user = $this->findOneByUsername($user->getUsername());
+        $userByEmail = $this->findOneByEmail($user->getEmail());
+        if ($user !== null or $userByEmail !== null) {
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @return User[]
      */
     public function findSubscribers(): array

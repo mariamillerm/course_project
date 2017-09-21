@@ -34,4 +34,20 @@ class PostRepository extends EntityRepository
             ->orderBy('p.id', 'asc')
             ->getQuery();
     }
+
+    /**
+     * @param Post $post
+     *
+     * @return bool
+     */
+    public function isUnique(Post $post): bool
+    {
+        $post = $this->findOneByUsername($post->getTitle());
+        if ($post !== null) {
+
+            return false;
+        }
+
+        return true;
+    }
 }
