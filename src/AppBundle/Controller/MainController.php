@@ -36,16 +36,33 @@ class MainController extends Controller
     public function homepageAction(int $page = 1, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository(Category::class)->findAll();
         $query = $em->getRepository(Post::class)->getPostsQuery();
 
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-            $query, /* query NOT result */
-            $request->query->getInt('page', 1)/*page number*/,
-            10/*limit per page*/
+            $query,
+            $request->query->getInt('page', $page),
+            10
         );
 
-        return $this->render(':main:show_posts.html.twig', array('pagination' => $pagination));
+        return $this->render(':main:show_posts.html.twig', [
+            'pagination' => $pagination,
+            'categories' => $categories,
+        ]);
+    }
+
+    /**
+     * @Route("/categories", methods={"GET"}, name="categories")
+     */
+    public function categoriesAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository(Category::class)->findAll();
+
+        return $this->render(':main:categories.html.twig', [
+            'categories' => $categories,
+        ]);
     }
 
     /**
@@ -100,11 +117,19 @@ class MainController extends Controller
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $post->setAuthor($this->getUser());
-                $em->persist($post);
-                $em->flush();
+                if ($em->getRepository(Post::class)->isUnique($form->getData())) {
 
-                return $this->redirectToRoute('homepage');
+                    $post->setAuthor($this->getUser());
+                    $em->persist($post);
+                    $em->flush();
+
+                    return $this->redirectToRoute('homepage');
+                }
+
+                return $this->render(':errors:error.html.twig', [
+                    'status_code' => Response::HTTP_CONFLICT,
+                    'status_text' => 'There is a post with the same title!',
+                ]);
             }
 
             $error = $form->getErrors()->current();
@@ -152,10 +177,17 @@ class MainController extends Controller
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $em->flush();
+                if ($em->getRepository(Post::class)->isUnique($form->getData())) {
 
-                //TODO Right route
-                return $this->redirectToRoute('homepage');
+                    $em->flush();
+
+                    return $this->redirectToRoute('homepage');
+                }
+
+                return $this->render(':errors:error.html.twig', [
+                    'status_code' => Response::HTTP_CONFLICT,
+                    'status_text' => 'There is a post with the same title!',
+                ]);
             }
 
             $error = $form->getErrors()->current();
@@ -198,7 +230,6 @@ class MainController extends Controller
             $em->remove($post);
             $em->flush();
 
-            //TODO Right route
             return $this->redirectToRoute('homepage');
         } else {
             return $this->render(':errors:error.html.twig', [
@@ -266,19 +297,6 @@ class MainController extends Controller
     }
 
     /**
-     * @Route(path="/categories", methods={"GET"}, name="categories")
-     */
-    public function categoryListAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository('AppBundle:Category')->findAll();
-        
-        return $this->render('main/homepage.html.twig', array(
-            'categories' => $categories
-        ));
-    }
-
-    /**
      * @Route(
      *     "/category",
      *     methods={"GET", "POST"},
@@ -312,10 +330,20 @@ class MainController extends Controller
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $em->persist($category);
-                $em->flush();
+                $existingCategory = $em
+                    ->getRepository(Category::class)
+                    ->findOneByName($form->get('name')->getData());
+                if ($existingCategory === null) {
+                    $em->persist($category);
+                    $em->flush();
 
-                return $this->redirectToRoute('homepage');
+                    return $this->redirectToRoute('homepage');
+                } else {
+                    return $this->render(':errors:error.html.twig', [
+                        'status_code' => Response::HTTP_CONFLICT,
+                        'status_text' => 'There is a category with the same name!',
+                    ]);
+                }
             }
 
             $error = $form->getErrors()->current();
@@ -392,13 +420,23 @@ class MainController extends Controller
                 'categoryName' =>$category->getName(),
                 ]);
 
+            $oldName = $category->getName();
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $category->setName($form->get('name')->getData());
-                $em->flush();
+                $existingCategory = $em
+                    ->getRepository(Category::class)
+                    ->findOneByName($form->get('name')->getData());
+                if ($form->get('name')->getData() === $oldName or $existingCategory === null) {
+                    $category->setName($form->get('name')->getData());
+                    $em->flush();
 
-                //TODO Right route
-                return $this->redirectToRoute('homepage');
+                    return $this->redirectToRoute('homepage');
+                } else {
+                    return $this->render(':errors:error.html.twig', [
+                        'status_code' => Response::HTTP_CONFLICT,
+                        'status_text' => 'There is a category with the same name!',
+                    ]);
+                }
             }
 
             $error = $form->getErrors()->current();
