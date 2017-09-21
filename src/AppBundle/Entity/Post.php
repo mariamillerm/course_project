@@ -21,7 +21,10 @@ class Post
      *
      * @ORM\Column(type="string")
      * @Assert\NotBlank(message="error.upload.notBlank")
-     * @Assert\File(uploadErrorMessage="error.upload", maxSize="10M")
+     * @Assert\File(
+     *     uploadErrorMessage="error.upload",
+     *     maxSize="10M"
+     * )
      */
     private $image;
 
@@ -107,7 +110,7 @@ class Post
     /**
      * @return string
      */
-    public function getImage(): string
+    public function getImage(): ?string
     {
         return $this->image;
     }
@@ -147,7 +150,7 @@ class Post
     /**
      * @return string
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -167,7 +170,7 @@ class Post
     /**
      * @return string
      */
-    public function getSummary(): string
+    public function getSummary(): ?string
     {
         return $this->summary;
     }
@@ -187,7 +190,7 @@ class Post
     /**
      * @return string
      */
-    public function getContent(): string
+    public function getContent(): ?string
     {
         return $this->content;
     }
@@ -285,7 +288,7 @@ class Post
     /**
      * @return Category
      */
-    public function getCategory(): Category
+    public function getCategory(): ?Category
     {
         return $this->category;
     }
