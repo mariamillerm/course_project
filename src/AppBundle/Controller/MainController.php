@@ -256,7 +256,7 @@ class MainController extends Controller
         if ($hasAccess) {
             $em = $this->getDoctrine()->getManager();
 
-            $category = new Category('');
+            $category = new Category();
             $form = $this
                 ->createForm(CategoryType::class, $category)
                 ->remove('delete');
