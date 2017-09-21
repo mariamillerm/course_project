@@ -9,54 +9,54 @@
 }
 
 .buttons{
-  max-width: 330px;
+  width: 100%;
   padding: 15px;
   margin: 0 auto;
 }
 
 .container_logout{
 	overflow: visible;
-	width: 100%;
 	text-align: center;
 	float: right;
 }
 
-header{
+.t {
+  float: left;
+}
+
+.header{
     color: #343434;
     font-weight: normal;
     font-family: "Segoe UI";  
     font-size: 39px;
     line-height: 62px;
     text-indent: 2.6em;
-    height: 130px;
+    height: 80px;
     width: 1170px;
     float: right;
     border-bottom-width: 7px; 
     border-bottom-style: ridge; 
-    border-bottom-color: #2E3234; /* Цвет линии внизу */
+    border-bottom-color: #2E3234; 
 }
 
 .auth{
 	float: left;
-    margin: 5px 0;
+    margin: 20px 0;
     font-size: 18px;
     font-family: Times;
 }
 
-.logout_button{
-    float: right;
-    margin: 18px 0;
-   
+.logout_button {
+  float: right;
+  margin: 5px 0;
 }
 
 .container_logout{
 	overflow: visible;
 	width: 100%;
-	height: 100%;
-	padding-left: 870px; 
-	padding-right: 25px;
-	text-align: center;
-	float: right;
+	padding-left: 1100px; 
+	padding-right: 30px;
+  float: right;
 }
 
 .sidebar_categories{
@@ -87,7 +87,7 @@ header{
 	background: #fff;
 	width: 60%;
 	left: 220px;
-	top: 180px;
+	top: 108px;
     overflow: auto; 
     position: absolute;
 	border-radius: 0 10px 0 10px;
@@ -96,7 +96,7 @@ header{
 
 .navbar-form {
 	padding-left: 1065px;
-	padding-top: 5px;
+	padding-top: 15px;
 }
 
 .form-signin .form-signin-heading,
@@ -113,6 +113,14 @@ header{
      color: #ffffff;
      font-family: 'Source Sans Pro', sans-serif;
      font-size: medium;
+ }
+
+ .btn-logout {
+    margin: 10px 0;
+    font-size: 16px;
+    font-family: Times;
+    background-color: #cb0016;
+    color: #ffffff;
  }
 
  .form-control:focus {
