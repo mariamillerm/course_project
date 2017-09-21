@@ -26,4 +26,15 @@ class UserRepository extends EntityRepository
             ->setParameter(1, $username)
             ->getSingleResult();
     }
+
+    /**
+     * @return User[]
+     */
+    public function findSubscribers(): array
+    {
+        // TODO Pagination
+        return $this->findBy([
+            'isSubscribed' => true,
+        ]);
+    }
 }
