@@ -2,7 +2,6 @@
 
 namespace AppBundle\Command;
 
-use AppBundle\Entity\Post;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,9 +19,10 @@ class CronCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $latestExecutions = $this->getContainer()->get('app.latest_execution_service');
+        $latestExecutions = $this
+            ->getContainer()
+            ->get('app.latest_execution_service');
         $time = new \DateTime();
-
         $tasksFile = $this->getContainer()->getParameter('tasks_file');
 
         if (file_exists($tasksFile)) {
@@ -33,7 +33,6 @@ class CronCommand extends ContainerAwareCommand
 
         foreach ($tasks as $task) {
             $command = $this->getApplication()->find($task);
-
             $execution = $latestExecutions->getExecution($task);
 
             if ($execution !== null) {
