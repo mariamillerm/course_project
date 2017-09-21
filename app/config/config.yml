@@ -80,7 +80,7 @@ kitpages_semaphore:
     dead_lock_microseconds: 5000000
 
 knp_paginator:
-    page_range: 5                       # number of links showed in the pagination menu (e.g: you have 10 pages, a page_range of 3, on the 5th page you'll see links to page 4, 5, 6)
+    page_range: 5
     template:
-        pagination: 'KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig'     # sliding pagination controls template
-        sortable: 'KnpPaginatorBundle:Pagination:sortable_link.html.twig' # sort link template
+        pagination: 'KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig'
+        sortable: 'KnpPaginatorBundle:Pagination:sortable_link.html.twig'
