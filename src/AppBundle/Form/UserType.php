@@ -36,7 +36,9 @@ class UserType extends AbstractType
                 'first_options' => ['label' => 'Password'],
                 'second_options' => ['label' => 'Repeat Password'],
             ])
-            ->add('submit', SubmitType::class);;
+            ->add('Submit', SubmitType::class, [
+                'attr' => ['class' => 'btn btn-danger']
+            ]);;
     }
 
     /**
