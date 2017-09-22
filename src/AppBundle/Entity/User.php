@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(
  *     name="users",
  *     uniqueConstraints={
- *      @UniqueConstraint(name="search_idx", columns={"name", "email"})
+ *      @UniqueConstraint(name="search_idx", columns={"username", "email"})
  * })
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */

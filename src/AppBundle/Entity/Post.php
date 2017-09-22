@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(
  *     name="posts",
  *     uniqueConstraints={
- *      @UniqueConstraint(name="search_idx", columns={"name", "email"})
+ *      @UniqueConstraint(name="search_idx", columns={"title"})
  * })
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PostRepository")
  */

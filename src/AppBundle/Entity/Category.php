@@ -2,9 +2,7 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 
@@ -34,24 +32,6 @@ class Category
      * @ORM\Column(type="string", length=50, unique=true)
      */
     private $name;
-
-    /**
-     * One Category has Many Categories.
-     *
-     * @var Collection
-     *
-     * @OneToMany(targetEntity="AppBundle\Entity\Category", mappedBy="parent")
-     */
-    private $children;
-
-    /**
-     * Many Categories have One Category.
-     *
-     * @var Category
-     *
-     * @ManyToOne(targetEntity="AppBundle\Entity\Category", inversedBy="children")
-     */
-    private $parent;
 
     /**
      * One Category has Many Posts.
@@ -91,26 +71,6 @@ class Category
     }
 
     /**
-     * @return Category
-     */
-    public function getParent(): ?Category
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param Category $parent
-     *
-     * @return Category
-     */
-    public function setParent($parent): Category
-    {
-        $this->parent = $parent;
-
-        return $this;
-    }
-
-    /**
      * @return Post[]
      */
     public function getPosts(): array
@@ -119,20 +79,10 @@ class Category
     }
 
     /**
-     * @return Category[]
-     */
-    public function getChildren(): array
-    {
-        return $this->children->toArray();
-    }
-
-        /**
-     * @param Category $child
-     *
      * @return string
      */
      public function __toString(){
-        
+
         return $this->name;
     }
 }

@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  * @ORM\Table(
  *     name="reset_tokens",
  *     uniqueConstraints={
- *      @UniqueConstraint(name="search_idx", columns={"name", "email"})
+ *      @UniqueConstraint(name="search_idx", columns={"hash"})
  * })
  * @ORM\Entity()
  */
