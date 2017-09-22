@@ -2,13 +2,9 @@
 
 namespace AppBundle\Form;
 
-use AppBundle\Entity\Post;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -35,22 +31,18 @@ class PostType extends AbstractType
             ->add('image', FileType::class, [
                 'label' => 'post.image',
                 'data_class' => null,
+                'required' => false,
             ])
-//            ->add('similarPosts', CollectionType::class, [
-//                'entry_type'   => EntityType::class,
-//                'entry_options'  => [
-//                    'choices' => 'AppBundle\Entity\Post'
-//                ],
-//                'label' => 'Choose similar posts',
-//                'allow_add' => true,
-//                'allow_delete' => true,
-//            ])
+            ->add('similarPosts', EntityType::class, [
+                'multiple' => true,
+                'class' => 'AppBundle\Entity\Post',
+                'label' => 'post.similarPosts',
+                'required' => false,
+                'empty_data' => null,
+            ])
             ->add('category', EntityType::class, [
                 'class' => 'AppBundle\Entity\Category',
                 'choice_label' => 'name',
-            ])
-            ->add('creationDate', DateTimeType::class, [
-                'label' => 'post.creation_date',
             ]);
     }
 
@@ -60,7 +52,7 @@ class PostType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Post::class,
+            'data_class' => 'AppBundle\Entity\Post',
         ]);
     }
 

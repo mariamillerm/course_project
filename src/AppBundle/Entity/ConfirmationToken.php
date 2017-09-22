@@ -3,9 +3,14 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
- * @ORM\Table(name="confirmation_tokens")
+ * @ORM\Table(
+ *     name="confirmation_tokens",
+ *     uniqueConstraints={
+ *      @UniqueConstraint(name="search_idx", columns={"hash"})
+ * })
  * @ORM\Entity()
  */
 class ConfirmationToken

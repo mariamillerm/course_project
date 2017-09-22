@@ -89,7 +89,17 @@ class EmailService
      */
     public function sendNewsEmail(User $user, array $posts)
     {
-        //TODO implement news email
-//        $this->mailer->send($message);
+        $message = (new \Swift_Message('Itr News'))
+            ->setFrom($this->from)
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->templating->render(
+                    ':emails:news.html.twig', [
+                        'posts' => $posts,
+                    ]
+                ),
+                'text/html'
+            );
+        $this->mailer->send($message);
     }
 }

@@ -165,7 +165,6 @@ class SecurityController extends Controller
             }
 
             $user = $token->getUser();
-            //TODO Solve this problem
             $user->setPlainPassword('');
             $form = $this
                 ->createForm(UserType::class, $user)
@@ -224,18 +223,25 @@ class SecurityController extends Controller
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $tokenService = $this->get('app.token_service');
+                if ($em->getRepository(User::class)->isUnique($form->getData())) {
+                    $tokenService = $this->get('app.token_service');
 
-                $this->get('app.user_service')->encodePassword($user);
-                $token = new ConfirmationToken($user, $tokenService->generateToken());
+                    $this->get('app.user_service')->encodePassword($user);
+                    $token = new ConfirmationToken($user, $tokenService->generateToken());
 
-                $em->persist($user);
-                $em->persist($token);
-                $em->flush();
+                    $em->persist($user);
+                    $em->persist($token);
+                    $em->flush();
 
-                $this->get('app.email_support')->sendActivationEmail($user, $token);
+                    $this->get('app.email_support')->sendActivationEmail($user, $token);
 
-                return $this->redirectToRoute('homepage');
+                    return $this->redirectToRoute('homepage');
+                } else {
+                    return $this->render(':errors:error.html.twig', [
+                        'status_code' => Response::HTTP_CONFLICT,
+                        'status_text' => 'User is already exist!',
+                    ]);
+                }
             }
 
             $error = $form->getErrors()->current();

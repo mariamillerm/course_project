@@ -6,11 +6,10 @@ use AppBundle\Entity\Category;
 use AppBundle\Entity\Post;
 use AppBundle\Form\CategoryType;
 use AppBundle\Form\PostType;
-use Doctrine\ORM\EntityRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 use Elastica\Query;
 use Elastica\Query\QueryString;
@@ -36,16 +35,33 @@ class MainController extends Controller
     public function homepageAction(int $page = 1, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository(Category::class)->findAll();
         $query = $em->getRepository(Post::class)->getPostsQuery();
 
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-            $query, /* query NOT result */
-            $request->query->getInt('page', 1)/*page number*/,
-            10/*limit per page*/
+            $query,
+            $request->query->getInt('page', $page),
+            10
         );
 
-        return $this->render(':main:show_posts.html.twig', array('pagination' => $pagination));
+        return $this->render(':main:show_posts.html.twig', [
+            'pagination' => $pagination,
+            'categories' => $categories,
+        ]);
+    }
+
+    /**
+     * @Route("/categories", methods={"GET"}, name="categories")
+     */
+    public function categoriesAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository(Category::class)->findAll();
+
+        return $this->render(':main:categories.html.twig', [
+            'categories' => $categories,
+        ]);
     }
 
     /**
@@ -108,21 +124,39 @@ class MainController extends Controller
         if ($hasAccess) {
             $em = $this->getDoctrine()->getManager();
 
-            $post = new Post();
+            $post = new Post($this->getUser());
             $form = $this
                 ->createForm(PostType::class, $post)
-                ->remove('creationDate')
                 ->add('save', SubmitType::class, [
                     'label' => 'post.create'
                 ]);;
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $post->setAuthor($this->getUser());
-                $em->persist($post);
-                $em->flush();
+                if ($em->getRepository(Post::class)->isUnique($form->getData())) {
 
-                return $this->redirectToRoute('homepage');
+                    $file = $post->getImage();
+                    if ($file != null) {
+                        $filename = md5(uniqid()).'.'.$file->guessExtension();
+                        $file->move(
+                            $this->getParameter('image_root'),
+                            $filename
+                        );
+                        $post->setImage($filename);
+                    } else {
+                        $post->setImage('not_found.jpg');
+                    }
+
+                    $em->persist($post);
+                    $em->flush();
+
+                    return $this->redirectToRoute('homepage');
+                }
+
+                return $this->render(':errors:error.html.twig', [
+                    'status_code' => Response::HTTP_CONFLICT,
+                    'status_text' => 'There is a post with the same title!',
+                ]);
             }
 
             $error = $form->getErrors()->current();
@@ -163,17 +197,42 @@ class MainController extends Controller
             ->isGranted('ROLE_MANAGER');
         if ($hasAccess) {
             $em = $this->getDoctrine()->getManager();
+
+            $oldTitle = $post->getTitle();
+            $oldImage = $post->getImage();
+            $image = new File($this->getParameter('image_root').'/'.$oldImage);
+            $post->setImage($image);
+
             $form = $this
                 ->createForm(PostType::class, $post)
-                ->add('edit', SubmitType::class)
-                ->remove('creationDate');
+                ->add('edit', SubmitType::class);
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $em->flush();
+                if ($em
+                    ->getRepository(Post::class)
+                    ->isUnique($form->getData(), $oldTitle)) {
 
-                //TODO Right route
-                return $this->redirectToRoute('homepage');
+                    $file = $post->getImage();
+                    if ($file != null) {
+                        $filename = md5(uniqid()).'.'.$file->guessExtension();
+                        $file->move(
+                            $this->getParameter('image_root'),
+                            $filename
+                        );
+                        $post->setImage($filename);
+                    } else {
+                        $post->setImage($oldImage);
+                    }
+                    $em->flush();
+
+                    return $this->redirectToRoute('homepage');
+                }
+
+                return $this->render(':errors:error.html.twig', [
+                    'status_code' => Response::HTTP_CONFLICT,
+                    'status_text' => 'There is a post with the same title!',
+                ]);
             }
 
             $error = $form->getErrors()->current();
@@ -216,7 +275,6 @@ class MainController extends Controller
             $em->remove($post);
             $em->flush();
 
-            //TODO Right route
             return $this->redirectToRoute('homepage');
         } else {
             return $this->render(':errors:error.html.twig', [
@@ -322,22 +380,24 @@ class MainController extends Controller
             $category = new Category();
             $form = $this
                 ->createForm(CategoryType::class, $category)
-                ->remove('parent')
-                ->add('parent', EntityType::class, [
-                    'class' => 'AppBundle\Entity\Category',
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('c')
-                            ->orderBy('c.name', 'ASC');
-                    },
-                    'choice_label' => 'name',
-                ]);
+                ->remove('delete');
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $em->persist($category);
-                $em->flush();
+                $existingCategory = $em
+                    ->getRepository(Category::class)
+                    ->findOneByName($form->get('name')->getData());
+                if ($existingCategory === null) {
+                    $em->persist($category);
+                    $em->flush();
 
-                return $this->redirectToRoute('homepage');
+                    return $this->redirectToRoute('homepage');
+                } else {
+                    return $this->render(':errors:error.html.twig', [
+                        'status_code' => Response::HTTP_CONFLICT,
+                        'status_text' => 'There is a category with the same name!',
+                    ]);
+                }
             }
 
             $error = $form->getErrors()->current();
@@ -410,17 +470,26 @@ class MainController extends Controller
         if ($hasAccess) {
             $em = $this->getDoctrine()->getManager();
             $form = $this
-                ->createForm(CategoryType::class, $category, [
-                'categoryName' =>$category->getName(),
-                ]);
+                ->createForm(CategoryType::class, $category)
+                ->remove('delete');
 
+            $oldName = $category->getName();
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $category->setName($form->get('name')->getData());
-                $em->flush();
+                $existingCategory = $em
+                    ->getRepository(Category::class)
+                    ->findOneByName($form->get('name')->getData());
+                if ($form->get('name')->getData() === $oldName or $existingCategory === null) {
+                    $category->setName($form->get('name')->getData());
+                    $em->flush();
 
-                //TODO Right route
-                return $this->redirectToRoute('homepage');
+                    return $this->redirectToRoute('homepage');
+                } else {
+                    return $this->render(':errors:error.html.twig', [
+                        'status_code' => Response::HTTP_CONFLICT,
+                        'status_text' => 'There is a category with the same name!',
+                    ]);
+                }
             }
 
             $error = $form->getErrors()->current();

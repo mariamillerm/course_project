@@ -13,10 +13,9 @@ class SendNewsCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        // TODO Change description
         $this
             ->setName('news:send')
-            ->setDescription('Send news')
+            ->setDescription('Send last news to followers')
             ->addArgument('execution', InputArgument::OPTIONAL,'Latest execution');
     }
 
@@ -24,8 +23,14 @@ class SendNewsCommand extends ContainerAwareCommand
     {
         $execution = new \DateTime($input->getArgument('execution'));
 
-        $postRepository = $this->getContainer()->get('doctrine')->getRepository(Post::class);
-        $userRepository = $this->getContainer()->get('doctrine')->getRepository(User::class);
+        $postRepository = $this
+            ->getContainer()
+            ->get('doctrine')
+            ->getRepository(Post::class);
+        $userRepository = $this
+            ->getContainer()
+            ->get('doctrine')
+            ->getRepository(User::class);
 
         /**
          * @var User[] $users
@@ -35,7 +40,10 @@ class SendNewsCommand extends ContainerAwareCommand
         $users = $userRepository->findSubscribers();
 
         foreach ($users as $user) {
-            $this->getContainer()->get('app.email_support')->sendNewsEmail($user, $posts);
+            $this
+                ->getContainer()
+                ->get('app.email_support')
+                ->sendNewsEmail($user, $posts);
         }
     }
 }
