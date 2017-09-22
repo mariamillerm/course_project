@@ -20,6 +20,14 @@
         {% endfor %}
      </div>
 {% endblock category%}
+        {% block category %}
+            <div class="sidebar_categories">
+                <h1>Categories</h1>
+                {% for category in categories %}
+                     <ul>{{ category.name }}</ul>
+                {% endfor %}
+             </div>
+        {% endblock category%}
 <div class="content">
     {% block post %}
 <table>

@@ -50,19 +50,6 @@ class MainController extends Controller
             'categories' => $categories,
         ]);
     }
-//
-//    /**
-//     * @Route("/categories", methods={"GET"}, name="categories")
-//     */
-//    public function categoriesAction()
-//    {
-//        $em = $this->getDoctrine()->getManager();
-//        $categories = $em->getRepository(Category::class)->findAll();
-//
-//        return $this->render(':main:categories.html.twig', [
-//            'categories' => $categories,
-//        ]);
-//    }
 
     /**
      * @Route(
@@ -324,12 +311,10 @@ class MainController extends Controller
 
     /**
      * @Route(path="/categories", methods={"GET"}, name="categories")
-     *
-     * @param Request $request
-     *
+     * 
      * @return Response
      */
-    public function categoryListAction(Request $request)
+    public function categoryListAction()
     {
         $em = $this->getDoctrine()->getManager();
         $categories = $em->getRepository('AppBundle:Category')->findAll();

@@ -22,12 +22,12 @@ class UserType extends AbstractType
     {
         $builder
             ->add('username', TextType::class, [
-                'label' => false,
-                'attr' => ['placeholder' => 'Username'],
+                'label' => 'user.username',
+                'attr' => ['placeholder' => 'user.username'],
             ])
             ->add('email', TextType::class, [
-                'label' => false,
-                'attr' => ['placeholder' => 'E-mail'],
+                'label' => 'user.email',
+                'attr' => ['placeholder' => 'user.email'],
             ])
             ->add('role', ChoiceType::class, [
                 'choices' => [
@@ -35,19 +35,23 @@ class UserType extends AbstractType
                     'manager' => 'ROLE_MANAGER',
                     'admin' => 'ROLE_ADMIN',
                 ],
+                'label' => 'user.role',
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Different passwords!',
                 'first_options' => [
-                    'label' => false, 'attr' => ['placeholder' => 'Password'],
+                    'label' => 'user.password',
+                    'attr' => ['placeholder' => 'user.password'],
                 ],
                 'second_options' => [
-                    'label' => false, 'attr' => ['placeholder' => 'Repeat password'],
+                    'label' => 'user.repeat_password',
+                    'attr' => ['placeholder' => 'user.repeat_password'],
                 ],
             ])
             ->add('Submit', SubmitType::class, [
-                'attr' => ['class' => 'btn btn-danger']
+                'attr' => ['class' => 'btn btn-danger'],
+                'label' => 'user.create',
             ]);;
     }
 
