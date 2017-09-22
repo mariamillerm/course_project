@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 use Elastica\Query;
 use Elastica\Query\QueryString;
@@ -178,14 +179,33 @@ class MainController extends Controller
             ->isGranted('ROLE_MANAGER');
         if ($hasAccess) {
             $em = $this->getDoctrine()->getManager();
+
+            $oldTitle = $post->getTitle();
+            $oldImage = $post->getImage();
+            $image = new File($this->getParameter('image_root').'/'.$oldImage);
+            $post->setImage($image);
+
             $form = $this
                 ->createForm(PostType::class, $post)
                 ->add('edit', SubmitType::class);
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                if ($em->getRepository(Post::class)->isUnique($form->getData())) {
+                if ($em
+                    ->getRepository(Post::class)
+                    ->isUnique($form->getData(), $oldTitle)) {
 
+                    $file = $post->getImage();
+                    if ($file != null) {
+                        $filename = md5(uniqid()).'.'.$file->guessExtension();
+                        $file->move(
+                            $this->getParameter('image_root'),
+                            $filename
+                        );
+                        $post->setImage($filename);
+                    } else {
+                        $post->setImage($oldImage);
+                    }
                     $em->flush();
 
                     return $this->redirectToRoute('homepage');
