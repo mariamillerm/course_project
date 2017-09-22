@@ -6,9 +6,7 @@ use AppBundle\Entity\Category;
 use AppBundle\Entity\Post;
 use AppBundle\Form\CategoryType;
 use AppBundle\Form\PostType;
-use Doctrine\ORM\EntityRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\File\File;
@@ -347,15 +345,7 @@ class MainController extends Controller
             $category = new Category();
             $form = $this
                 ->createForm(CategoryType::class, $category)
-                ->remove('parent')
-                ->add('parent', EntityType::class, [
-                    'class' => 'AppBundle\Entity\Category',
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('c')
-                            ->orderBy('c.name', 'ASC');
-                    },
-                    'choice_label' => 'name',
-                ]);
+                ->remove('delete');
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
@@ -445,9 +435,8 @@ class MainController extends Controller
         if ($hasAccess) {
             $em = $this->getDoctrine()->getManager();
             $form = $this
-                ->createForm(CategoryType::class, $category, [
-                'categoryName' =>$category->getName(),
-                ]);
+                ->createForm(CategoryType::class, $category)
+                ->remove('delete');
 
             $oldName = $category->getName();
             $form->handleRequest($request);
