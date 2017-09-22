@@ -160,7 +160,8 @@ class SecurityController extends Controller
 
                 return $this->render(':errors:error.html.twig', [
                     'status_code' => Response::HTTP_REQUEST_TIMEOUT,
-                    'status_text' => 'The token was deleted. Retry the password recovery request.',
+                    'status_text' => 'The token was deleted. Retry the 
+                                       password recovery request.',
                 ]);
             }
 
