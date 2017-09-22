@@ -37,17 +37,19 @@ class PostRepository extends EntityRepository
 
     /**
      * @param Post $post
+     * @param String $oldName
      *
      * @return bool
      */
-    public function isUnique(Post $post): bool
+    public function isUnique(Post $post, String $oldName = null): bool
     {
+        $title = $post->getTitle();
         $post = $this->findOneByTitle($post->getTitle());
-        if ($post !== null) {
+        if ($post === null or $title === $oldName) {
 
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 }
