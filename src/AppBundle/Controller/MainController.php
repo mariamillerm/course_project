@@ -107,10 +107,9 @@ class MainController extends Controller
         if ($hasAccess) {
             $em = $this->getDoctrine()->getManager();
 
-            $post = new Post();
+            $post = new Post($this->getUser());
             $form = $this
                 ->createForm(PostType::class, $post)
-                ->remove('creationDate')
                 ->add('save', SubmitType::class, [
                     'label' => 'post.create'
                 ]);;
@@ -119,7 +118,16 @@ class MainController extends Controller
             if ($form->isSubmitted() && $form->isValid()) {
                 if ($em->getRepository(Post::class)->isUnique($form->getData())) {
 
-                    $post->setAuthor($this->getUser());
+                    $file = $post->getImage();
+                    if ($file != null) {
+                        $filename = md5(uniqid()).'.'.$file->guessExtension();
+                        $file->move(
+                            $this->getParameter('image_root'),
+                            $filename
+                        );
+                        $post->setImage($filename);
+                    }
+
                     $em->persist($post);
                     $em->flush();
 
@@ -172,8 +180,7 @@ class MainController extends Controller
             $em = $this->getDoctrine()->getManager();
             $form = $this
                 ->createForm(PostType::class, $post)
-                ->add('edit', SubmitType::class)
-                ->remove('creationDate');
+                ->add('edit', SubmitType::class);
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
