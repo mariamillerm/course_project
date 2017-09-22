@@ -2,11 +2,11 @@
 
 {% block body %}
 <div class="header">
-    <div class="t">ItraNEWS!</div>
+    <div class="t"><img src="{{ asset('../images/title.jpg') }}"></div>
 </div>    
         <div class="container_logout">
              <div class="auth">
-                 Welcome, <strong>{{ app.user.username }}</strong>
+                 Welcome,<strong>{{ app.user.username }}</strong>
              </div>
              <div class="logout_button">
                  <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}">Log out</a>
@@ -21,13 +21,18 @@
              </div>
         {% endblock category%}
 <div class="content">
+<<<<<<< HEAD
+    {% block post %}
+=======
 <table>
             <tr>
                 <td></td>
             </tr>
     </table>
 </div>
+>>>>>>> c10ba074757371b80a8bcc6ef89d8341d3e2d711
 
+    {% endblock %}
 {% block sortable %}
             <div class="page-custom-header">
                 <p>Sort by</p>
