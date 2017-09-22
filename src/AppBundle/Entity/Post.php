@@ -23,7 +23,6 @@ class Post
      * @var string
      *
      * @ORM\Column(type="string")
-     * @Assert\NotBlank(message="error.upload.notBlank")
      * @Assert\File(
      *     uploadErrorMessage="error.upload",
      *     maxSize="10M"
