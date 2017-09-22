@@ -12,28 +12,22 @@
                  <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}">Log out</a>
              </div>
         </div>
-{#{% block category %}#}
-    {#<div class="sidebar_categories">#}
-        {#<h1>Categories</h1>#}
-        {#{% for category in categories %}#}
-             {#<ul>{{ category.name }}</ul>#}
-             {#{% for child in category.children %}#}
-             	{#<li>{{ child }}</li>#}
-             {#{% endfor %}#}
-        {#{% endfor %}#}
-     {#</div>#}
-{#{% endblock category%}#}
+{% block category %}
+    <div class="sidebar_categories">
+        <h1>Categories</h1>
+        {% for category in categories %}
+             <ul>{{ category.name }}</ul>
+        {% endfor %}
+     </div>
+{% endblock category%}
 <div class="content">
-<<<<<<< HEAD
     {% block post %}
-=======
 <table>
             <tr>
                 <td></td>
             </tr>
     </table>
 </div>
->>>>>>> c10ba074757371b80a8bcc6ef89d8341d3e2d711
 
     {% endblock %}
 {% block sortable %}
