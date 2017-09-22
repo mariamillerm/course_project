@@ -15,11 +15,11 @@ use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 class AdminController extends Controller
 {
     /**
-     * @Route(path="/admin", name="admin_home")
+     * @Route(path="/admin", methods={"GET"}, name="admin_home")
      */
     public function homeAction()
     {
-        return $this->render('admin_home.html.twig');
+        return $this->render(':admin:account.html.twig');
     }
 
     /**
@@ -67,24 +67,6 @@ class AdminController extends Controller
         ]);
     }
 
-        /**
-     * @Route(path="/admin/user/{user}/edit", name="user_edit", requirements={"user": "\d+"})
-     *
-     * @param User $user
-     *
-     * @return Response
-     */
-    public function editUserAction(User $user)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $em->edit($user);
-        $em->flush();
-
-        return $this->json([
-            'status' => 'Changed',
-        ], 200);
-    }
-
     /**
      * @Route(path="/admin/users_show", name="users_show")
      */
@@ -118,10 +100,11 @@ class AdminController extends Controller
     public function blockUserAction(User $user)
     {
         $em = $this->getDoctrine()->getManager();
-        $em->block($user);
+        $user->setIsActive(false);
+        $em->flush();
 
         return $this->json([
-            'status' => 'Blocked',
+            'status' => 'Changed',
         ], 200);
     }
 
