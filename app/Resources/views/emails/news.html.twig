@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<ul>
+    {% for post in posts %}
+        <li>
+            <p><a href="{{ url('post', {'id': post.id}) }}">{{ post.title }}</a></p>
+            <span>{{ post.summary }}</span>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
