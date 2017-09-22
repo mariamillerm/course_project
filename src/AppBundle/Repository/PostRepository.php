@@ -42,7 +42,7 @@ class PostRepository extends EntityRepository
      */
     public function isUnique(Post $post): bool
     {
-        $post = $this->findOneByUsername($post->getTitle());
+        $post = $this->findOneByTitle($post->getTitle());
         if ($post !== null) {
 
             return false;
