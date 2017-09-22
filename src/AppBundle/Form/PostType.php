@@ -31,6 +31,7 @@ class PostType extends AbstractType
             ->add('image', FileType::class, [
                 'label' => 'post.image',
                 'data_class' => null,
+                'required' => false,
             ])
             ->add('similarPosts', EntityType::class, [
                 'multiple' => true,
