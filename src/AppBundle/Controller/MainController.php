@@ -127,6 +127,8 @@ class MainController extends Controller
                             $filename
                         );
                         $post->setImage($filename);
+                    } else {
+                        $post->setImage('not_found.jpg');
                     }
 
                     $em->persist($post);
