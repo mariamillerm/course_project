@@ -89,7 +89,7 @@ class EmailService
      */
     public function sendNewsEmail(User $user, array $posts)
     {
-        $message = (new \Swift_Message('Itr News'))
+        $message = (new \Swift_Message('Palmary News'))
             ->setFrom($this->from)
             ->setTo($user->getEmail())
             ->setBody(
