@@ -72,6 +72,24 @@ class MainController extends Controller
     }
 
     /**
+     * @Route("/homepage/{page}",
+     *     methods={"GET"}, name="homepage")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function postListAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $posts = $em->getRepository('AppBundle:Post')->findAll();
+
+        return $this->render(':main:homepage.html.twig', [
+            'posts' => $posts
+        ]);
+    }
+
+    /**
      * @Route(
      *     "/post",
      *     methods={"GET", "POST"},
@@ -260,22 +278,26 @@ class MainController extends Controller
             ->findByCategory($category);
 
         return $this->render('main/homepage.html.twig', [
-            'posts' => $posts->getResult()
-            //'posts' => $posts,
+            'posts' => $posts,
         ]);
     }
 
     /**
+     * @Route("/", methods={"GET"}, name="homepage")
      * @Route(path="/categories", methods={"GET"}, name="categories")
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
-    public function categoryListAction()
+    public function categoryListAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $categories = $em->getRepository('AppBundle:Category')->findAll();
-        
-        return $this->render('main/homepage.html.twig', array(
+
+        return $this->render(':main:homepage.html.twig', [
             'categories' => $categories
-        ));
+        ]);
     }
 
     /**
