@@ -51,18 +51,18 @@ class MainController extends Controller
         ]);
     }
 
-    /**
-     * @Route("/categories", methods={"GET"}, name="categories")
-     */
-    public function categoriesAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository(Category::class)->findAll();
-
-        return $this->render(':main:categories.html.twig', [
-            'categories' => $categories,
-        ]);
-    }
+//    /**
+//     * @Route("/categories", methods={"GET"}, name="categories")
+//     */
+//    public function categoriesAction()
+//    {
+//        $em = $this->getDoctrine()->getManager();
+//        $categories = $em->getRepository(Category::class)->findAll();
+//
+//        return $this->render(':main:categories.html.twig', [
+//            'categories' => $categories,
+//        ]);
+//    }
 
     /**
      * @Route(
@@ -87,23 +87,23 @@ class MainController extends Controller
         ]);
     }
 
-    /**
-     * @Route("/homepage/{page}",
-     *     methods={"GET"}, name="homepage")
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function postListAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $posts = $em->getRepository('AppBundle:Post')->findAll();
-
-        return $this->render(':main:homepage.html.twig', [
-            'posts' => $posts
-        ]);
-    }
+//    /**
+//     * @Route("/homepage/{page}",
+//     *     methods={"GET"}, name="homepage")
+//     *
+//     * @param Request $request
+//     *
+//     * @return Response
+//     */
+//    public function postListAction(Request $request)
+//    {
+//        $em = $this->getDoctrine()->getManager();
+//        $posts = $em->getRepository('AppBundle:Post')->findAll();
+//
+//        return $this->render(':main:homepage.html.twig', [
+//            'posts' => $posts
+//        ]);
+//    }
 
     /**
      * @Route(
@@ -341,7 +341,6 @@ class MainController extends Controller
     }
 
     /**
-     * @Route("/", methods={"GET"}, name="homepage")
      * @Route(path="/categories", methods={"GET"}, name="categories")
      *
      * @param Request $request
