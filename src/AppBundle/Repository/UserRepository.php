@@ -34,9 +34,9 @@ class UserRepository extends EntityRepository
      */
     public function isUnique(User $user): bool
     {
-        $user = $this->findOneByUsername($user->getUsername());
+        $userByUsername = $this->findOneByUsername($user->getUsername());
         $userByEmail = $this->findOneByEmail($user->getEmail());
-        if ($user !== null or $userByEmail !== null) {
+        if ($userByUsername !== null or $userByEmail !== null) {
 
             return false;
         }
