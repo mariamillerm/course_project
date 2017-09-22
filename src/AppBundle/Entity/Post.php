@@ -18,8 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Post
 {
-    // @TODO Remove setters
-    // @TODO Update constructor
     // @TODO UniqueConstraint
     /**
      * @var string
@@ -104,28 +102,28 @@ class Post
 
     /**
      * Post constructor.
+     *
+     * @param User $user
      */
-    public function __construct()
+    public function __construct(User $user)
     {
         $this->similarPosts = new ArrayCollection();
         $this->creationDate = new \DateTime();
+        $this->author = $user;
         $this->rating = 0;
     }
 
-    /**
-     * @return string
-     */
-    public function getImage(): ?string
+    public function getImage()
     {
         return $this->image;
     }
 
     /**
-     * @param string $image
+     * @param mixed $image
      *
      * @return Post
      */
-    public function setImage(string $image): Post
+    public function setImage($image): Post
     {
         $this->image = $image;
 
@@ -138,18 +136,6 @@ class Post
     public function getId(): int
     {
         return $this->id;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return Post
-     */
-    public function setId(int $id): Post
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     /**
@@ -221,35 +207,11 @@ class Post
     }
 
     /**
-     * @param User $author
-     *
-     * @return Post
-     */
-    public function setAuthor(User $author): Post
-    {
-        $this->author = $author;
-
-        return $this;
-    }
-
-    /**
      * @return \DateTime
      */
     public function getCreationDate(): \DateTime
     {
         return $this->creationDate;
-    }
-
-    /**
-     * @param \DateTime $creationDate
-     *
-     * @return Post
-     */
-    public function setCreationDate(\DateTime $creationDate): Post
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
     }
 
     /**
@@ -268,6 +230,22 @@ class Post
         $this->rating += 1;
 
         return $this;
+    }
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getSimilarPosts()
+    {
+        return $this->similarPosts;
+    }
+
+    /**
+     * @return null|string
+     */
+    function __toString()
+    {
+        return $this->getTitle();
     }
 
     /**
