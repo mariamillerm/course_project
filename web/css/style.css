@@ -30,13 +30,13 @@
     font-family: "Segoe UI";  
     font-size: 39px;
     line-height: 62px;
-    text-indent: 2.6em;
+    text-indent: 7em;
     height: 80px;
-    width: 1170px;
+    min-width: 100%;
     float: right;
     border-bottom-width: 7px; 
     border-bottom-style: ridge; 
-    border-bottom-color: #2E3234; 
+    border-bottom-color: #2E3234;
 }
 
 .auth{
@@ -52,21 +52,50 @@
 }
 
 .container_logout{
-	overflow: visible;
-	width: 100%;
-	padding-left: 1100px; 
-	padding-right: 30px;
-  float: right;
+	overflow: auto;
+	min-width: 100%;
+	padding-left: 1050px;
+	padding-right: 60px;
+    float: right;
 }
 
 .sidebar_categories{
 	width: 200px; 
 	background: #2E3234;
-    bottom: 0; 
-    position: absolute;
+    position: fixed;
     overflow: auto; 
     color: #F5FFFA;
     height: 100%;
+}
+
+ .post_conteiner {
+    width: 100%;
+}
+.post_image {
+    float: left;
+    padding: 15px;
+    width: 100%;
+}
+
+.post_title {
+    color: #2E3234;
+    padding-left: 10px;
+    padding-top: 8px;
+    font-size: 22px;
+    font-family: "Javanese Text";
+}
+
+.post_date {
+    color: #888888;
+    font-size: 12px;
+    padding-left: 10px;
+    float: left;
+    padding-bottom: 5px;
+}
+.post_summary {
+    padding-top: 8px;
+    padding-right: 10px;
+    padding-left: 50px;
 }
 
 .content{
@@ -81,8 +110,9 @@
 }
 
 .navbar-form {
-	padding-left: 1065px;
+	padding-left: 1035px;
 	padding-top: 15px;
+    position: absolute;
 }
 
 .form-signin .form-signin-heading,
@@ -117,4 +147,26 @@
  .form-control:focus {
      box-shadow: 0 1px 0 #cb0016 inset, 0 -1px 0 #cb0016 inset, 1px 0 0 #cb0016 inset, -1px 0 0 #cb0016 inset, 0 0 5px rgba(255,0,0,0.6);
      border: thick;
+ }
+
+ .sidebar {
+     width: 200px;
+     background: #2E3234;
+     bottom: 0;
+     position: absolute;
+     overflow: auto;
+     color: #F5FFFA;
+     height: 100%;
+ }
+
+ table {
+     width: 100%;
+ }
+
+ th, td {
+     border-bottom: 1px solid #ddd;
+ }
+
+ .navigation {
+     text-align: center;
  }
