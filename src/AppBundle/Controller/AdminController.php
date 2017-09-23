@@ -26,8 +26,30 @@ class AdminController extends Controller
         return $this->render(':admin:account.html.twig');
     }
 
-  
+    /**
+     * @Route(
+     *     path="/admin/posts",
+     *     methods={"GET"},
+     *     name="admin_posts",
+     *     requirements={"id": "\d+"}
+     * )
+     *
+     * @param Post $post
+     *
+     * @return Response
+     */
+    public function postAction(Post $post)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository(Category::class)->findAll();
+        $post->addRating();
+        $em->flush();
 
+        return $this->render(':admin:account.html.twig', [
+            'post' => $post,
+            'categories' => $categories,
+        ]);
+    }
 
     /**
      * @Route(path="/admin/users/{user}", name="admin_user", requirements={"user": "\d+"})
