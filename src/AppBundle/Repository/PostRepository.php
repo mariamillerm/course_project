@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Category;
 use AppBundle\Entity\Post;
 use Doctrine\ORM\EntityRepository;
 
@@ -32,6 +33,21 @@ class PostRepository extends EntityRepository
         return $this
             ->createQueryBuilder('p')
             ->orderBy('p.id', 'asc')
+            ->getQuery();
+    }
+
+    /**
+     * @param Category $category
+     *
+     * @return \Doctrine\ORM\Query
+     */
+    public function getCategoryPostsQuery(Category $category)
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->where('p.category = ?1')
+            ->orderBy('p.id', 'asc')
+            ->setParameter(1, $category)
             ->getQuery();
     }
 
