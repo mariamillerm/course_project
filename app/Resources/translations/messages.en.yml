@@ -1,0 +1,27 @@
+account:
+    confirmed: Your account is confirmed. Please, login.
+category:
+    create: Create category
+    edit: Edit category
+    name: Name
+post:
+    category: Category
+    content: Content
+    create: Create post
+    edit: Edit post
+    image: Post's image
+    similarPosts: Similar posts
+    summary: Short content
+    title: Title
+user:
+    create: Sign up
+    email: E-mail
+    invalid_class: Unsupported class
+    not_found: User with such username not found
+    password: Password
+    repeat_password: Repeat password
+    role: Role
+    set:
+        email: Send token
+        password: Set new password
+    username: Username

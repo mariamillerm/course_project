@@ -1,0 +1,27 @@
+account:
+    confirmed: Ваш аккаунт подтвержден. Пожалуйста, войдите в систему.
+category:
+    create: Создать категорию
+    edit: Отредактировать
+    name: Название
+post:
+    category: Категория
+    content: Текст статьи
+    create: Создать пост
+    edit: Отредактировать
+    image: Изображение
+    similarPosts: Похожие посты
+    summary: Краткое содержание
+    title: Заголовок
+user:
+    create: Зарегистрироваться
+    email: Почта
+    invalid_class: Неподдерживаемый класс
+    not_found: Пользователь не найден
+    password: Пароль
+    repeat_password: Повторите пароль
+    role: Роль
+    set:
+        email: Выслать токен
+        password: Установить новый пароль
+    username: Никнейм
