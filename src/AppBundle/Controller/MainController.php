@@ -254,6 +254,21 @@ class MainController extends Controller
     }
 
     /**
+     * @Route(path="/categories", methods={"GET"}, name="categories")
+     *
+     * @return Response
+     */
+    public function categoryListAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository('AppBundle:Category')->findAll();
+
+        return $this->render(':main:categories.html.twig', [
+            'categories' => $categories
+        ]);
+    }
+
+    /**
      * @Route(
      *     path="/search",
      *     methods={"GET"},
