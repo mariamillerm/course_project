@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  *     uniqueConstraints={
  *      @UniqueConstraint(name="search_idx", columns={"name"})
  * })
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CategoryRepository")
  */
 class Category
 {

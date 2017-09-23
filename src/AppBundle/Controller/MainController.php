@@ -350,14 +350,13 @@ class MainController extends Controller
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $existingCategory = $em
+                if ($em
                     ->getRepository(Category::class)
-                    ->findOneByName($form->get('name')->getData());
-                if ($existingCategory === null) {
-                    $em->persist($category);
-                    $em->flush();
+                    ->isUnique($form->getData())) {
+                        $em->persist($category);
+                        $em->flush();
 
-                    return $this->redirectToRoute('homepage');
+                        return $this->redirectToRoute('homepage');
                 } else {
                     return $this->render(':errors:error.html.twig', [
                         'status_code' => Response::HTTP_CONFLICT,
@@ -443,10 +442,10 @@ class MainController extends Controller
             $oldName = $category->getName();
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $existingCategory = $em
+                $isUnique = $em
                     ->getRepository(Category::class)
-                    ->findOneByName($form->get('name')->getData());
-                if ($form->get('name')->getData() === $oldName or $existingCategory === null) {
+                    ->isUnique($form->getData(), $oldName);
+                if ($isUnique) {
                     $category->setName($form->get('name')->getData());
                     $em->flush();
 
