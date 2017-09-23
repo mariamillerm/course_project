@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="header">
+        <div class="t"><a href="{{ path('homepage') }}" title="Home page"><img src="{{ asset('../images/title.jpg') }}"></a></div>
+    </div>
+    <div class="container_logout">
+        <div class="auth">
+            Welcome ,<strong>{{ app.user.username }}</strong>
+        </div>
+        <div class="logout_button">
+            <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}">Log out</a>
+        </div>
+    </div>
+    {% block sidebar %}
+        <ul>Users</ul>
+        <li>Edit</li>
+        <li></li>
+        <ul>Categories</ul>
+        <li>Add</li>
+        <li>Edit</li>
+        <ul>Posts</ul>
+        <li>Add</li>
+        <li>Edit</li>
+    {% endblock %}
+
+{% endblock %}
