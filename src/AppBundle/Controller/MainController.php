@@ -310,21 +310,6 @@ class MainController extends Controller
     }
 
     /**
-     * @Route(path="/categories", methods={"GET"}, name="categories")
-     * 
-     * @return Response
-     */
-    public function categoryListAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository('AppBundle:Category')->findAll();
-
-        return $this->render(':main:homepage.html.twig', [
-            'categories' => $categories
-        ]);
-    }
-
-    /**
      * @Route(
      *     "/category",
      *     methods={"GET", "POST"},
@@ -437,6 +422,7 @@ class MainController extends Controller
             $em = $this->getDoctrine()->getManager();
             $form = $this
                 ->createForm(CategoryType::class, $category)
+                ->remove('parent')
                 ->remove('delete');
 
             $oldName = $category->getName();
