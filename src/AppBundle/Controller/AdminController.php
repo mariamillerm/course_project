@@ -3,7 +3,11 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
-use AppBundle\Form\UserEdit;
+use AppBundle\Form\UserType;
+use AppBundle\Entity\Post;
+use AppBundle\Form\PostType;
+use AppBundle\Entity\Category;
+use AppBundle\Form\CategoryType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -22,20 +26,8 @@ class AdminController extends Controller
         return $this->render(':admin:account.html.twig');
     }
 
-    /**
-     * @Route(path="/admin/posts", name="admin_posts")
-     */
-    public function postsAction()
-    {
-        // @TODO Show posts
+  
 
-        $posts = $this->getDoctrine()->getRepository(Post::class)->findAll();
-
-        return $this->render('show_posts.html.twig', [
-            'posts' => $posts,
-        ]);
-
-    }
 
     /**
      * @Route(path="/admin/users/{user}", name="admin_user", requirements={"user": "\d+"})
