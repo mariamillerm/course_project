@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <div class="header">
+        <img src="{{ asset('../images/title.jpg') }}">
+    </div>
 
 {{ form_start(form, {'attr': {'class': 'form-signin'}}) }}
     {{ form_row(form.username, {'attr': {'class': 'form-control'}}) }}
