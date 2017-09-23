@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block body %}
-    <header>
-        ItraNEWS!
-    </header>
+    <div class="header">
+        <img src="{{ asset('../images/title.jpg') }}">
+    </div>
     <div class="container">
         {% if error is defined and error is not null %}
             <div class="alert alert-danger">{{ error.messageKey }}</div>
@@ -17,7 +17,7 @@
         {% endif %}
         <form action="{{ path('login') }}" method="post" class="form-signin">
 
-            <span class="form-signin-heading">Please, sign in</span>
+            <span class="form-signin-heading"><h1>Please, sign in</h1></span>
 
             <label for="username" class="sr-only">Username:</label>
             <input id="username" name="_username" value="{{ last_username }}" class="form-control" placeholder="Email address" required autofocus>
@@ -27,10 +27,12 @@
             <button class="btn btn-lg btn-danger btn-block" style="margin-top: 5px">Sign in</button>
         </form>
         <div class="buttons">
-
-        <a class="btn btn-sm btn-action btn-block" href="{{ path('forgotPassword') }}">Forgot password?</a>
-
-        <a class="btn btn-sm btn-action btn-block" href="{{ path('signup') }}">Sign up</a>
+           <div class="forgot">
+               <a class="btn btn-sm btn-action btn-block" href="{{ path('forgotPassword') }}">Forgot password?</a>
+           </div>
+            <div class="signup">
+               <a class="btn btn-sm btn-action btn-block" href="{{ path('signup') }}">Sign up</a>
+            </div>
         </div>
 
     </div>
