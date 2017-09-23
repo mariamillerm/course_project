@@ -98,7 +98,7 @@ class MainController extends Controller
                 ->createForm(PostType::class, $post)
                 ->add('save', SubmitType::class, [
                     'label' => 'post.create'
-                ]);;
+                ]);
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
@@ -174,7 +174,9 @@ class MainController extends Controller
 
             $form = $this
                 ->createForm(PostType::class, $post)
-                ->add('edit', SubmitType::class);
+                ->add('edit', SubmitType::class, [
+                    'label' => 'post.edit'
+                ]);
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
@@ -346,7 +348,10 @@ class MainController extends Controller
             $category = new Category();
             $form = $this
                 ->createForm(CategoryType::class, $category)
-                ->remove('delete');
+                ->add('save', SubmitType::class, [
+                    'attr'      => ['class' => 'button-link save'],
+                    'label'     => 'category.create',
+                ]);
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
@@ -437,7 +442,10 @@ class MainController extends Controller
             $em = $this->getDoctrine()->getManager();
             $form = $this
                 ->createForm(CategoryType::class, $category)
-                ->remove('delete');
+                ->add('save', SubmitType::class, [
+                    'attr'      => ['class' => 'button-link save'],
+                    'label'     => 'category.edit',
+                ]);
 
             $oldName = $category->getName();
             $form->handleRequest($request);

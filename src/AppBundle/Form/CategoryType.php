@@ -20,14 +20,6 @@ class CategoryType extends AbstractType{
 		$builder
 		    ->add('name', TextType::class, [
 		        'label' => 'category.name',
-            ])
-            ->add('save', SubmitType::class, [
-                'attr'      => ['class' => 'button-link save'],
-                'label'     => 'category.save',
-            ])
-            ->add('delete', SubmitType::class, [
-                'attr'      => ['class' => 'button-link delete'],
-                'label'     => 'category.delete',
             ]);
 	}
 

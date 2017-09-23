@@ -48,11 +48,7 @@ class UserType extends AbstractType
                     'label' => 'user.repeat_password',
                     'attr' => ['placeholder' => 'user.repeat_password'],
                 ],
-            ])
-            ->add('Submit', SubmitType::class, [
-                'attr' => ['class' => 'btn btn-danger'],
-                'label' => 'user.create',
-            ]);;
+            ]);
     }
 
     /**

@@ -6,6 +6,7 @@ use AppBundle\Entity\ConfirmationToken;
 use AppBundle\Entity\ResetToken;
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -94,7 +95,11 @@ class SecurityController extends Controller
             ->createForm(UserType::class, $user)
             ->remove('role')
             ->remove('username')
-            ->remove('plainPassword');
+            ->remove('plainPassword')
+            ->add('Submit', SubmitType::class, [
+                'attr' => ['class' => 'btn btn-danger'],
+                'label' => 'user.set.email',
+            ]);
 
         $em = $this->getDoctrine()->getManager();
         $tokenService = $this->get('app.token_service');
@@ -171,7 +176,11 @@ class SecurityController extends Controller
                 ->createForm(UserType::class, $user)
                 ->remove('username')
                 ->remove('email')
-                ->remove('role');
+                ->remove('role')
+                ->add('Submit', SubmitType::class, [
+                    'attr' => ['class' => 'btn btn-danger'],
+                    'label' => 'user.set.password',
+                ]);
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
@@ -220,7 +229,11 @@ class SecurityController extends Controller
             $user = new User();
             $form = $this
                 ->createForm(UserType::class, $user)
-                ->remove('role');
+                ->remove('role')
+                ->add('Submit', SubmitType::class, [
+                    'attr' => ['class' => 'btn btn-danger'],
+                    'label' => 'user.create',
+                ]);
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
