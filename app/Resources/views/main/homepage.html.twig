@@ -6,7 +6,7 @@
 </div>    
         <div class="container_logout">
              <div class="auth">
-                 Welcome,<strong>{{ app.user.username }}</strong>
+                 {{ 'welcome' | trans }},<strong>{{ app.user.username }}</strong>
              </div>
              <div class="logout_button">
                  <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}">Log out</a>
