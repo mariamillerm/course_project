@@ -330,7 +330,7 @@ class MainController extends Controller
             10
         );
 
-        return $this->render(':main:homepage.html.twig', [
+        return $this->render(':main:show_posts_by_category.html.twig', [
             'pagination' => $pagination,
             'categories' => $categories,
         ]);
