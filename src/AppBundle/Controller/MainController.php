@@ -66,11 +66,13 @@ class MainController extends Controller
     public function postAction(Post $post)
     {
         $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository(Category::class)->findAll();
         $post->addRating();
         $em->flush();
 
         return $this->render(':main:show_post.html.twig', [
             'post' => $post,
+            'categories' => $categories,
         ]);
     }
 
