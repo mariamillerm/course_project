@@ -1,8 +1,20 @@
-{% extends 'base.html.twig' %}
-
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    {% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+</head>
 {% block body %}
     <div class="header">
         <div class="t"><img src="{{ asset('../images/title.jpg') }}"></div>
+        <div class="language"><img src="{{ asset('../images/usa.jpg') }}" width="15" height="12">
+            <img src="{{ asset('../images/rus.jpg') }}" width="15" height="12" ></div>
     </div>
     <div class="container_logout">
         <div class="auth">
@@ -20,9 +32,6 @@
             {% endfor %}
         </div>
     {% endblock category%}
-{#<div class="count">#}
-    {#{{ pagination.getTotalItemCount }}#}
-{#</div>#}
 <div class="content">
     <table>
     <tr>
@@ -32,12 +41,17 @@
 
     {% for post in pagination %}
         <tr {% if loop.index is odd %}class="color"{% endif %}>
-            <td><div class="post_conteiner">
+            <td><div class="posts_conteiner">
                     <div class="post_title">{{ post.title }}</div>
                     <div class="post_date">{{ post.creationDate | date('h:m:s d M Y') }} ({{ post.rating }})</div>
-                    <div class="post_image"><img src="{{ asset('../images/not_found.jpg') }}" width="180" height="140"></div>
-                    <div class="post_summary">{{ post.summary }}</div>
-                </div></td>
+                    <div class="post_show">
+                        <div class="post_image"><img src="{{ asset('../images/~.jpg') }}" width="180" height="140"></div>
+                        <div class="post_summary">{{ post.summary }}
+                            <div class="read_more"><a href="{{ path('post', {'id': post.id}) }}"> <button class="read_more">Read more</button></a></div></div>
+                    </div>
+                </div>
+
+            </td>
         </tr>
     {% endfor %}
      </table>
