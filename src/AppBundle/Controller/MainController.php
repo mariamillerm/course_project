@@ -313,18 +313,26 @@ class MainController extends Controller
      * )
      *
      * @param Category $category
+     * @param Request $request
      *
      * @return Response
      */
-    public function categoryPostsAction(Category $category)
+    public function categoryPostsAction(Category $category, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $posts = $em
-            ->getRepository(Post::class)
-            ->findByCategory($category);
+        $categories = $em->getRepository(Category::class)->findAll();
+        $query = $em->getRepository(Post::class)->getCategoryPostsQuery($category);
 
-        return $this->render('main/homepage.html.twig', [
-            'posts' => $posts,
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render(':main:homepage.html.twig', [
+            'pagination' => $pagination,
+            'categories' => $categories,
         ]);
     }
 
