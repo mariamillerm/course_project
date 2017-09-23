@@ -256,6 +256,21 @@ class MainController extends Controller
     }
 
     /**
+     * @Route(path="/categories", methods={"GET"}, name="categories")
+     *
+     * @return Response
+     */
+    public function categoryListAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository('AppBundle:Category')->findAll();
+
+        return $this->render(':main:categories.html.twig', [
+            'categories' => $categories
+        ]);
+    }
+
+    /**
      * @Route(
      *     path="/search",
      *     methods={"GET"},
@@ -312,21 +327,6 @@ class MainController extends Controller
     }
 
     /**
-     * @Route(path="/categories", methods={"GET"}, name="categories")
-     * 
-     * @return Response
-     */
-    public function categoryListAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository('AppBundle:Category')->findAll();
-
-        return $this->render(':main:homepage.html.twig', [
-            'categories' => $categories
-        ]);
-    }
-
-    /**
      * @Route(
      *     "/category",
      *     methods={"GET", "POST"},
@@ -355,14 +355,13 @@ class MainController extends Controller
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $existingCategory = $em
+                if ($em
                     ->getRepository(Category::class)
-                    ->findOneByName($form->get('name')->getData());
-                if ($existingCategory === null) {
-                    $em->persist($category);
-                    $em->flush();
+                    ->isUnique($form->getData())) {
+                        $em->persist($category);
+                        $em->flush();
 
-                    return $this->redirectToRoute('homepage');
+                        return $this->redirectToRoute('homepage');
                 } else {
                     return $this->render(':errors:error.html.twig', [
                         'status_code' => Response::HTTP_CONFLICT,
@@ -442,18 +441,20 @@ class MainController extends Controller
             $em = $this->getDoctrine()->getManager();
             $form = $this
                 ->createForm(CategoryType::class, $category)
+                ->remove('parent')
                 ->add('save', SubmitType::class, [
                     'attr'      => ['class' => 'button-link save'],
                     'label'     => 'category.edit',
                 ]);
 
+
             $oldName = $category->getName();
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $existingCategory = $em
+                $isUnique = $em
                     ->getRepository(Category::class)
-                    ->findOneByName($form->get('name')->getData());
-                if ($form->get('name')->getData() === $oldName or $existingCategory === null) {
+                    ->isUnique($form->getData(), $oldName);
+                if ($isUnique) {
                     $category->setName($form->get('name')->getData());
                     $em->flush();
 

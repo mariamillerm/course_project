@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\UniqueConstraint;
@@ -12,7 +14,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  *     uniqueConstraints={
  *      @UniqueConstraint(name="search_idx", columns={"name"})
  * })
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CategoryRepository")
  */
 class Category
 {
@@ -41,6 +43,26 @@ class Category
      * @OneToMany(targetEntity="AppBundle\Entity\Post", mappedBy="category")
      */
     private $posts;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
+     */
+    private $children;
+
+    /**
+     * Category constructor.
+     */
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
+
 
     /**
      * @param string $name
@@ -79,12 +101,38 @@ class Category
     }
 
     /**
+     * @param Category|null $parent
+     *
+     * @return Category
+     */
+    public function setParent(Category $parent = null): Category
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return Category
+     */
+    public function getParent(): ?Category
+    {
+        return $this->parent;
+    }
+
+    /**
      * @return string
      */
-     public function __toString(){
-
+     public function __toString(): string
+     {
         return $this->name;
+     }
+
+    /**
+     * @return Collection
+     */
+    public function getChildren(): Collection
+    {
+        return $this->children;
     }
 }
-
-
