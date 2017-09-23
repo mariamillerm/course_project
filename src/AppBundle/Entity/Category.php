@@ -2,19 +2,19 @@
 
 namespace AppBundle\Entity;
 
-use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
- * @Gedmo\Tree(type="nested")
  * @ORM\Table(
  *     name="categories",
  *     uniqueConstraints={
  *      @UniqueConstraint(name="search_idx", columns={"name"})
  * })
- * @ORM\Entity(repositoryClass="AppBundle\Repository\CategoryRepository")
+ * @ORM\Entity()
  */
 class Category
 {
@@ -45,31 +45,6 @@ class Category
     private $posts;
 
     /**
-     * @Gedmo\TreeLeft
-     * @ORM\Column(name="lft", type="integer")
-     */
-    private $lft;
-
-    /**
-     * @Gedmo\TreeLevel
-     * @ORM\Column(name="lvl", type="integer")
-     */
-    private $lvl;
-
-    /**
-     * @Gedmo\TreeRight
-     * @ORM\Column(name="rgt", type="integer")
-     */
-    private $rgt;
-
-    /**
-     * @Gedmo\TreeRoot
-     * @ORM\Column(name="root", type="integer", nullable=true)
-     */
-    private $root;
-
-    /**
-     * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
@@ -77,9 +52,17 @@ class Category
 
     /**
      * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
-     * @ORM\OrderBy({"lft" = "ASC"})
      */
     private $children;
+
+    /**
+     * Category constructor.
+     */
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
+
 
     /**
      * @param string $name
@@ -122,7 +105,7 @@ class Category
      *
      * @return Category
      */
-    public function setParent(Category $parent = null): ?Category
+    public function setParent(Category $parent = null): Category
     {
         $this->parent = $parent;
 
@@ -130,9 +113,9 @@ class Category
     }
 
     /**
-     * @return mixed
+     * @return Category
      */
-    public function getParent()
+    public function getParent(): ?Category
     {
         return $this->parent;
     }
@@ -140,10 +123,16 @@ class Category
     /**
      * @return string
      */
-     public function __toString(){
-
+     public function __toString(): string
+     {
         return $this->name;
+     }
+
+    /**
+     * @return Collection
+     */
+    public function getChildren(): Collection
+    {
+        return $this->children;
     }
 }
-
-
