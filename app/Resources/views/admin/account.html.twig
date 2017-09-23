@@ -1,16 +1,44 @@
-{% extends 'base.html.twig' %}
+{% extends ':admin:admin_base.html.twig' %}
 
 {% block body %}
     <div class="header">
-        <div class="t"><a href="{{ path('homepage') }}" title="Home page"><img src="{{ asset('../images/title.jpg') }}"></a></div>
+        <a href="{{ path('homepage') }}"><img src="{{ asset('../images/title.jpg') }}"></a>
     </div>
-    <div class="container_logout">
-        <div class="auth">
-            Welcome ,<strong>{{ app.user.username }}</strong>
+    <div class="sidebar_categories">
+
+        <div class="search">
+            <form role="search" action="{{ path('post_search') }}" method="post">
+                <div class="row" style="margin: 10px;">
+                    <input type="search" name="query" class="form-control" placeholder="{{ 'search' }}"
+                           value="{% if searched is defined %}{{ searched }}{% endif %}">
+                    <button type="submit" class="btn btn-default" style="margin-top: 10px; width: 100%">{{ 'search' }}</button>
+                </div>
+            </form>
         </div>
-        <div class="logout_button">
-            <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}">Log out</a>
+
+        <hr>
+
+        <div class="auth row">
+            Welcome, <a href="{{ path('admin_home') }}" title="Personal account"><strong>{{ app.user.username }}</strong></a>
+            <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">Log out</a>
         </div>
+
+        <hr>
+
+        <div class="admin_sidebar">
+            <ul class="admin-list">
+                <li>Users</li>
+                <li>Posts</li>
+                <li>Categories</li>
+            </ul>
+        </div>
+
+        <div class="language">
+            <img src="{{ asset('../images/usa.jpg') }}">
+            <img src="{{ asset('../images/rus.jpg') }}">
+        </div>
+    </div>
+
     </div>
     {% block sidebar %}
         <ul>Users</ul>
