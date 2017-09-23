@@ -4,8 +4,52 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "db86f09d1e5631b8bfd898d296b43bb0",
+    "content-hash": "e83473770816ad1a2467ebbd5b4d1563",
     "packages": [
+        {
+            "name": "behat/transliterator",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Behat/Transliterator.git",
+                "reference": "826ce7e9c2a6664c0d1f381cbb38b1fb80a7ee2c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Behat/Transliterator/zipball/826ce7e9c2a6664c0d1f381cbb38b1fb80a7ee2c",
+                "reference": "826ce7e9c2a6664c0d1f381cbb38b1fb80a7ee2c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "chuyskywalker/rolling-curl": "^3.1",
+                "php-yaoi/php-yaoi": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Behat\\Transliterator": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Artistic-1.0"
+            ],
+            "description": "String transliterator",
+            "keywords": [
+                "i18n",
+                "slug",
+                "transliterator"
+            ],
+            "time": "2017-04-04T11:38:05+00:00"
+        },
         {
             "name": "composer/ca-bundle",
             "version": "1.0.7",
@@ -1113,6 +1157,84 @@
             "time": "2017-08-10T13:45:18+00:00"
         },
         {
+            "name": "gedmo/doctrine-extensions",
+            "version": "v2.4.30",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Atlantic18/DoctrineExtensions.git",
+                "reference": "5e2cc07beb0cd24345cbe02eb7afc3b23f9cd488"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/5e2cc07beb0cd24345cbe02eb7afc3b23f9cd488",
+                "reference": "5e2cc07beb0cd24345cbe02eb7afc3b23f9cd488",
+                "shasum": ""
+            },
+            "require": {
+                "behat/transliterator": "~1.2",
+                "doctrine/common": "~2.4",
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "doctrine/common": ">=2.5.0",
+                "doctrine/mongodb-odm": ">=1.0.2",
+                "doctrine/orm": ">=2.5.0",
+                "phpunit/phpunit": "*",
+                "symfony/yaml": "~2.6|~3.0"
+            },
+            "suggest": {
+                "doctrine/mongodb-odm": "to use the extensions with the MongoDB ODM",
+                "doctrine/orm": "to use the extensions with the ORM"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Gedmo\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "David Buchmann",
+                    "email": "david@liip.ch"
+                },
+                {
+                    "name": "Gediminas Morkevicius",
+                    "email": "gediminas.morkevicius@gmail.com"
+                },
+                {
+                    "name": "Gustavo Falco",
+                    "email": "comfortablynumb84@gmail.com"
+                }
+            ],
+            "description": "Doctrine2 behavioral extensions",
+            "homepage": "http://gediminasm.org/",
+            "keywords": [
+                "Blameable",
+                "behaviors",
+                "doctrine2",
+                "extensions",
+                "gedmo",
+                "loggable",
+                "nestedset",
+                "sluggable",
+                "sortable",
+                "timestampable",
+                "translatable",
+                "tree",
+                "uploadable"
+            ],
+            "time": "2017-07-02T09:46:37+00:00"
+        },
+        {
             "name": "incenteev/composer-parameter-handler",
             "version": "v2.1.2",
             "source": {
@@ -1212,6 +1334,59 @@
                 "sql"
             ],
             "time": "2014-01-12T16:20:24+00:00"
+        },
+        {
+            "name": "kitpages/semaphore-bundle",
+            "version": "v2.0.0",
+            "target-dir": "Kitpages/SemaphoreBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kitpages/KitpagesSemaphoreBundle.git",
+                "reference": "460af43458f58cf46fe9c2cfc66f4895fe933321"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kitpages/KitpagesSemaphoreBundle/zipball/460af43458f58cf46fe9c2cfc66f4895fe933321",
+                "reference": "460af43458f58cf46fe9c2cfc66f4895fe933321",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6",
+                "symfony/console": "~3.0",
+                "symfony/framework-bundle": "~3.0",
+                "symfony/monolog-bundle": "~3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~5.0",
+                "symfony/browser-kit": "~3.0",
+                "symfony/class-loader": "~3.0",
+                "symfony/finder": "~3.0",
+                "symfony/process": "~3.0",
+                "symfony/yaml": "~3.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "Kitpages\\SemaphoreBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Philippe Le Van",
+                    "homepage": "https://twitter.com/plv"
+                }
+            ],
+            "description": "This is a Symfony2 bundle that provides a semaphore system.",
+            "homepage": "https://github.com/kitpages/KitpagesSemaphoreBundle",
+            "keywords": [
+                "lock",
+                "semaphore"
+            ],
+            "time": "2017-03-24T12:47:35+00:00"
         },
         {
             "name": "knplabs/knp-components",
@@ -2179,6 +2354,67 @@
             "time": "2017-08-22T22:18:16+00:00"
         },
         {
+            "name": "stof/doctrine-extensions-bundle",
+            "version": "v1.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stof/StofDoctrineExtensionsBundle.git",
+                "reference": "4e7499d25dc5d0862da09fa8e336164948a29a25"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stof/StofDoctrineExtensionsBundle/zipball/4e7499d25dc5d0862da09fa8e336164948a29a25",
+                "reference": "4e7499d25dc5d0862da09fa8e336164948a29a25",
+                "shasum": ""
+            },
+            "require": {
+                "gedmo/doctrine-extensions": "^2.3.1",
+                "php": ">=5.3.2",
+                "symfony/framework-bundle": "~2.1|~3.0"
+            },
+            "suggest": {
+                "doctrine/doctrine-bundle": "to use the ORM extensions",
+                "doctrine/mongodb-odm-bundle": "to use the MongoDB ODM extensions"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Stof\\DoctrineExtensionsBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christophe Coevoet",
+                    "email": "stof@notk.org"
+                }
+            ],
+            "description": "Integration of the gedmo/doctrine-extensions with Symfony2",
+            "homepage": "https://github.com/stof/StofDoctrineExtensionsBundle",
+            "keywords": [
+                "behaviors",
+                "doctrine2",
+                "extensions",
+                "gedmo",
+                "loggable",
+                "nestedset",
+                "sluggable",
+                "sortable",
+                "timestampable",
+                "translatable",
+                "tree"
+            ],
+            "time": "2016-01-26T23:58:32+00:00"
+        },
+        {
             "name": "swiftmailer/swiftmailer",
             "version": "v5.4.8",
             "source": {
@@ -3015,59 +3251,6 @@
         }
     ],
     "packages-dev": [
-        {
-            "name": "kitpages/semaphore-bundle",
-            "version": "v2.0.0",
-            "target-dir": "Kitpages/SemaphoreBundle",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/kitpages/KitpagesSemaphoreBundle.git",
-                "reference": "460af43458f58cf46fe9c2cfc66f4895fe933321"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/kitpages/KitpagesSemaphoreBundle/zipball/460af43458f58cf46fe9c2cfc66f4895fe933321",
-                "reference": "460af43458f58cf46fe9c2cfc66f4895fe933321",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6",
-                "symfony/console": "~3.0",
-                "symfony/framework-bundle": "~3.0",
-                "symfony/monolog-bundle": "~3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~5.0",
-                "symfony/browser-kit": "~3.0",
-                "symfony/class-loader": "~3.0",
-                "symfony/finder": "~3.0",
-                "symfony/process": "~3.0",
-                "symfony/yaml": "~3.0"
-            },
-            "type": "symfony-bundle",
-            "autoload": {
-                "psr-0": {
-                    "Kitpages\\SemaphoreBundle": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Philippe Le Van",
-                    "homepage": "https://twitter.com/plv"
-                }
-            ],
-            "description": "This is a Symfony2 bundle that provides a semaphore system.",
-            "homepage": "https://github.com/kitpages/KitpagesSemaphoreBundle",
-            "keywords": [
-                "lock",
-                "semaphore"
-            ],
-            "time": "2017-03-24T12:47:35+00:00"
-        },
         {
             "name": "sensio/generator-bundle",
             "version": "v3.1.6",
