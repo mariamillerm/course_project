@@ -12,6 +12,7 @@
   width: 100%;
   padding: 15px;
   margin: 0 auto;
+
 }
 
 .container_logout{
@@ -44,9 +45,6 @@
   display: inline-block;
 }
 
-.container_logout{
-}
-
 .sidebar_categories{
     top: 0;
 	width: 200px;
@@ -68,9 +66,7 @@
 .categories-list {
     list-style-type: none;
     font-size: 1.2em;
-}
-
- .posts_conteiner {
+    color: #FFFFFF;
 }
 
  .post_conteiner {
@@ -97,8 +93,13 @@
 .post_summary {
     padding-top: 8px;
     padding-right: 20px;
+    padding-left: 15px;
     height: auto;
     display: inline-block;
+}
+
+.post_content {
+    margin: 15px;
 }
 
 .post {
@@ -134,6 +135,7 @@ body {
      color: #ffffff;
      font-family: 'Source Sans Pro', sans-serif;
      font-size: medium;
+     margin: 3px;
  }
 
  .btn-action:hover {
@@ -184,4 +186,51 @@ body {
      border-radius: 4px;
      color: #000000;
      font-size: 14px;
+ }
+
+ .ad {
+     padding-left: 10px;
+ }
+
+ .admin-list {
+     list-style-type: none;
+     font-size: 1.2em;
+ }
+
+ .content_users, .content_posts, .content_categories {
+     margin-top: 40px;
+     margin-left: 210px;
+     border: solid;
+ }
+
+ .forgot, .signup {
+    display: inline-block;
+     margin-left: auto;
+     margin-right: auto
+ }
+
+ .list, .list:hover {
+     color: #F5FFFA;
+ }
+
+ .edit, .delete, .read_more, .add {
+     background: #2E3234;
+     color: #F5FFFA;
+ }
+
+ .button, .button:hover {
+     margin-left: 15px;
+     background: #2E3234;
+     color: #F5FFFA;
+     padding: 5px;
+     border-radius: 4px;
+     font-size: 14px;
+ }
+
+ #categories {
+     margin-left: 100px;
+ }
+
+ .content_users {
+
  }
