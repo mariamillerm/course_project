@@ -12,10 +12,10 @@
         {% for user in users %}
             <tr>
                 <td>{{ user.id }}</td>
-                <td><a href="{{ path('admin_user', {'id': user.id}) }}">{{ user.username }}</a></td>
+                <td><a href="{{ path('users_show', {'id': user.id}) }}">{{ user.username }}</a></td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.roles[0] }}</td>
-                <td><a href="{{ path('user_remove', {'id': user.id}) }}">Delete user</a></td>
+                <td><a href="{{ path('user_block', {'id': user.id}) }}">Block user</a></td>
             </tr>
         {% endfor %}
     </table>

@@ -4,3 +4,6 @@ app:
 
 logout:
     path: /logout
+
+account:
+    path: /account
