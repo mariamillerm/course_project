@@ -9,7 +9,9 @@ use AppBundle\Form\PostType;
 use AppBundle\Entity\Category;
 use AppBundle\Form\CategoryType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,32 +29,167 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route(
-     *     path="/admin/posts",
-     *     methods={"GET"},
-     *     name="admin_posts",
-     *     requirements={"id": "\d+"}
-     * )
-     *
-     * @param Post $post
+     * @Route("/admin/categories", methods={"GET"}, name="categories_show")
      *
      * @return Response
      */
-    public function postAction(Post $post)
+    public function categoryListAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository('AppBundle:Category')->findAll();
+
+        return $this->render(':admin:categories_show.html.twig', [
+            'categories' => $categories
+        ]);
+    }
+
+    /**
+     * @Route(
+     *     "/admin/posts",
+     *     methods={"GET"},
+     *     name="posts_show",
+     *     requirements={"id": "\d+"}
+     * )
+     *
+     * @return Response
+     */
+    public function postsAction()
     {
         $em = $this->getDoctrine()->getManager();
         $categories = $em->getRepository(Category::class)->findAll();
-        $post->addRating();
-        $em->flush();
+        $posts = $em->getRepository(Post::class)->findAll();
 
-        return $this->render(':admin:account.html.twig', [
-            'post' => $post,
+        return $this->render(':admin:posts_show.html.twig', [
+            'posts' => $posts,
             'categories' => $categories,
         ]);
     }
 
     /**
-     * @Route(path="/admin/users/{user}", name="admin_user", requirements={"user": "\d+"})
+     * @Route(
+     *     "/admin/post",
+     *     methods={"GET", "POST"},
+     *     name="create_post"
+     * )
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function createPostAction(Request $request)
+    {
+        $hasAccess = $this
+            ->get('security.authorization_checker')
+            ->isGranted('ROLE_MANAGER');
+        if ($hasAccess) {
+            $em = $this->getDoctrine()->getManager();
+
+            $post = new Post($this->getUser());
+            $form = $this
+                ->createForm(PostType::class, $post)
+                ->add('save', SubmitType::class, [
+                    'label' => 'post.create'
+                ])
+                ->remove('similarPosts')
+                ->add('similarPosts', EntityType::class, [
+                    'multiple' => true,
+                    'class' => 'AppBundle\Entity\Post',
+                    'label' => 'post.similarPosts',
+                    'required' => false,
+                    'empty_data' => null,
+                ]);
+
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                if ($em->getRepository(Post::class)->isUnique($form->getData())) {
+
+                    $file = $post->getImage();
+                    if ($file != null) {
+                        $filename = md5(uniqid()).'.'.$file->guessExtension();
+                        $file->move(
+                            $this->getParameter('image_root'),
+                            $filename
+                        );
+                        $post->setImage($filename);
+                    } else {
+                        $post->setImage('not_found.jpg');
+                    }
+
+                    $em->persist($post);
+                    $em->flush();
+
+                    return $this->redirectToRoute('posts_show');
+                }
+
+                return $this->render(':errors:error.html.twig', [
+                    'status_code' => Response::HTTP_CONFLICT,
+                    'status_text' => 'There is a post with the same title!',
+                ]);
+            }
+
+            $error = $form->getErrors()->current();
+            $message = null;
+            if ($error !== false) {
+                $message = $error->getMessage();
+            }
+
+            return $this->render(':admin:post_create.html.twig', [
+                'form' => $form->createView(),
+                'error' => $message,
+            ]);
+        } else {
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_FORBIDDEN,
+                'status_text' => 'You don\'t have permissions to do this!',
+            ]);
+        }
+    }
+
+//    /**
+//     * @Route(path="/admin/users/{user}", name="admin_user", requirements={"user": "\d+"})
+//     *
+//     * @param User $user
+//     * @param Request $request
+//     *
+//     * @return Response
+//     */
+//    public function userAction(User $user, Request $request)
+//    {
+//        // @TODO Remove form, use AJaX
+//        $form = $this->createForm(UserType::class, [
+//            'role' => $user->getRole()
+//        ]);
+//        $form->handleRequest($request);
+//
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $user->setRole($form->get('role')->getData());
+//
+//            $this->getDoctrine()->getManager()->flush();
+//
+//            return new RedirectResponse($this->generateUrl('edit_users'));
+//        }
+//
+//        return $this->render(':admin:user_edit.html.twig', [
+//            'form' => $form->createView(),
+//            'username' => $user->getUsername(),
+//        ]);
+//    }
+
+    /**
+     * @Route(path="/admin/users", name="users_show")
+     */
+    public function usersAction()
+    {
+        // @TODO Remove render
+        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+
+    	return $this->render(':admin:users_show.html.twig', [
+            'users' => $users,
+        ]);
+    }
+
+    /**
+     * @Route(path="/admin/users/{user}", name="edit_user", requirements={"user": "\d+"})
      *
      * @param User $user
      * @param Request $request
@@ -61,48 +198,35 @@ class AdminController extends Controller
      */
     public function userAction(User $user, Request $request)
     {
-        // @TODO Remove form, use AJaX
-        $form = $this->createForm(UserEdit::class, [
-            'role' => $user->getRole()
-        ]);
+        $em = $this->getDoctrine()->getManager();
+        /**
+         * @var User $user
+         */
+        $user = $em->getRepository(User::class)->find($user->getId());
+        $form = $this
+            ->createForm(UserType::class, $user)
+            ->remove('username')
+            ->remove('email')
+            ->remove('plainPassword')
+            ->add('edit', SubmitType::class, [
+                'label' => 'user.edit',
+            ]);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setRole($form->get('role')->getData());
+            $em->flush();
 
-            $this->getDoctrine()->getManager()->flush();
-
-            return new RedirectResponse($this->generateUrl('edit_users'));
+            return new RedirectResponse($this->generateUrl('users_show'));
         }
 
-        return $this->render('user_edit.html.twig', [
+        return $this->render(':admin:user_edit.html.twig', [
             'form' => $form->createView(),
             'username' => $user->getUsername(),
         ]);
-    }
+      }
 
-    /**
-     * @Route(path="/admin/users_show", name="users_show")
-     */
-    public function usersAction()
-    {
-        // @TODO Remove render
-        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
-
-    	return $this->render('users_show.html.twig', [
-            'users' => $users,
-        ]);
-
-    /**
-     * @var $paginator \Knp\Component\Pager\Paginator
-     */
-        $paginator = $this->get('knp_paginator');
-        $result = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            $request->query->getInt('limit', 10)
-        );
-    }
 
     /**
      * @Route(path="/admin/user/{user}/block", name="user_block", requirements={"user": "\d+"})
@@ -139,7 +263,6 @@ class AdminController extends Controller
         $repository = $this->getDoctrine()->getRepository('AppBundle:User');
         $queryBuilder = $repository->createQueryBuilder('u');
 
-        // @TODO TODO
         $page = $request->get('page');
         $rows = $request->get('rows');
         if ($request->getQueryString() === '') {
