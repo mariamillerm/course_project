@@ -241,9 +241,31 @@ class AdminController extends Controller
         $user->setIsActive(false);
         $em->flush();
 
-        return $this->json([
-            'status' => 'Changed',
-        ], 200);
+        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+
+        return $this->render(':admin:users_show.html.twig', [
+            'users' => $users,
+        ]);
+    }
+
+    /**
+     * @Route(path="/admin/user/{user}/unblock", name="user_unblock", requirements={"user": "\d+"})
+     *
+     * @param User $user
+     *
+     * @return Response
+     */
+    public function unblockUserAction(User $user)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user->setIsActive(true);
+        $em->flush();
+
+        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+
+        return $this->render(':admin:users_show.html.twig', [
+            'users' => $users,
+        ]);
     }
 
 
