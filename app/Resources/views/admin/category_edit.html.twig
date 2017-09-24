@@ -28,7 +28,9 @@
 
         <div class="admin_sidebar">
             <ul class="admin-list">
-                <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
+                {% endif %}
                 <li><a href="{{ path('posts_show') }}" class="list">Posts</a></li>
                 <li><a href="{{ path('categories_show') }}" class="list">Categories</a></li>
             </ul>
@@ -39,9 +41,9 @@
             <img src="{{ asset('../images/rus.jpg') }}">
         </div>
     </div>
-    <div class="content">
-    {{ form_start(form, {'attr': {'class': 'form-signin'}}) }}
-    {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
-    {{ form_end(form) }}
+    <div class="content_category">
+        <div class="category_start">{{ form_start(form, {'attr': {'class': 'form-signin'}}) }}</div>
+        <div class="category_row">{{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}</div>
+        <div class="category_end">{{ form_end(form) }}</div>
     </div>
 {% endblock %}
