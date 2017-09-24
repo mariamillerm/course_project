@@ -54,7 +54,9 @@
                 <div class="post_date">{{ post.creationDate | date('h:m:s d M Y') }} ({{ post.rating }})
                 </div>
                 <div class="post_show">
-                    <div class="post_image"><img src="{{ asset('../images/not_found.jpg') }}" width="180" height="140"></div>
+                    <div class="post_image">
+                        <img src="{{ asset('../images/' ~ post.image) }}" width="300" height="200">
+                    </div>
                     <div class="post_summary">{{ post.summary }}</div>
                     <div style="display: flex; justify-content: flex-end;" class="action-buttons">
                         <a href="{{ path('post', {'id': post.id}) }}"><button class="read_more">Read more</button></a>
