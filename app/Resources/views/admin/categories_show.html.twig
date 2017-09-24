@@ -1,0 +1,80 @@
+{% extends ':admin:admin_base.html.twig' %}
+
+{% block body %}
+<div class="header">
+    <a href="{{ path('homepage') }}"><img src="{{ asset('../images/title.jpg') }}"></a>
+</div>
+<div class="sidebar_categories">
+
+    <div class="search">
+        <form role="search" action="{{ path('post_search') }}" method="post">
+            <div class="row" style="margin: 10px;">
+                <input type="search" name="query" class="form-control" placeholder="{{ 'search' }}"
+                       value="{% if searched is defined %}{{ searched }}{% endif %}">
+                <button type="submit" class="btn btn-default" style="margin-top: 10px; width: 100%">{{ 'search' }}</button>
+            </div>
+        </form>
+    </div>
+
+    <hr>
+
+    <div class="auth row">
+        Welcome, <a href="{{ path('admin_home') }}" title="Personal account"><strong>{{ app.user.username }}</strong></a>
+        <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">Log out</a>
+    </div>
+
+    <hr>
+
+    <div class="admin_sidebar">
+        <ul class="admin-list">
+            <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
+            <li><a href="{{ path('posts_show') }}" class="list">Posts</a></li>
+            <li><a href="{{ path('categories_show') }}" class="list">Categories</a></li>
+            <ul><li><a href="{{ path('create_category') }}" class="list">Add category</a></li></ul></li>
+        </ul>
+    </div>
+
+    <div class="language">
+        <img src="{{ asset('../images/usa.jpg') }}">
+        <img src="{{ asset('../images/rus.jpg') }}">
+    </div>
+</div>
+<div class="content_categories">
+    {% macro recursiveCategory(category) %}
+        {% if category.children|length %}
+            <li class="parent-category">
+                <div>
+                    <a href="{{ path('edit_category', {'category': category.id} )}}" class="btn" title="Edit category">{{ category.name }}</a>
+                    <a class="btn btn-action" href="{{ path('delete_category', {'category': category.id}) }}">Delete</a>
+                </div>
+                {% for child in category.children %}
+                    <ul>
+                        {{ _self.recursiveCategory(child) }}
+                    </ul>
+                {% endfor %}
+            </li>
+        {% else %}
+            <li class="category">
+                <div>
+                    <a href="{{ path('edit_category', {'category': category.id} )}}" class="btn" title="Edit category">{{ category.name }}</a>
+                    <a class="btn btn-action" href="{{ path('delete_category', {'category': category.id}) }}">Delete</a>
+                </div>
+            </li>
+        {% endif %}
+    {% endmacro %}
+
+    {% if categories %}
+        <div id="categories">
+            <h3>Categories</h3>
+            <ul>
+                {% for category in categories %}
+                    {% if category.children|length and category.parent is null %}
+                        {{ _self.recursiveCategory(category) }}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
