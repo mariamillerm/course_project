@@ -3,7 +3,7 @@
 {% block body %}
 
     <div class="header">
-        <img src="{{ asset('../images/title.jpg') }}">
+        <a href="{{ path('homepage') }}"><img src="{{ asset('../images/title.jpg') }}"></a>
     </div>
 
     <div class="sidebar_categories">
@@ -31,7 +31,7 @@
             <h1>Categories</h1>
             <ul class="categories-list">
                 {% for category in categories %}
-                    <li>{{ category.name }}</li>
+                    <li><a href="{{ path('category_posts', {'category': category.id}) }}">{{ category.name }}</a></li>
                 {% endfor %}
             </ul>
         </div>
