@@ -20,7 +20,14 @@
         <hr>
 
         <div class="auth row">
-            {{ 'welcome' | trans }}, <a href="{{ path('admin_home') }}" title="Personal account"><strong>{{ app.user.username }}</strong></a>
+            {{ 'welcome' | trans }},
+            {% if is_granted('ROLE_MANAGER') %}
+                <a href="{{ path('admin_home') }}" title="Personal account">
+            {% endif %}
+            <strong>{{ app.user.username }}</strong>
+            {% if is_granted('ROLE_MANAGER') %}
+                </a>
+            {% endif %}
             <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">Log out</a>
         </div>
 
