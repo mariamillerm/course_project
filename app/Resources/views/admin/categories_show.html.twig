@@ -27,7 +27,9 @@
 
     <div class="admin_sidebar">
         <ul class="admin-list">
-            <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
+            {% if is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
+            {% endif %}
             <li><a href="{{ path('posts_show') }}" class="list">Posts</a></li>
             <li><a href="{{ path('categories_show') }}" class="list">Categories</a></li>
             <ul><li><a href="{{ path('create_category') }}" class="list">Add category</a></li></ul></li>
@@ -40,13 +42,14 @@
     </div>
 </div>
 <div class="content_categories">
-    {% macro recursiveCategory(category) %}
+    <table>
+    <tr> {% macro recursiveCategory(category) %}
         {% if category.children|length %}
             <li class="parent-category">
-                <div>
+                <td><div>
                     <a href="{{ path('edit_category', {'category': category.id} )}}" class="btn" title="Edit category">{{ category.name }}</a>
-                    <a class="btn btn-action" href="{{ path('delete_category', {'category': category.id}) }}">Delete</a>
-                </div>
+                    <div style="display: flex; justify-content: flex-end;" class="button_category"><a class="button btn-action" href="{{ path('delete_category', {'category': category.id}) }}">Delete</a></div>
+            </div></td>
                 {% for child in category.children %}
                     <ul>
                         {{ _self.recursiveCategory(child) }}
@@ -55,13 +58,13 @@
             </li>
         {% else %}
             <li class="category">
-                <div>
+               <td> <div >
                     <a href="{{ path('edit_category', {'category': category.id} )}}" class="btn" title="Edit category">{{ category.name }}</a>
-                    <a class="btn btn-action" href="{{ path('delete_category', {'category': category.id}) }}">Delete</a>
-                </div>
+                    <div style="display: flex; justify-content: flex-end;" class="button_category"><a class="button btn-action" href="{{ path('delete_category', {'category': category.id}) }}">Delete</a></div>
+                   </div></td>
             </li>
         {% endif %}
-    {% endmacro %}
+            {% endmacro %} </tr> </table>
 
     {% if categories %}
         <div id="categories">

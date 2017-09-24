@@ -1,12 +1,55 @@
 {% extends ':admin:admin_base.html.twig' %}
 
 {% block body %}
+    <div class="header">
+        <a href="{{ path('homepage') }}"><img src="{{ asset('../images/title.jpg') }}"></a>
+    </div>
+    <div class="sidebar_categories">
 
-    <p>Username: {{ username }}</p>
+        <div class="search">
+            <form role="search" action="{{ path('post_search') }}" method="post">
+                <div class="row" style="margin: 10px;">
+                    <input type="search" name="query" class="form-control" placeholder="{{ 'search' }}"
+                           value="{% if searched is defined %}{{ searched }}{% endif %}">
+                    <button type="submit" class="btn btn-default" style="margin-top: 10px; width: 100%">{{ 'search' }}</button>
+                </div>
+            </form>
+        </div>
 
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
+        <hr>
 
+        <div class="auth row">
+            Welcome, <a href="{{ path('admin_home') }}" title="Personal account"><strong>{{ app.user.username }}</strong></a>
+            <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">Log out</a>
+        </div>
+
+        <hr>
+
+        <div class="admin_sidebar">
+            <ul class="admin-list">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
+                {% endif %}
+                <li><a href="{{ path('posts_show') }}" class="list">Posts</a></li>
+                <li><a href="{{ path('categories_show') }}" class="list">Categories</a></li>
+            </ul>
+        </div>
+
+        <div class="language">
+            <img src="{{ asset('../images/usa.jpg') }}">
+            <img src="{{ asset('../images/rus.jpg') }}">
+        </div>
+    </div>
+
+    </div>
+
+    <div class="content_username">
+
+        <p>Username: <strong>{{ username }}</strong></p>
+
+        <div class="form_start">{{ form_start(form) }}</div>
+        <div class="form_widget">{{ form_widget(form) }}</div>
+        <div class="form_end">{{ form_end(form) }}</div>
+    </div>
 
 {% endblock %}

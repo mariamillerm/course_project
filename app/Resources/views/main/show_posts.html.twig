@@ -31,12 +31,15 @@
             <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">Log out</a>
         </div>
 
+        <div class="subsribe"><a href="{{ path('admin_home') }}"><strong>Subsribe!</strong></a></div>
+
         <hr>
 
         <div class="categories">
             <h1>Categories</h1>
             <ul class="categories-list">
                 {% for category in categories %}
+
                     <li><a href="{{ path('category_posts', {'category': category.id}) }}">{{ category.name }}</a></li>
                 {% endfor %}
             </ul>

@@ -27,7 +27,9 @@
 
         <div class="admin_sidebar">
             <ul class="admin-list">
+                {% if is_granted('ROLE_ADMIN') %}
                 <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
+                {% endif %}
                 <li><a href="{{ path('posts_show') }}" class="list">Posts</a></li>
                 <li><a href="{{ path('categories_show') }}" class="list">Categories</a></li>
             </ul>
@@ -44,14 +46,15 @@
     <div class="content_users">
     <table>
         <tr>
-            <th>{{ 'id'}}</th>
+            <th style="width: 20px;">{{ 'id'}}</th>
             <th>{{ 'name'}}</th>
             <th>{{ 'email'}}</th>
             <th>{{ 'role'}}</th>
+            <th>Action</th>
         </tr>
         {% for user in users %}
             <tr>
-                <td>{{ user.id }}</td>
+                <td style="width: 20px;">{{ user.id }}</td>
                 <td><a href="{{ path('edit_user', {'user': user.id}) }}">{{ user.username }}</a></td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.roles[0] }}</td>
