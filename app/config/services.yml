@@ -1,4 +1,12 @@
 services:
+    app.locale_listener:
+        class: AppBundle\Event\LocaleListener
+        tags:
+            - name: kernel.event_listener
+              event: kernel.request
+              method: onKernelRequest
+              priority: 11
+
     app.email_support:
         class: AppBundle\Service\EmailService
         arguments:

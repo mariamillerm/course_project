@@ -10,9 +10,9 @@
         <div class="search">
             <form role="search" action="{{ path('post_search') }}" method="post">
                 <div class="row" style="margin: 10px;">
-                    <input type="search" name="query" class="form-control" placeholder="{{ 'search' }}"
+                    <input type="search" name="query" class="form-control" placeholder="{{ 'search' | trans }}"
                            value="{% if searched is defined %}{{ searched }}{% endif %}">
-                    <button type="submit" class="btn btn-default" style="margin-top: 10px; width: 100%">{{ 'search' }}</button>
+                    <button type="submit" class="btn btn-default" style="margin-top: 10px; width: 100%">{{ 'search' | trans }}</button>
                 </div>
             </form>
         </div>
@@ -20,7 +20,7 @@
         <hr>
 
         <div class="auth row">
-            {{ 'welcome' | trans() }}, <a href="{{ path('admin_home') }}" title="Personal account"><strong>{{ app.user.username }}</strong></a>
+            {{ 'welcome' | trans }}, <a href="{{ path('admin_home') }}" title="Personal account"><strong>{{ app.user.username }}</strong></a>
             <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">Log out</a>
         </div>
 
@@ -39,8 +39,14 @@
         </div>
 
         <div class="language">
-            <img src="{{ asset('../images/usa.jpg') }}">
-            <img src="{{ asset('../images/rus.jpg') }}">
+            <script>
+                function setLocale(locale) {
+                    Cookies.set("locale", locale);
+                    location.reload();
+                }
+            </script>
+            <img src="{{ asset('../images/usa.jpg') }}" onclick="setLocale('en')">
+            <img src="{{ asset('../images/rus.jpg') }}" onclick="setLocale('ru')">
         </div>
     </div>
 
