@@ -6,6 +6,7 @@ use AppBundle\Entity\Category;
 use AppBundle\Entity\Post;
 use AppBundle\Form\CategoryType;
 use AppBundle\Form\PostType;
+use Elastica\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -286,7 +287,6 @@ class MainController extends Controller
     /**
      * @Route(
      *     path="/search",
-     *     methods={"GET"},
      *     name="post_search"
      * )
      *
@@ -298,18 +298,32 @@ class MainController extends Controller
     {
         $query = $request->request->get('query');
         if ($query) {
-            $finder = $this->get('fos_elastica.finder');
-            $keywordQuery = new QueryString();
-            $keywordQuery->setQuery('*'.$query.'*');
-            $q = new Query();
-            $q->setQuery($keywordQuery);
-            $posts = $finder->find($q);
-            dump($posts);
+            $finder = $this->get('fos_elastica.finder.app.post');
 
-            return $this->render('search.html.twig', array(
+            $match = new Query\MultiMatch();
+
+            $match->setQuery($query);
+            $match->setFields(['title', 'content']);
+
+            $posts = $finder->find($match);
+
+            $categories = $this
+                ->getDoctrine()
+                ->getRepository(Category::class)
+                ->categoriesUnderRoot();
+            $paginator  = $this->get('knp_paginator');
+            $pagination = $paginator->paginate(
+                $posts,
+                $request->query->getInt('page', $request->query->get('page') ?? 1),
+                10
+            );
+
+            return $this->render('search.html.twig', [
                 'posts' => $posts,
                 'searched' => $query,
-            ));
+                'categories' => $categories,
+                'pagination' => $pagination,
+            ]);
         }
 
         return $this->redirectToRoute('homepage');
