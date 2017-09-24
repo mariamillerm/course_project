@@ -1,6 +1,43 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'admin/admin_base.html.twig' %}
 {% block body %}
+    <div class="header">
+        <a href="{{ path('homepage') }}"><img src="{{ asset('../images/title.jpg') }}"></a>
+    </div>
+
+    <div class="sidebar_categories">
+
+        <div class="search">
+            <form role="search" action="{{ path('post_search') }}" method="post">
+                <div class="row" style="margin: 10px;">
+                    <input type="search" name="query" class="form-control" placeholder="{{ 'search' }}"
+                           value="{% if searched is defined %}{{ searched }}{% endif %}">
+                    <button type="submit" class="btn btn-default" style="margin-top: 10px; width: 100%">{{ 'search' }}</button>
+                </div>
+            </form>
+        </div>
+
+        <hr>
+
+        <div class="auth row">
+            {{ 'welcome' | trans() }}, <a href="{{ path('admin_home') }}" title="Personal account"><strong>{{ app.user.username }}</strong></a>
+            <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">Log out</a>
+        </div>
+
+        <hr>
+
+        <div class="admin_sidebar">
+            <ul class="admin-list">
+                <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
+                <li><a href="{{ path('posts_show') }}" class="list">Posts</a></li>
+                <li><a href="{{ path('categories_show') }}" class="list">Categories</a></li>
+            </ul>
+        </div>
+
+        <div class="language">
+            <img src="{{ asset('../images/usa.jpg') }}">
+            <img src="{{ asset('../images/rus.jpg') }}">
+        </div>
+    </div>
     {{ form_start(form, {'attr': {'class': 'form-signin'}}) }}
     {{ form_row(form.title, {'attr': {'class': 'form-control'}}) }}
     {{ form_row(form.summary, {'attr': {'class': 'form-control'}}) }}
