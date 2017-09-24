@@ -6,15 +6,12 @@ use AppBundle\Entity\Category;
 use AppBundle\Entity\Post;
 use AppBundle\Form\CategoryType;
 use AppBundle\Form\PostType;
-use Elastica\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 use Elastica\Query;
-use Elastica\Query\QueryString;
 use Symfony\Component\HttpFoundation\Request;
 
 class MainController extends Controller

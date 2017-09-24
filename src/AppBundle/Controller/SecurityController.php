@@ -71,7 +71,7 @@ class SecurityController extends Controller
 
             return $this->render(':security:login.html.twig', [
                 'last_username' => $user->getEmail(),
-                'message' => 'account.confirmed',
+                'message' => $this->get('translator')->trans('account.confirmed'),
             ]);
         } else {
             return $this->render(':errors:error.html.twig', [
