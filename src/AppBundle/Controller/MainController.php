@@ -36,7 +36,7 @@ class MainController extends Controller
     public function homepageAction(int $page = 1, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository(Category::class)->findAll();
+        $categories = $em->getRepository(Category::class)->categoriesUnderRoot();
         $query = $em->getRepository(Post::class)->getPostsQuery();
 
         $paginator  = $this->get('knp_paginator');

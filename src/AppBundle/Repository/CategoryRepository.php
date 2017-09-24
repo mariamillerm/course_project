@@ -24,4 +24,15 @@ class CategoryRepository extends EntityRepository
 
         return false;
     }
+
+    /**
+     * @return Category[]
+     */
+    public function categoriesUnderRoot(): array
+    {
+        $rootCategory = $this->find(2);
+        $categories = $this->findByParent($rootCategory);
+
+        return $categories;
+    }
 }
