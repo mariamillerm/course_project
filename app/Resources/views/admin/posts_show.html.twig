@@ -1,0 +1,69 @@
+{% extends ':admin:admin_base.html.twig' %}
+
+{% block body %}
+    <div class="header">
+        <a href="{{ path('homepage') }}"><img src="{{ asset('../images/title.jpg') }}"></a>
+    </div>
+
+    <div class="sidebar_categories">
+
+        <div class="search">
+            <form role="search" action="{{ path('post_search') }}" method="post">
+                <div class="row" style="margin: 10px;">
+                    <input type="search" name="query" class="form-control" placeholder="{{ 'search' }}"
+                           value="{% if searched is defined %}{{ searched }}{% endif %}">
+                    <button type="submit" class="btn btn-default" style="margin-top: 10px; width: 100%">{{ 'search' }}</button>
+                </div>
+            </form>
+        </div>
+
+        <hr>
+
+        <div class="auth row">
+            {{ 'welcome' | trans() }}, <a href="{{ path('admin_home') }}" title="Personal account"><strong>{{ app.user.username }}</strong></a>
+            <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">Log out</a>
+        </div>
+
+        <hr>
+
+        <div class="admin_sidebar">
+            <ul class="admin-list">
+                <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
+                <li><a href="{{ path('posts_show') }}" class="list">Posts</a>
+                    <ul><li><a href="{{ path('create_post') }}" class="list">Add post</a></li></ul></li>
+                <li><a href="{{ path('categories_show') }}" class="list">Categories</a></li>
+            </ul>
+        </div>
+
+        <div class="language">
+            <img src="{{ asset('../images/usa.jpg') }}">
+            <img src="{{ asset('../images/rus.jpg') }}">
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="row sort">
+        </div>
+        {% for post in posts %}
+            <div class="row post">
+                <div class="post_title">{{ post.title }}</div>
+                <div class="post_date">{{ post.creationDate | date('h:m:s d M Y') }} ({{ post.rating }})
+                </div>
+                <div class="post_show">
+                    <div class="post_image">
+                        <img src="{{ asset('../images/' ~ post.image) }}" width="300" height="200">
+                    </div>
+                    <div class="post_summary">{{ post.summary }}</div>
+                    <div style="display: flex; justify-content: flex-end;" class="action-buttons">
+                        <a href="{{ path('post', {'id': post.id}) }}"><button class="read_more">Read more</button></a>
+                        {% if is_granted('ROLE_MANAGER') %}
+                            <a href="{{ path('edit_post', {'id': post.id}) }}"><button class="edit">Edit</button></a>
+                            <a href="{{ path('delete_post', {'id': post.id}) }}"><button class="delete">Delete</button></a>
+
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
