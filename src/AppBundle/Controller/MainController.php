@@ -323,8 +323,9 @@ class MainController extends Controller
             ->getRepository(Post::class)
             ->findByCategory($category);
 
-        return $this->render('main/homepage.html.twig', [
+        return $this->render(':main:show_posts_by_category.html.twig', [
             'posts' => $posts,
+            'category' => $category,
         ]);
     }
 
