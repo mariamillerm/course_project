@@ -79,86 +79,6 @@ class MainController extends Controller
 
     /**
      * @Route(
-     *     "/post",
-     *     methods={"GET", "POST"},
-     *     name="create_post"
-     * )
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function createPostAction(Request $request)
-    {
-        $hasAccess = $this
-            ->get('security.authorization_checker')
-            ->isGranted('ROLE_MANAGER');
-        if ($hasAccess) {
-            $em = $this->getDoctrine()->getManager();
-
-            $post = new Post($this->getUser());
-            $form = $this
-                ->createForm(PostType::class, $post)
-                ->add('save', SubmitType::class, [
-                    'label' => 'post.create'
-                ])
-                ->remove('similarPosts')
-                ->add('similarPosts', EntityType::class, [
-                    'multiple' => true,
-                    'class' => 'AppBundle\Entity\Post',
-                    'label' => 'post.similarPosts',
-                    'required' => false,
-                    'empty_data' => null,
-                ]);
-
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                if ($em->getRepository(Post::class)->isUnique($form->getData())) {
-
-                    $file = $post->getImage();
-                    if ($file != null) {
-                        $filename = md5(uniqid()).'.'.$file->guessExtension();
-                        $file->move(
-                            $this->getParameter('image_root'),
-                            $filename
-                        );
-                        $post->setImage($filename);
-                    } else {
-                        $post->setImage('not_found.jpg');
-                    }
-
-                    $em->persist($post);
-                    $em->flush();
-
-                    return $this->redirectToRoute('homepage');
-                }
-
-                return $this->render(':errors:error.html.twig', [
-                    'status_code' => Response::HTTP_CONFLICT,
-                    'status_text' => 'There is a post with the same title!',
-                ]);
-            }
-
-            $error = $form->getErrors()->current();
-            $message = null;
-            if ($error !== false) {
-                $message = $error->getMessage();
-            }
-
-            return $this->render(':main:post_create.html.twig', [
-                'form' => $form->createView(),
-                'error' => $message,
-            ]);
-        } else {
-            return $this->render(':errors:error.html.twig', [
-                'status_code' => Response::HTTP_FORBIDDEN,
-                'status_text' => 'You don\'t have permissions to do this!',
-            ]);
-        }
-    }
-
-    /**
-     * @Route(
      *     "/post/{id}/edit",
      *     methods={"GET", "POST"},
      *     name="edit_post",
@@ -331,7 +251,7 @@ class MainController extends Controller
     public function categoryPostsAction(Category $category, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository(Category::class)->findAll();
+        $categories = $em->getRepository(Category::class)->categoriesUnderRoot();
         $query = $em->getRepository(Post::class)->getCategoryPostsQuery($category);
 
         $paginator  = $this->get('knp_paginator');
@@ -349,7 +269,7 @@ class MainController extends Controller
 
     /**
      * @Route(
-     *     "/category",
+     *     "/admin/category",
      *     methods={"GET", "POST"},
      *     name="create_category"
      * )
@@ -382,7 +302,7 @@ class MainController extends Controller
                         $em->persist($category);
                         $em->flush();
 
-                        return $this->redirectToRoute('homepage');
+                        return $this->redirectToRoute('categories_show');
                 } else {
                     return $this->render(':errors:error.html.twig', [
                         'status_code' => Response::HTTP_CONFLICT,
@@ -397,7 +317,7 @@ class MainController extends Controller
                 $message = $error->getMessage();
             }
 
-            return $this->render(':main:category_create.html.twig', [
+            return $this->render(':admin:category_create.html.twig', [
                 'form' => $form->createView(),
                 'error' => $message,
             ]);
@@ -411,7 +331,7 @@ class MainController extends Controller
 
     /**
      * @Route(
-     *     "/category/{category}/delete",
+     *     "/admin/category/{category}/delete",
      *     methods={"GET"},
      *     name="delete_category",
      *     requirements={"category": "\d+"}
@@ -431,7 +351,7 @@ class MainController extends Controller
             $em->remove($category);
             $em->flush();
 
-            return $this->redirectToRoute('homepage');
+            return $this->redirectToRoute('show_categories');
         } else {
             return $this->render(':errors:error.html.twig', [
                 'status_code' => Response::HTTP_FORBIDDEN,
@@ -442,7 +362,7 @@ class MainController extends Controller
 
     /**
      * @Route(
-     *     "/category/{category}",
+     *     "/admin/category/{category}",
      *     methods={"GET", "POST"},
      *     name="edit_category",
      *     requirements={"category": "\d+"}
@@ -479,7 +399,7 @@ class MainController extends Controller
                     $category->setName($form->get('name')->getData());
                     $em->flush();
 
-                    return $this->redirectToRoute('homepage');
+                    return $this->redirectToRoute('show_categories');
                 } else {
                     return $this->render(':errors:error.html.twig', [
                         'status_code' => Response::HTTP_CONFLICT,
@@ -494,7 +414,7 @@ class MainController extends Controller
                 $message = $error->getMessage();
             }
 
-            return $this->render(':main:category_edit.html.twig', [
+            return $this->render(':admin:category_edit.html.twig', [
                 'form' => $form->createView(),
                 'error' => $message,
             ]);
