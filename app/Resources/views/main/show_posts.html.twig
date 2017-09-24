@@ -58,7 +58,7 @@
                     <div class="post_summary">{{ post.summary }}</div>
                     <div style="display: flex; justify-content: flex-end;" class="action-buttons">
                         <a href="{{ path('post', {'id': post.id}) }}"><button class="read_more">Read more</button></a>
-                        {% if is_granted('ROLE_ADMIN') %}
+                        {% if is_granted('ROLE_MANAGER') %}
                         <a href="{{ path('delete_post', {'id': post.id}) }}"><button class="delete">Delete</button></a>
                         <a href="{{ path('edit_post', {'id': post.id}) }}"><button class="edit">Edit</button></a>
                         {% endif %}
