@@ -30,7 +30,7 @@
             <h1>Categories</h1>
             <ul class="categories-list">
                 {% for category in categories %}
-                    <li>{{ category.name }}</li>
+                    <li><a href="{{ path('category_posts', {'category': category.id}) }}">{{ category.name }}</a></li>
                 {% endfor %}
             </ul>
         </div>
@@ -65,10 +65,10 @@
                     </div>
                     <div class="post_summary">{{ post.summary }}</div>
                     <div style="display: flex; justify-content: flex-end;" class="action-buttons">
-                        <a href="{{ path('post', {'id': post.id}) }}"><button class="read_more">Read more</button></a>
+                        <a href="{{ path('post', {'id': post.id}) }}" class="read_more btn-action">Read more</a>
                         {% if is_granted('ROLE_MANAGER') %}
-                        <a href="{{ path('delete_post', {'id': post.id}) }}"><button class="delete">Delete</button></a>
-                        <a href="{{ path('edit_post', {'id': post.id}) }}"><button class="edit">Edit</button></a>
+                        <a href="{{ path('delete_post', {'id': post.id}) }}" class="delete btn-action">Delete</a>
+                        <a href="{{ path('edit_post', {'id': post.id}) }}" class="edit btn-action">Edit</a>
                         {% endif %}
                     </div>
                 </div>

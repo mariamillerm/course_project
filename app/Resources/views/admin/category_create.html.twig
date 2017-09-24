@@ -1,4 +1,4 @@
-{% extends ':admin:admin_base.html.twig' %}
+{% extends 'admin/admin_base.html.twig' %}
 
 {% block body %}
     <div class="header">
@@ -39,26 +39,8 @@
         </div>
     </div>
 
-    </div>
-
-    <div class="content_users">
-    <table>
-        <tr>
-            <th>{{ 'id'}}</th>
-            <th>{{ 'name'}}</th>
-            <th>{{ 'email'}}</th>
-            <th>{{ 'role'}}</th>
-        </tr>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td><a href="{{ path('edit_user', {'user': user.id}) }}">{{ user.username }}</a></td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.roles[0] }}</td>
-                <td><a href="{{ path('user_block', {'user': user.id}) }}">Block user</a></td>
-            </tr>
-        {% endfor %}
-    </table>
-    </div>
-
+    {{ form_start(form, {'attr': {'class': 'form-signin'}}) }}
+    {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.parent, {'attr': {'class': 'form-control'}}) }}
+    {{ form_end(form) }}
 {% endblock %}

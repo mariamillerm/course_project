@@ -27,9 +27,9 @@
 
         <div class="admin_sidebar">
             <ul class="admin-list">
-                <li>Users</li>
-                <li>Posts</li>
-                <li>Categories</li>
+                <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
+                <li><a href="{{ path('posts_show') }}" class="list">Posts</a></li>
+                <li><a href="{{ path('categories_show') }}" class="list">Categories</a></li>
             </ul>
         </div>
 
@@ -38,18 +38,6 @@
             <img src="{{ asset('../images/rus.jpg') }}">
         </div>
     </div>
-
     </div>
-    {% block sidebar %}
-        <ul>Users</ul>
-        <li>Edit</li>
-        <li></li>
-        <ul>Categories</ul>
-        <li>Add</li>
-        <li>Edit</li>
-        <ul>Posts</ul>
-        <li>Add</li>
-        <li>Edit</li>
-    {% endblock %}
 
 {% endblock %}

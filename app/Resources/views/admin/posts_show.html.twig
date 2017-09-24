@@ -1,7 +1,6 @@
-{% extends 'base.html.twig' %}
+{% extends ':admin:admin_base.html.twig' %}
 
 {% block body %}
-
     <div class="header">
         <a href="{{ path('homepage') }}"><img src="{{ asset('../images/title.jpg') }}"></a>
     </div>
@@ -27,12 +26,12 @@
 
         <hr>
 
-        <div class="categories">
-            <h1>Categories</h1>
-            <ul class="categories-list">
-                {% for category in categories %}
-                    <li><a href="{{ path('category_posts', {'category': category.id}) }}">{{ category.name }}</a></li>
-                {% endfor %}
+        <div class="admin_sidebar">
+            <ul class="admin-list">
+                <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
+                <li><a href="{{ path('posts_show') }}" class="list">Posts</a>
+                    <ul><li><a href="{{ path('create_post') }}" class="list">Add post</a></li></ul></li>
+                <li><a href="{{ path('categories_show') }}" class="list">Categories</a></li>
             </ul>
         </div>
 
@@ -44,12 +43,8 @@
 
     <div class="content">
         <div class="row sort">
-            <span>
-                Sort by: {{ knp_pagination_sortable(pagination, 'Release', ['p.creationDate', 'p.creationDate']) }}|
-                {{ knp_pagination_sortable(pagination, 'Rating', ['p.rating', 'p.rating']) }}
-            </span>
         </div>
-        {% for post in pagination %}
+        {% for post in posts %}
             <div class="row post">
                 <div class="post_title">{{ post.title }}</div>
                 <div class="post_date">{{ post.creationDate | date('h:m:s d M Y') }} ({{ post.rating }})
@@ -61,16 +56,14 @@
                     <div class="post_summary">{{ post.summary }}</div>
                     <div style="display: flex; justify-content: flex-end;" class="action-buttons">
                         <a href="{{ path('post', {'id': post.id}) }}"><button class="read_more">Read more</button></a>
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('delete_post', {'id': post.id}) }}"><button class="delete">Delete</button></a>
+                        {% if is_granted('ROLE_MANAGER') %}
                             <a href="{{ path('edit_post', {'id': post.id}) }}"><button class="edit">Edit</button></a>
+                            <a href="{{ path('delete_post', {'id': post.id}) }}"><button class="delete">Delete</button></a>
+
                         {% endif %}
                     </div>
                 </div>
             </div>
         {% endfor %}
-        <div class="navigation row" style="margin-left: 30px">
-            {{ knp_pagination_render(pagination) }}
-        </div>
     </div>
 {% endblock %}
