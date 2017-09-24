@@ -94,7 +94,7 @@ class EmailService
             ->setTo($user->getEmail())
             ->setBody(
                 $this->templating->render(
-                    ':emails:news.html.twig', [
+                    'emails/news.html.twig', [
                         'posts' => $posts,
                     ]
                 ),
