@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -18,6 +19,8 @@ class PostType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $postTitle = $options['postTitle'];
+
         $builder
             ->add('title', TextType::class, [
                 'label' => 'post.title',
@@ -36,6 +39,12 @@ class PostType extends AbstractType
             ->add('similarPosts', EntityType::class, [
                 'multiple' => true,
                 'class' => 'AppBundle\Entity\Post',
+                'query_builder' => function (EntityRepository $er) use ($postTitle) {
+                    return $er->createQueryBuilder('p')
+                        ->where('p.title != ?1')
+                        ->orderBy('p.title', 'ASC')
+                        ->setParameter(1, $postTitle);
+                },
                 'label' => 'post.similarPosts',
                 'required' => false,
                 'empty_data' => null,
@@ -54,6 +63,7 @@ class PostType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => 'AppBundle\Entity\Post',
+            'postTitle' => null,
         ]);
     }
 

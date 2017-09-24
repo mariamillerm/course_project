@@ -7,6 +7,7 @@ use AppBundle\Entity\Post;
 use AppBundle\Form\CategoryType;
 use AppBundle\Form\PostType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\File\File;
@@ -100,6 +101,14 @@ class MainController extends Controller
                 ->createForm(PostType::class, $post)
                 ->add('save', SubmitType::class, [
                     'label' => 'post.create'
+                ])
+                ->remove('similarPosts')
+                ->add('similarPosts', EntityType::class, [
+                    'multiple' => true,
+                    'class' => 'AppBundle\Entity\Post',
+                    'label' => 'post.similarPosts',
+                    'required' => false,
+                    'empty_data' => null,
                 ]);
 
             $form->handleRequest($request);
@@ -175,9 +184,11 @@ class MainController extends Controller
             $post->setImage($image);
 
             $form = $this
-                ->createForm(PostType::class, $post)
+                ->createForm(PostType::class, $post, [
+                    'postTitle' => $post->getTitle(),
+                ])
                 ->add('edit', SubmitType::class, [
-                    'label' => 'post.edit'
+                    'label' => 'post.edit',
                 ]);
 
             $form->handleRequest($request);
