@@ -20,7 +20,7 @@
         <hr>
 
         <div class="auth row">
-            Welcome, <a href="{{ path('admin_home') }}" title="Personal account"><strong>{{ app.user.username }}</strong></a>
+            {{ 'welcome' | trans() }}, <a href="{{ path('admin_home') }}" title="Personal account"><strong>{{ app.user.username }}</strong></a>
             <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">Log out</a>
         </div>
 
@@ -54,7 +54,9 @@
                 <div class="post_date">{{ post.creationDate | date('h:m:s d M Y') }} ({{ post.rating }})
                 </div>
                 <div class="post_show">
-                    <div class="post_image"><img src="{{ asset('../images/not_found.jpg') }}" width="180" height="140"></div>
+                    <div class="post_image">
+                        <img src="{{ asset('../images/' ~ post.image) }}" width="300" height="200">
+                    </div>
                     <div class="post_summary">{{ post.summary }}</div>
                     <div style="display: flex; justify-content: flex-end;" class="action-buttons">
                         <a href="{{ path('post', {'id': post.id}) }}"><button class="read_more">Read more</button></a>

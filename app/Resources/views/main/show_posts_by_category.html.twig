@@ -2,15 +2,75 @@
 
 {% block body %}
 
-    <table>
-        <tr>
-            <th>{{ 'name' }}</th>
-        </tr>
-        {% for post in posts %}
-            <tr>
-                <td><a href="{{ path('post', {'id': post.id}, {'id': category.id}) }}">{{ post.title }}</a></td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div class="header">
+        <img src="{{ asset('../images/title.jpg') }}">
+    </div>
 
+    <div class="sidebar_categories">
+
+        <div class="search">
+            <form role="search" action="{{ path('post_search') }}" method="post">
+                <div class="row" style="margin: 10px;">
+                    <input type="search" name="query" class="form-control" placeholder="{{ 'search' }}"
+                           value="{% if searched is defined %}{{ searched }}{% endif %}">
+                    <button type="submit" class="btn btn-default" style="margin-top: 10px; width: 100%">{{ 'search' }}</button>
+                </div>
+            </form>
+        </div>
+
+        <hr>
+
+        <div class="auth row">
+            {{ 'welcome' | trans() }}, <a href="{{ path('admin_home') }}" title="Personal account"><strong>{{ app.user.username }}</strong></a>
+            <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">Log out</a>
+        </div>
+
+        <hr>
+
+        <div class="categories">
+            <h1>Categories</h1>
+            <ul class="categories-list">
+                {% for category in categories %}
+                    <li>{{ category.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="language">
+            <img src="{{ asset('../images/usa.jpg') }}">
+            <img src="{{ asset('../images/rus.jpg') }}">
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="row sort">
+            <span>
+                Sort by: {{ knp_pagination_sortable(pagination, 'Release', ['p.creationDate', 'p.creationDate']) }}|
+                {{ knp_pagination_sortable(pagination, 'Rating', ['p.rating', 'p.rating']) }}
+            </span>
+        </div>
+        {% for post in pagination %}
+            <div class="row post">
+                <div class="post_title">{{ post.title }}</div>
+                <div class="post_date">{{ post.creationDate | date('h:m:s d M Y') }} ({{ post.rating }})
+                </div>
+                <div class="post_show">
+                    <div class="post_image">
+                        <img src="{{ asset('../images/' ~ post.image) }}" width="300" height="200">
+                    </div>
+                    <div class="post_summary">{{ post.summary }}</div>
+                    <div style="display: flex; justify-content: flex-end;" class="action-buttons">
+                        <a href="{{ path('post', {'id': post.id}) }}"><button class="read_more">Read more</button></a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('delete_post', {'id': post.id}) }}"><button class="delete">Delete</button></a>
+                            <a href="{{ path('edit_post', {'id': post.id}) }}"><button class="edit">Edit</button></a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="navigation row" style="margin-left: 30px">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
 {% endblock %}

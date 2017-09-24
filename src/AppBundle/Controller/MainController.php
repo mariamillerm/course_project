@@ -7,6 +7,7 @@ use AppBundle\Entity\Post;
 use AppBundle\Form\CategoryType;
 use AppBundle\Form\PostType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\File\File;
@@ -100,6 +101,14 @@ class MainController extends Controller
                 ->createForm(PostType::class, $post)
                 ->add('save', SubmitType::class, [
                     'label' => 'post.create'
+                ])
+                ->remove('similarPosts')
+                ->add('similarPosts', EntityType::class, [
+                    'multiple' => true,
+                    'class' => 'AppBundle\Entity\Post',
+                    'label' => 'post.similarPosts',
+                    'required' => false,
+                    'empty_data' => null,
                 ]);
 
             $form->handleRequest($request);
@@ -175,9 +184,11 @@ class MainController extends Controller
             $post->setImage($image);
 
             $form = $this
-                ->createForm(PostType::class, $post)
+                ->createForm(PostType::class, $post, [
+                    'postTitle' => $post->getTitle(),
+                ])
                 ->add('edit', SubmitType::class, [
-                    'label' => 'post.edit'
+                    'label' => 'post.edit',
                 ]);
 
             $form->handleRequest($request);
@@ -313,19 +324,26 @@ class MainController extends Controller
      * )
      *
      * @param Category $category
+     * @param Request $request
      *
      * @return Response
      */
-    public function categoryPostsAction(Category $category)
+    public function categoryPostsAction(Category $category, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $posts = $em
-            ->getRepository(Post::class)
-            ->findByCategory($category);
+        $categories = $em->getRepository(Category::class)->findAll();
+        $query = $em->getRepository(Post::class)->getCategoryPostsQuery($category);
+
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10
+        );
 
         return $this->render(':main:show_posts_by_category.html.twig', [
-            'posts' => $posts,
-            'category' => $category,
+            'pagination' => $pagination,
+            'categories' => $categories,
         ]);
     }
 

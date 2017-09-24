@@ -6,6 +6,7 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    app_locales: ru|en
     locale: en
     image_root: '%kernel.root_dir%/../web/images'
 
@@ -19,7 +20,7 @@ framework:
     form: ~
     csrf_protection: ~
     validation: { enable_annotations: true }
-    #serializer: { enable_annotations: true }
+    translator: { fallbacks: ['%locale%'] }
     templating:
         engines: ['twig']
     default_locale: '%locale%'
@@ -61,10 +62,28 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
 
-stof_doctrine_extensions:
-    orm:
-        default:
-            tree: true
+fos_elastica:
+    clients:
+        default: { host: localhost, port: 9200 }
+    indexes:
+        app:
+            types:
+                post:
+                    properties:
+                        date: { boost: 5 }
+                        title: { boost: 3 }
+                        content: ~
+                        comments: ~
+                        user:
+                            type: "object"
+                        approver:
+                            type: "object"
+                            properties:
+                                date: { boost: 5 }
+                    persistence:
+                        driver: orm #the driver can be orm, mongodb, phpcr or propel
+                        model: src\AppBundle\Entity\User
+                        listener: ~
 
 # Swiftmailer Configuration
 swiftmailer:
