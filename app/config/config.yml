@@ -62,6 +62,29 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
 
+fos_elastica:
+    clients:
+        default: { host: localhost, port: 9200 }
+    indexes:
+        app:
+            types:
+                post:
+                    properties:
+                        date: { boost: 5 }
+                        title: { boost: 3 }
+                        content: ~
+                        comments: ~
+                        user:
+                            type: "object"
+                        approver:
+                            type: "object"
+                            properties:
+                                date: { boost: 5 }
+                    persistence:
+                        driver: orm #the driver can be orm, mongodb, phpcr or propel
+                        model: src\AppBundle\Entity\User
+                        listener: ~
+
 # Swiftmailer Configuration
 swiftmailer:
     transport: '%mailer_transport%'
