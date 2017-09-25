@@ -12,7 +12,8 @@
                 <div class="row" style="margin: 10px;">
                     <input type="search" name="query" class="form-control" placeholder="{{ 'search' | trans }}"
                            value="{% if searched is defined %}{{ searched }}{% endif %}">
-                    <button type="submit" class="btn btn-default" style="margin-top: 10px; width: 100%">{{ 'search' | trans }}</button>
+                    <button type="submit" class="btn btn-default"
+                            style="margin-top: 10px; width: 100%">{{ 'search' | trans }}</button>
                 </div>
             </form>
         </div>
@@ -22,16 +23,20 @@
         <div class="auth row">
             {{ 'welcome' | trans }},
             {% if is_granted('ROLE_MANAGER') %}
-                <a href="{{ path('admin_home') }}" title="Personal account">
-            {% endif %}
-            <strong>{{ app.user.username }}</strong>
-            {% if is_granted('ROLE_MANAGER') %}
-                </a>
+            <a href="{{ path('admin_home') }}" title="Personal account">
+                {% endif %}
+                <strong>{{ app.user.username }}</strong>
+                {% if is_granted('ROLE_MANAGER') %}
+            </a>
             {% endif %}
             <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">Log out</a>
         </div>
 
-        <div class="subsribe"><a href="{{ path('admin_home') }}"><strong>Subsribe!</strong></a></div>
+        {% if not app.user.isSubscribed %}
+            <div class="subsribe"><a href="{{ path('subscribe', {"user": app.user.id}) }}"><strong>Subsribe!</strong></a></div>
+        {% else %}
+            <div class="subsribe"><a href="{{ path('unsubscribe', {"user": app.user.id}) }}"><strong>Unsubsribe!</strong></a></div>
+        {% endif %}
 
         <hr>
 
@@ -44,16 +49,22 @@
                 {% endfor %}
             </ul>
         </div>
-
-        <div class="language">
+        <div class="bottom-sidebar">
             <script>
                 function setLocale(locale) {
                     Cookies.set("locale", locale);
                     location.reload();
                 }
             </script>
-            <img src="{{ asset('../images/usa.jpg') }}" onclick="setLocale('en')">
-            <img src="{{ asset('../images/rus.jpg') }}" onclick="setLocale('ru')">
+
+            <div class="language">
+                <img src="{{ asset('../images/usa.jpg') }}">
+                <img src="{{ asset('../images/rus.jpg') }}">
+
+            </div>
+            <div class="footer">
+                <footer>© 2017, Palina and Maria</footer>
+            </div>
         </div>
     </div>
 
@@ -66,19 +77,19 @@
         </div>
         {% for post in pagination %}
             <div class="row post">
-                <div class="post_title">{{ post.title }}</div>
-                <div class="post_date">{{ post.creationDate | date('h:m:s d M Y') }} ({{ post.rating }})
+                <div class="post_title"><a href="{{ path('post', {'id': post.id}) }}">{{ post.title }}</a></div>
+                <div class="post_date">{{ post.creationDate | date('h:m:s d M Y') }} ( +{{ post.rating }})
                 </div>
                 <div class="post_show">
                     <div class="post_image">
-                        <img src="{{ asset('../images/' ~ post.image) }}" width="300" height="200">
+                        <img src="{{ path("image", {"filename": post.image}) }}" width="300" height="200">
                     </div>
                     <div class="post_summary">{{ post.summary }}</div>
                     <div style="display: flex; justify-content: flex-end;" class="action-buttons">
                         <a href="{{ path('post', {'id': post.id}) }}" class="read_more btn-action">Read more</a>
                         {% if is_granted('ROLE_MANAGER') %}
-                        <a href="{{ path('delete_post', {'id': post.id}) }}" class="delete btn-action">Delete</a>
-                        <a href="{{ path('edit_post', {'id': post.id}) }}" class="edit btn-action">Edit</a>
+                            <a href="{{ path('delete_post', {'id': post.id}) }}" class="delete btn-action">Delete</a>
+                            <a href="{{ path('edit_post', {'id': post.id}) }}" class="edit btn-action">Edit</a>
                         {% endif %}
                     </div>
                 </div>

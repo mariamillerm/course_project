@@ -12,7 +12,8 @@
                 <div class="row" style="margin: 10px;">
                     <input type="search" name="query" class="form-control" placeholder="{{ 'search' }}"
                            value="{% if searched is defined %}{{ searched }}{% endif %}">
-                    <button type="submit" class="btn btn-default" style="margin-top: 10px; width: 100%">{{ 'search' }}</button>
+                    <button type="submit" class="btn btn-default"
+                            style="margin-top: 10px; width: 100%">{{ 'search' }}</button>
                 </div>
             </form>
         </div>
@@ -20,9 +21,12 @@
         <hr>
 
         <div class="auth row">
-            Welcome, <a href="{{ path('admin_home') }}" title="Personal account"><strong>{{ app.user.username }}</strong></a>
+            Welcome, <a href="{{ path('admin_home') }}"
+                        title="Personal account"><strong>{{ app.user.username }}</strong></a>
             <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">Log out</a>
         </div>
+
+        <div class="subsribe"><a href="{{ path('admin_home') }}"><strong>Subsribe!</strong></a></div>
 
         <hr>
 
@@ -30,28 +34,48 @@
             <h1>Categories</h1>
             <ul class="categories-list">
                 {% for category in categories %}
-                    {#<li><a href="{{ path('category_posts',{'id': category.id}) }}">{{ category.name }}</a></li>#}
+                    <li><a href="{{ path('category_posts',{'category': category.id}) }}">{{ category.name }}</a></li>
                 {% endfor %}
             </ul>
         </div>
 
-        <div class="language">
-            <img src="{{ asset('../images/usa.jpg') }}">
-            <img src="{{ asset('../images/rus.jpg') }}">
+        <div class="bottom-sidebar">
+            <script>
+                function setLocale(locale) {
+                    Cookies.set("locale", locale);
+                    location.reload();
+                }
+            </script>
+
+            <div class="language">
+                <img src="{{ asset('../images/usa.jpg') }}">
+                <img src="{{ asset('../images/rus.jpg') }}">
+
+            </div>
+            <div class="footer">
+                <footer>© 2017, Palina and Maria</footer>
+            </div>
         </div>
     </div>
     <div class="content_posts">
         <div class="row post">
             <div class="post_title">{{ post.title }}</div>
-            <div class="post_date">{{ post.creationDate | date('h:m:s d M Y') }} (+ {{ post.rating }})</div>
+            <div class="post_date">{{ post.creationDate | date('h:m:s d M Y') }} ( +{{ post.rating }})</div>
             <div class="post_date">{{ post.author.username }}</div>
             <div class="post_show">
-                {#<div class="post_summary" style="font-weight: bold">{{ post.summary }}</div>#}
-                <div class="post_image"><img src="{{ asset('../images/' ~ post.image) }}" width="400" height="300"></div>
-
+                <div class="post_image"><img src="{{ path("image", {"filename": post.image}) }}" width="400" height="300">
+                </div>
             </div>
             <div class="post_summary" style="font-weight: bold">{{ post.summary }}</div>
             <div class="post_content">{{ post.content }}</div>
+            <div class="post_similarPosts">
+                <h4><strong>Similar posts</strong></h4>
+                {% for post in post.similarPosts %}
+                    <div class="similar">
+                        <li><a href="{{ post.id }}">{{ post.title }}</a></li>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}
