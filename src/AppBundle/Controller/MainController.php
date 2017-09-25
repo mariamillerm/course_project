@@ -203,7 +203,7 @@ class MainController extends Controller
                 $message = $error->getMessage();
             }
 
-            return $this->render(':main:post_edit.html.twig', [
+            return $this->render(':admin:post_edit.html.twig', [
                 'form' => $form->createView(),
                 'error' => $message,
             ]);
