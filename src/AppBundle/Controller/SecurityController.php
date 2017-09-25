@@ -6,6 +6,8 @@ use AppBundle\Entity\ConfirmationToken;
 use AppBundle\Entity\ResetToken;
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -28,7 +30,15 @@ class SecurityController extends Controller
             ->get('security.authorization_checker')
             ->isGranted('IS_AUTHENTICATED_FULLY');
         if ($hasAccess) {
-            return $this->render(':errors:error.html.twig', [
+
+            /**
+             * @var User $user
+             */
+            $user = $this->getUser();
+            if (!$user->isActive()) {
+                return $this->redirectToRoute('logout');
+            }
+            return $this->render('@Twig/Exception/error.html.twig', [
                 'status_code' => Response::HTTP_BAD_GATEWAY,
                 'status_text' => 'You are already in system!',
             ]);
@@ -74,7 +84,7 @@ class SecurityController extends Controller
                 'message' => $this->get('translator')->trans('account.confirmed'),
             ]);
         } else {
-            return $this->render(':errors:error.html.twig', [
+            return $this->render('@Twig/Exception/error.html.twig', [
                 'status_code' => Response::HTTP_BAD_REQUEST,
                 'status_text' => 'Invalid token! Token has already been used or has not been found.',
             ]);
@@ -111,7 +121,7 @@ class SecurityController extends Controller
                 ->findOneByEmail($form->get('email')->getData());
 
             if ($user === null) {
-                return $this->render(':errors:error.html.twig', [
+                return $this->render('@Twig/Exception/error.html.twig', [
                     'status_code' => Response::HTTP_BAD_REQUEST,
                     'status_text' => 'There is no user with such email!',
                 ]);
@@ -163,7 +173,7 @@ class SecurityController extends Controller
                 $em->remove($token);
                 $em->flush();
 
-                return $this->render(':errors:error.html.twig', [
+                return $this->render('@Twig/Exception/error.html.twig', [
                     'status_code' => Response::HTTP_REQUEST_TIMEOUT,
                     'status_text' => 'The token was deleted. Retry the 
                                        password recovery request.',
@@ -202,7 +212,7 @@ class SecurityController extends Controller
                 'error' => $message,
             ]);
         } else {
-            return $this->render(':errors:error.html.twig', [
+            return $this->render('@Twig/Exception/error.html.twig', [
                 'status_code' => Response::HTTP_BAD_REQUEST,
                 'status_text' => 'Token not found!',
             ]);
@@ -251,7 +261,7 @@ class SecurityController extends Controller
 
                     return $this->redirectToRoute('homepage');
                 } else {
-                    return $this->render(':errors:error.html.twig', [
+                    return $this->render('@Twig/Exception/error.html.twig', [
                         'status_code' => Response::HTTP_CONFLICT,
                         'status_text' => 'User is already exist!',
                     ]);
