@@ -18,7 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Post
 {
-    // @TODO UniqueConstraint
     /**
      * @var string
      *
