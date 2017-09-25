@@ -30,7 +30,7 @@
         <hr>
 
         <div class="categories">
-            <h1>Categories</h1>
+            <h1>{{ category.name }}</h1>
             <ul class="categories-list">
                 {% for category in categories %}
                     <li><a href="{{ path('category_posts', {'category': category.id}) }}">{{ category.name }}</a></li>
