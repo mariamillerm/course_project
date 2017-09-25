@@ -4,14 +4,19 @@
     <div class="header">
         <img src="{{ asset('../images/title.jpg') }}">
     </div>
+    <div class="signup_form">
 
 {{ form_start(form, {'attr': {'class': 'form-signin'}}) }}
     {{ form_row(form.username, {'attr': {'class': 'form-control'}}) }}
     {{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
     {{ form_row(form.plainPassword.first, {'attr': {'class': 'form-control'}}) }}
     {{ form_row(form.plainPassword.second, {'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.Submit, {'attr': {'class': 'submit-button btn-danger btn'}}) }}
 {{ form_end(form) }}
-
+    </div>
+<div class="signup_login">
     <span>Already has an account? <a href="{{ path('login') }}">Log in</a></span>
+
+    </div>
 
 {% endblock %}
