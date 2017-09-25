@@ -8,13 +8,16 @@
     <div class="header">
         <img src="{{ asset('../images/title.jpg') }}">
     </div>
+
     <div class="container">
+        <div class="error">
         {% if error is defined and error is not null %}
-            <div class="alert alert-danger">{{ error.messageKey }}</div>
+            <div class="alert alert-danger" style="margin: 10px;">{{ error.messageKey }}</div>
         {% endif %}
         {% if message is defined %}
-            <div class="alert alert-success">{{ message }}</div>
+            <div class="alert alert-success" style="margin: 10px;">{{ message }}</div>
         {% endif %}
+        </div>
         <form action="{{ path('login') }}" method="post" class="form-signin">
 
             <span class="form-signin-heading"><h1>Please, sign in</h1></span>

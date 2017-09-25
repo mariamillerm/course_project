@@ -58,12 +58,15 @@
             </div>
         </div>
     </div>
-    </div>
+    <div class="content_posts_edit">
+        <div class="edit_post">
     {{ form_start(form, {'attr': {'class': 'form-signin'}}) }}
-    {{ form_row(form.title, {'attr': {'class': 'form-control'}}) }}
-    {{ form_row(form.summary, {'attr': {'class': 'form-control'}}) }}
-    {{ form_row(form.content, {'attr': {'class': 'form-control'}}) }}
-    {{ form_row(form.similarPosts, {'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.title, {'attr': {'class': 'form-title'}}) }}
+    {{ form_row(form.summary, {'attr': {'class': 'form-summary'}}) }}
+    {{ form_row(form.content, {'attr': {'class': 'form-content'}}) }}
+    {{ form_row(form.similarPosts, {'attr': {'class': 'form-similar'}}) }}
     {{ form_row(form.category, {'attr': {'class': 'form-control'}}) }}
     {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}
