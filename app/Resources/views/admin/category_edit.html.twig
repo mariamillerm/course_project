@@ -31,7 +31,7 @@
                 {% if is_granted('ROLE_ADMIN') %}
                     <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
                 {% endif %}
-                <li><a href="{{ path('posts_show') }}" class="list">Posts</a></li>
+                <li><a href="{{ path('posts_show_admin') }}" class="list">Posts</a></li>
                 <li><a href="{{ path('categories_show') }}" class="list">Categories</a></li>
             </ul>
         </div>
