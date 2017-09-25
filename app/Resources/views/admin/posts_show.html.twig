@@ -31,7 +31,7 @@
                 {% if is_granted('ROLE_ADMIN') %}
                     <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
                 {% endif %}
-                <li><a href="{{ path('posts_show') }}" class="list">Posts</a>
+                <li><a href="{{ path('posts_show_admin') }}" class="list">Posts</a>
                     <ul><li><a href="{{ path('create_post') }}" class="list">Add post</a></li></ul></li>
                 <li><a href="{{ path('categories_show') }}" class="list">Categories</a></li>
             </ul>
@@ -44,28 +44,23 @@
     </div>
 
     <div class="content">
-        <div class="row sort">
-        </div>
-        {% for post in posts %}
-            <div class="row post">
-                <div class="post_title">{{ post.title }}</div>
-                <div class="post_date">{{ post.creationDate | date('h:m:s d M Y') }} ({{ post.rating }})
-                </div>
-                <div class="post_show">
-                    <div class="post_image">
-                        <img src="{{ asset('../images/' ~ post.image) }}" width="300" height="200">
-                    </div>
-                    <div class="post_summary">{{ post.summary }}</div>
-                    <div style="display: flex; justify-content: flex-end;" class="action-buttons">
-                        <a href="{{ path('post', {'id': post.id}) }}"><button class="read_more">Read more</button></a>
-                        {% if is_granted('ROLE_MANAGER') %}
-                            <a href="{{ path('edit_post', {'id': post.id}) }}"><button class="edit">Edit</button></a>
-                            <a href="{{ path('delete_post', {'id': post.id}) }}"><button class="delete">Delete</button></a>
+        <div id="data-wrapper">
 
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
+        </div>
     </div>
+
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ asset('js/fos_js_routes.js') }}"></script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/ajaxgrid.js') }}"></script>
+    <script>
+        $('#data-wrapper').ajaxgrid({
+            'dataUrl': '{{ path('posts_show_admin') }}',
+            'sortableColumns': ['title', 'rating', 'creationDate'],
+            'filterableColumns': ['author', 'category'],
+            'rowsPerPage': 10,
+            'filter': '{{ 'filter' | trans }}',
+            'edit': 'admin_post_edit'
+        })
+    </script>
 {% endblock %}

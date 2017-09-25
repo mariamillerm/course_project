@@ -28,15 +28,15 @@
             {% if is_granted('ROLE_MANAGER') %}
                 </a>
             {% endif %}
-            <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">Log out</a>
+            <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">{{ 'logout' | trans }}</a>
         </div>
 
-        <div class="subsribe"><a href="{{ path('admin_home') }}"><strong>Subsribe!</strong></a></div>
+        <div class="subsribe"><a href="{{ path('admin_home') }}"><strong>{{ 'subscribe' | trans }}</strong></a></div>
 
         <hr>
 
         <div class="categories">
-            <h1>Categories</h1>
+            <h1>{{ 'categories' | trans }}</h1>
             <ul class="categories-list">
                 {% for category in categories %}
 
@@ -60,8 +60,8 @@
     <div class="content">
         <div class="row sort">
             <span>
-                Sort by: {{ knp_pagination_sortable(pagination, 'Release', ['p.creationDate', 'p.creationDate']) }}|
-                {{ knp_pagination_sortable(pagination, 'Rating', ['p.rating', 'p.rating']) }}
+                {{ 'sort_by' | trans }}: {{ knp_pagination_sortable(pagination, 'release' | trans , ['p.creationDate', 'p.creationDate']) }}|
+                {{ knp_pagination_sortable(pagination, 'rating' | trans , ['p.rating', 'p.rating']) }}
             </span>
         </div>
         {% for post in pagination %}
@@ -75,10 +75,10 @@
                     </div>
                     <div class="post_summary">{{ post.summary }}</div>
                     <div style="display: flex; justify-content: flex-end;" class="action-buttons">
-                        <a href="{{ path('post', {'id': post.id}) }}" class="read_more btn-action">Read more</a>
+                        <a href="{{ path('post', {'id': post.id}) }}" class="read_more btn-action">{{ 'read_more' | trans }}</a>
                         {% if is_granted('ROLE_MANAGER') %}
-                        <a href="{{ path('delete_post', {'id': post.id}) }}" class="delete btn-action">Delete</a>
-                        <a href="{{ path('edit_post', {'id': post.id}) }}" class="edit btn-action">Edit</a>
+                        <a href="{{ path('delete_post', {'id': post.id}) }}" class="delete btn-action">{{ 'delete' | trans }}</a>
+                        <a href="{{ path('edit_post', {'id': post.id}) }}" class="edit btn-action">{{ 'edit' | trans }}</a>
                         {% endif %}
                     </div>
                 </div>
