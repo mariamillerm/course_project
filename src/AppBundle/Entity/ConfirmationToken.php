@@ -15,7 +15,6 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  */
 class ConfirmationToken
 {
-    // @TODO UniqueConstraint
     /**
      * @var int
      *

@@ -260,7 +260,7 @@ class Post
     }
 
     /**
-     * @TODO PHPDoc clear method
+     * Clear similarPosts field in post entity
      */
     public function clearSimilarPosts(): void
     {

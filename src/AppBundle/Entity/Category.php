@@ -18,7 +18,6 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  */
 class Category
 {
-    // @TODO UniqueConstraint
     /**
      * @var int
      *

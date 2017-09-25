@@ -282,7 +282,6 @@ class AdminController extends Controller
      */
     public function usersAction()
     {
-        // @TODO Remove render
         $users = $this->getDoctrine()->getRepository(User::class)->findAll();
 
     	return $this->render(':admin:users_show.html.twig', [

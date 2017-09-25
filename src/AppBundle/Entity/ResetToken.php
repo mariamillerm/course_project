@@ -15,7 +15,6 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  */
 class ResetToken
 {
-    // @TODO UniqueConstraint
     /**
      * @var int
      *

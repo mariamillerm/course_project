@@ -49,7 +49,6 @@ class UserRepository extends EntityRepository
      */
     public function findSubscribers(): array
     {
-        // TODO Pagination
         return $this->findBy([
             'isSubscribed' => true,
         ]);
