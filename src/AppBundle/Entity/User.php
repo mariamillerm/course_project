@@ -275,21 +275,33 @@ class User implements AdvancedUserInterface
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function isAccountNonExpired()
     {
         return $this->isActive();
     }
 
+    /**
+     * @return bool
+     */
     public function isAccountNonLocked()
     {
-        $this->isActive();
+        return $this->isActive();
     }
 
+    /**
+     * @return bool
+     */
     public function isCredentialsNonExpired()
     {
         return $this->isActive();
     }
 
+    /**
+     * @return bool
+     */
     public function isEnabled()
     {
         return $this->isActive;
