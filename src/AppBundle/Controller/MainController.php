@@ -125,7 +125,10 @@ class MainController extends Controller
     public function postAction(Post $post)
     {
         $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository(Category::class)->findAll();
+        /**
+         * @var Category[]
+         */
+        $categories = $em->getRepository(Category::class)->categoriesUnderRoot();
         $post->addRating();
         $em->flush();
 
