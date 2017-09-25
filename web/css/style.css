@@ -66,8 +66,16 @@
 .categories-list {
     list-style-type: none;
     font-size: 1.2em;
+}
+
+.categories-list a, .subsribe a, .similar a {
     color: #FFFFFF;
 }
+
+ .similar a {
+     color: #2E3234;
+     font-size: 16px;
+ }
 
  .post_conteiner {
      width: 100%;
@@ -78,12 +86,15 @@
 }
 
 .post_title {
-    color: #2E3234;
     padding-left: 10px;
     padding-top: 8px;
     font-size: 22px;
     font-family: "Javanese Text";
 }
+
+ .post_title a {
+     color: #2E3234;
+ }
 
 .post_date {
     color: #888888;
@@ -100,6 +111,12 @@
 
 .post_content {
     margin: 15px;
+}
+
+.post_similarPosts {
+    padding-left: 15px;
+    list-style-type: none;
+    color: #2E3234;
 }
 
 .post {
@@ -128,6 +145,12 @@ body {
 
  .btn {
      border-radius: 3px;
+     padding: 4px;
+ }
+
+ .btn-danger {
+     width: 100%;
+     margin-top: 9px;
  }
 
  .btn-action {
@@ -136,6 +159,7 @@ body {
      font-family: 'Source Sans Pro', sans-serif;
      font-size: medium;
      margin: 3px;
+     padding: 4px;
  }
 
  .btn-action:hover {
@@ -166,16 +190,19 @@ body {
  }
 
  .language {
+     width: 100%;
+     display: flex;
+     justify-content: space-around;
+ }
+ .bottom-sidebar {
      padding: 10px 5px 5px;
      position: absolute;
      bottom: 0;
      width: 100%;
-     display: flex;
-     justify-content: space-around;
      background: #232729;
  }
 
- .language > img {
+ .language img {
      height: 25px;
      border: 1px solid white;
      border-radius: 4px;
@@ -228,9 +255,75 @@ body {
  }
 
  #categories {
-     margin-left: 100px;
+     margin-left: 15px;
+ }
+
+ .form_start, .form_widget, form_end, form_row {
+     margin: 10px;
+     font-size: 17px;
+     padding-left: 45px;
+ }
+
+ p {
+     font-size: 19px;
+     padding-left: 70px;
+ }
+
+ .content_username, .content_category {
+     margin-top: 40px;
+     margin-left: 350px;
+     border: solid;
+     border-radius: 4px;
+     width: 20%;
+ }
+
+ .content_categories{
+   width: 22%;
  }
 
  .content_users {
+     width: 40%;
+ }
 
+ .category_row, .category_start, .category_end {
+     margin-left: 10px;
+     margin-right: 10px;
+     margin-bottom: 10px;
+ }
+
+ .table, tr, td, th{
+     border: double;
+     width: 100%;
+ }
+
+ .subsribe{
+     text-align: center;
+     margin-top: 10px;
+ }
+
+ .similar a {
+     color: #5e5e5e;
+ }
+
+ .similar a:hover {
+     color: #ac2925;
+ }
+
+ .buttons_login {
+     text-align: center;
+ }
+
+ .signup_form {
+     margin-top: 10px;
+     width: 100%;
+ }
+
+ .signup_login {
+     text-align: center;
+ }
+
+ .footer {
+    text-align: center;
+     width: 100%;
+     margin-top: 8px;
  }
