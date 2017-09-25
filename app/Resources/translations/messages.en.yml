@@ -14,8 +14,10 @@ filter: Filter
 logout: Log out
 post:
     add: Add post
+    author: Author
     category: Category
     content: Content
+    creationDate: Creation date
     create: Create post
     edit: Edit post
     image: Post's image

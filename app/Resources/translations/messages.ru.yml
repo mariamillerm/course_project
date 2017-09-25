@@ -14,8 +14,10 @@ filter: Фильтр
 logout: Выйти
 post:
     add: Добавить статью
+    author: Автор
     category: Категория
     content: Текст статьи
+    creationDate: Дата создания
     create: Создать статью
     edit: Отредактировать
     image: Изображение
