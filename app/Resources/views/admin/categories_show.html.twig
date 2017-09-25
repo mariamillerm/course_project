@@ -9,9 +9,9 @@
     <div class="search">
         <form role="search" action="{{ path('post_search') }}" method="post">
             <div class="row" style="margin: 10px;">
-                <input type="search" name="query" class="form-control" placeholder="{{ 'search' }}"
+                <input type="search" name="query" class="form-control" placeholder="{{ 'search' | trans }}"
                        value="{% if searched is defined %}{{ searched }}{% endif %}">
-                <button type="submit" class="btn btn-default" style="margin-top: 10px; width: 100%">{{ 'search' }}</button>
+                <button type="submit" class="btn btn-default" style="margin-top: 10px; width: 100%">{{ 'search' | trans }}</button>
             </div>
         </form>
     </div>
@@ -19,8 +19,9 @@
     <hr>
 
     <div class="auth row">
-        Welcome, <a href="{{ path('admin_home') }}" title="Personal account"><strong>{{ app.user.username }}</strong></a>
-        <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">Log out</a>
+        {{ 'welcome' | trans }},
+        <a href="{{ path('admin_home') }}" title="Personal account"><strong>{{ app.user.username }}</strong></a>
+        <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">{{ 'logout' | trans }}</a>
     </div>
 
     <hr>
@@ -28,11 +29,15 @@
     <div class="admin_sidebar">
         <ul class="admin-list">
             {% if is_granted('ROLE_ADMIN') %}
-                <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
+                <li><a href="{{ path('users_show') }}" class="list">{{ 'users' | trans }}</a></li>
             {% endif %}
-            <li><a href="{{ path('posts_show_admin') }}" class="list">Posts</a></li>
-           <li><a href="{{ path('categories_show') }}" class="list">Categories</a></li>
-            <ul><li><a href="{{ path('create_category') }}" class="list">Add category</a></li></ul></li>
+            {% if is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('posts_show_admin') }}" class="list">{{ 'posts' | trans }}</a></li>
+            {% else %}
+                <li><a href="{{ path('posts_show') }}" class="list">{{ 'posts' | trans }}</a></li>
+            {% endif %}
+           <li><a href="{{ path('categories_show') }}" class="list">{{ 'categories' | trans }}</a></li>
+            <ul><li><a href="{{ path('create_category') }}" class="list">{{ 'category.add' | trans }}</a></li></ul></li>
         </ul>
     </div>
 
@@ -74,14 +79,15 @@
                <td> <div class="category">
                     <a href="{{ path('edit_category', {'category': category.id} )}}" class="btn" title="Edit category">{{ category.name }}</a>
                     <div style="display: flex; justify-content: flex-end;" class="button_category"><a class="button btn-action" href="{{ path('delete_category', {'category': category.id}) }}">Delete</a></div>
-                   </div></td>
+                   </div>
+               </td>
             </li>
         {% endif %}
             {% endmacro %} </tr> </table>
 
     {% if categories %}
         <div id="categories">
-            <h3>Categories</h3>
+            <h3>{{ 'categories' | trans }}</h3>
             <ul>
                 {% for category in categories %}
                     {% if category.children|length and category.parent is null %}

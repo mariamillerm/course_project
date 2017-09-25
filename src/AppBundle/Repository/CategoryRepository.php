@@ -35,4 +35,16 @@ class CategoryRepository extends EntityRepository
 
         return $categories;
     }
+
+    /**
+     * @param Category $category
+     *
+     * @return Category[]
+     */
+    public function categoriesUnderCurrentCategory(Category $category): array
+    {
+        $categories = $this->findByParent($category);
+
+        return $categories;
+    }
 }

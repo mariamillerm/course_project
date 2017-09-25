@@ -1,14 +1,19 @@
 account:
     confirmed: Your account is confirmed. Please, login.
+admin:
+    page: Admin page
 categories: Categories
 category:
+    add: Add category
     create: Create category
     edit: Edit category
     name: Name
 delete: Delete
 edit: Edit
+filter: Filter
 logout: Log out
 post:
+    add: Add post
     category: Category
     content: Content
     create: Create post
@@ -17,12 +22,14 @@ post:
     similarPosts: Similar posts
     summary: Short content
     title: Title
+posts: Posts
 rating: Rating
 read_more: Read more
 release: Date
 search: Search
 sort_by: Sort by
 subscribe: Subscribe!
+unsubscribe: Unsubscribe
 user:
     create: Sign up
     email: E-mail
@@ -35,4 +42,5 @@ user:
         email: Send token
         password: Set new password
     username: Username
+users: Users
 welcome: Welcome
