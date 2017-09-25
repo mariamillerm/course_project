@@ -360,10 +360,12 @@ body {
  .form-content {
      height: 250px;
      position: relative;
+     resize: vertical;
  }
 
  .form-summary {
      height: 90px;
+     resize: vertical;
  }
 
  .parent-category li, ul{
