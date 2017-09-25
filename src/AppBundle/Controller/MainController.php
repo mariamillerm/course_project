@@ -422,7 +422,7 @@ class MainController extends Controller
             $em->remove($category);
             $em->flush();
 
-            return $this->redirectToRoute('show_categories');
+            return $this->redirectToRoute('categories_show');
         } else {
             return $this->render(':errors:error.html.twig', [
                 'status_code' => Response::HTTP_FORBIDDEN,
@@ -470,7 +470,7 @@ class MainController extends Controller
                     $category->setName($form->get('name')->getData());
                     $em->flush();
 
-                    return $this->redirectToRoute('show_categories');
+                    return $this->redirectToRoute('categories_show');
                 } else {
                     return $this->render(':errors:error.html.twig', [
                         'status_code' => Response::HTTP_CONFLICT,

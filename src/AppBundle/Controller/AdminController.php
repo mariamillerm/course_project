@@ -7,18 +7,14 @@ use AppBundle\Form\UserType;
 use AppBundle\Entity\Post;
 use AppBundle\Form\PostType;
 use AppBundle\Entity\Category;
-use AppBundle\Form\CategoryType;
 use AppBundle\Repository\PaginatedEntityRepository;
-use Doctrine\Common\Persistence\ObjectRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 
 class AdminController extends Controller
 {
@@ -30,6 +26,14 @@ class AdminController extends Controller
         return $this->render(':admin:account.html.twig');
     }
 
+    /**
+     * @param PaginatedEntityRepository $repository
+     * @param array $parameters
+     * @param callable $arrayPushFunc
+     * @param array $columns
+     *
+     * @return array
+     */
     private function getAjaxData(
         PaginatedEntityRepository $repository,
         array $parameters,
@@ -273,36 +277,6 @@ class AdminController extends Controller
         }
     }
 
-//    /**
-//     * @Route(path="/admin/users/{user}", name="admin_user", requirements={"user": "\d+"})
-//     *
-//     * @param User $user
-//     * @param Request $request
-//     *
-//     * @return Response
-//     */
-//    public function userAction(User $user, Request $request)
-//    {
-//        // @TODO Remove form, use AJaX
-//        $form = $this->createForm(UserType::class, [
-//            'role' => $user->getRole()
-//        ]);
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $user->setRole($form->get('role')->getData());
-//
-//            $this->getDoctrine()->getManager()->flush();
-//
-//            return new RedirectResponse($this->generateUrl('edit_users'));
-//        }
-//
-//        return $this->render(':admin:user_edit.html.twig', [
-//            'form' => $form->createView(),
-//            'username' => $user->getUsername(),
-//        ]);
-//    }
-
     /**
      * @Route(path="/admin/users", name="users_show")
      */
@@ -395,85 +369,4 @@ class AdminController extends Controller
             'users' => $users,
         ]);
     }
-
-//    /**
-//     * @Route(path="/admin/users/ajax", name="admin_users_show_ajax")
-//     *
-//     * @param Request $request
-//     *
-//     * @return Response
-//     */
-//    public function usersShowAction(Request $request)
-//    {
-//        /**
-//        *@var \Doctrine\ORM\EntityRepository $repository
-//        *
-//        */
-//        $repository = $this->getDoctrine()->getRepository('AppBundle:User');
-//        $queryBuilder = $repository->createQueryBuilder('u');
-//
-//        $page = $request->get('page');
-//        $rows = $request->get('rows');
-//        if ($request->getQueryString() === '') {
-//            $response = [
-//                'cols' => [
-//                    [
-//                        'name' => 'id',
-//                    ],
-//                    [
-//                        'name' => 'username',
-//                    ],
-//                    [
-//                        'name' => 'role',
-//                    ],
-//                ],
-//                'sortable' => ['id', 'username'],
-//                'filterable' => ['role']
-//            ];
-//
-//            return new JsonResponse($response);
-//        } else {
-//            $em = $this->getDoctrine()->getManager();
-//            $repository= $em->getRepository('AppBundle:User');
-//            dump($request->get('sortField'));
-//            dump($request->get('field'));
-//            if (($request->get('sortField') !== null) && ($request->get('field') === null)) {
-//                if ($request->get('order') === 'true') {
-//                    $order = 'ASC';
-//                } else {
-//                    $order = 'DESC';
-//                }
-//
-//                $pages = ceil(count($repository->createQueryBuilder('u')
-//                    ->orderBy('u.' . $request->get('sortField'), $order)
-//                    ->getQuery()->getResult())/$rows);
-//
-//                $result = $repository->createQueryBuilder('u')
-//                    ->orderBy('u.' . $request->get('sortField'), $order)
-//                    ->getQuery()->getResult();
-//            } else if (($request->get('field') !== null) && ($request->get('sortField') === null)) {
-//                $pages = ceil(count($em->getRepository('AppBundle:User')->findAll()) / $rows);
-//                $result = $repository->createQueryBuilder('u')
-//                    ->where('u.' . $request->get('field') . ' LIKE :pattern')
-//                    ->setParameter('pattern', '%' . $request->get('pattern') . '%')
-//                    ->getQuery()
-//                    ->getResult();
-//            } else {
-//                $pages = ceil(count($repository->findAll()) / $rows);
-//                $result = $repository->createQueryBuilder('u');
-//                $result = $result->setFirstResult(($page - 1) * $rows)
-//                    ->setMaxResults($rows)->getQuery()->getResult();
-//            }
-//
-//            $response = [];
-//            foreach ($result as $user) {
-//                $response[] = [$user->getId(), $user->getUsername(), $user->getRole()];
-//            }
-//
-//            return new JsonResponse([
-//                'data' => $response,
-//                'pages' => $pages
-//            ]);
-//        }
-//    }
 }
