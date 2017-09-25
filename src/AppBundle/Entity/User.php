@@ -4,7 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 /**
  * @ORM\Table(
@@ -14,9 +14,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * })
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */
-class User implements UserInterface
+class User implements AdvancedUserInterface
 {
-    // @TODO UniqueConstraint
     /**
      * @var int
      *
@@ -275,4 +274,26 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function isAccountNonExpired()
+    {
+        return $this->isActive();
+    }
+
+    public function isAccountNonLocked()
+    {
+        $this->isActive();
+    }
+
+    public function isCredentialsNonExpired()
+    {
+        return $this->isActive();
+    }
+
+    public function isEnabled()
+    {
+        return $this->isActive;
+    }
+
+
 }

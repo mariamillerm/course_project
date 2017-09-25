@@ -341,7 +341,6 @@ class AdminController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $user->setIsActive(false);
-        $user->setRole('ROLE_BLOCKED');
         $em->flush();
 
         $users = $this->getDoctrine()->getRepository(User::class)->findAll();
@@ -362,7 +361,6 @@ class AdminController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $user->setIsActive(true);
-        $user->setRole('ROLE_USER');
         $em->flush();
 
         $users = $this->getDoctrine()->getRepository(User::class)->findAll();
