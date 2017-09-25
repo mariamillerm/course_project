@@ -8,6 +8,8 @@ use AppBundle\Entity\Post;
 use AppBundle\Form\PostType;
 use AppBundle\Entity\Category;
 use AppBundle\Form\CategoryType;
+use AppBundle\Repository\PaginatedEntityRepository;
+use Doctrine\Common\Persistence\ObjectRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -26,6 +28,64 @@ class AdminController extends Controller
     public function homeAction()
     {
         return $this->render(':admin:account.html.twig');
+    }
+
+    private function getAjaxData(
+        PaginatedEntityRepository $repository,
+        array $parameters,
+        callable $arrayPushFunc,
+        array $columns
+    ) {
+        $count = $repository->count($repository->createQuery($parameters));
+
+        $data = $repository->paginate(
+            $repository->createQuery($parameters),
+            $parameters['page'],
+            $parameters['perPage']
+        );
+
+        $items = [];
+        $trans = $this->get('translator');
+        foreach ($data as $item) {
+            $arrayPushFunc($items, $item, $trans);
+        }
+        foreach ($columns as $column => $title) {
+            $columns[$column] = $trans->trans($title);
+        }
+
+        return [
+            'rows' => $count,
+            'columns' => $columns,
+            'data' => $items,
+        ];
+    }
+
+    /**
+     * @Route(
+     *     "/admin/post/{id}/edit",
+     *     methods={"DELETE", "GET"},
+     *     name="admin_post_edit",
+     *     requirements={"id": "\d+"}
+     * )
+     *
+     * @param Request $request
+     * @param Post $post
+     *
+     * @return Response
+     */
+    public function editAction(Request $request, Post $post)
+    {
+        if ($request->isMethod('DELETE')) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($post);
+            $em->flush();
+
+            return $this->json([
+                'status' => 'Success',
+            ]);
+        } else {
+            return $this->redirectToRoute('edit_post', ['id' => $post->getId()]);
+        }
     }
 
     /**
@@ -47,22 +107,68 @@ class AdminController extends Controller
      * @Route(
      *     "/admin/posts",
      *     methods={"GET"},
-     *     name="posts_show",
+     *     name="posts_show_admin",
      *     requirements={"id": "\d+"}
      * )
      *
+     * @param Request $request
+     *
+     *
      * @return Response
      */
-    public function postsAction()
+    public function postsAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository(Category::class)->findAll();
-        $posts = $em->getRepository(Post::class)->findAll();
+        if ($request->isXmlHttpRequest()) {
+            $postRepository = $this
+                ->getDoctrine()
+                ->getRepository(Post::class);
+            $parameters = $request->query->all();
+            if (isset($parameters['filterbyfield']) && isset($parameters['pattern'])) {
+                if ($parameters['filterbyfield'] == 'author') {
+                    $author = $this
+                        ->getDoctrine()
+                        ->getRepository(User::class)
+                        ->findOneBy([
+                            'username' => $parameters['pattern'],
+                        ]);
+                    $parameters['pattern'] = $author ? $author->getId() : -1;
+                }
+                if ($parameters['filterbyfield'] == 'category') {
+                    $category = $this
+                        ->getDoctrine()
+                        ->getRepository('AppBundle:Category')
+                        ->findOneBy([
+                            'name' => $parameters['pattern'],
+                        ]);
+                    $parameters['pattern'] = $category ? $category->getId() : -1;
+                }
+            }
+            $parameters['perPage'] = $parameters['rows'] ?? 10;
 
-        return $this->render(':admin:posts_show.html.twig', [
-            'posts' => $posts,
-            'categories' => $categories,
-        ]);
+            return $this->json($this->getAjaxData(
+                $postRepository,
+                $parameters,
+                function (&$items, Post $item, $trans) {
+                    array_push($items, array(
+                        'id' => $item->getId(),
+                        'title' => $item->getTitle(),
+                        'category' => $item->getCategory()->getName(),
+                        'author' => $item->getAuthor()->getUsername(),
+                        'creationDate' => $item->getCreationDate()->format('Y-m-d H:i:s'),
+                        'rating' => $item->getRating(),
+                    ));
+                },
+                [
+                    'title' => 'post.title',
+                    'category' => 'post.category',
+                    'author' => 'post.author',
+                    'creationDate' => 'post.creationDate',
+                    'rating' => 'post.rating',
+                ]
+            ));
+        }
+
+        return $this->render(':admin:posts_show.html.twig');
     }
 
     /**
