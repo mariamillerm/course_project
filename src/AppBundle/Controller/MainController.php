@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Post;
+use AppBundle\Entity\User;
 use AppBundle\Form\CategoryType;
 use AppBundle\Form\PostType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -48,6 +49,65 @@ class MainController extends Controller
             'pagination' => $pagination,
             'categories' => $categories,
         ]);
+    }
+
+    /**
+     * @Route("/image/{filename}", name="image")
+     *
+     * @param string $filename
+     *
+     * @return Response
+     */
+    public function imageAction(string $filename)
+    {
+        $hasAccess = $this
+            ->get('security.authorization_checker')
+            ->isGranted('ROLE_USER');
+        if ($hasAccess) {
+            $file = $this->getParameter('image_root') . $filename;
+            $image = file_get_contents($file);
+
+            return new Response($image, 200, [
+                'Content-type' => 'image/jpeg',
+            ]);
+        } else {
+            return $this->render(':errors:error.html.twig', [
+                'status_code' => Response::HTTP_NOT_FOUND,
+                'status_text' => 'Not found!',
+            ]);
+        }
+    }
+
+    /**
+     * @Route("/subscribe/{user}", name="subscribe", requirements={"id": "\d+"})
+     *
+     * @param User $user
+     *
+     * @return Response
+     */
+    public function subscribeAction(User $user)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user->setIsSubscribed(true);
+        $em->flush();
+
+        return $this->redirectToRoute('homepage');
+    }
+
+    /**
+     * @Route("/unsubscribe/{user}", name="unsubscribe")
+     *
+     * @param User $user
+     *
+     * @return Response
+     */
+    public function unsubscribeAction(User $user)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user->setIsSubscribed(false);
+        $em->flush();
+
+        return $this->redirectToRoute('homepage');
     }
 
     /**
