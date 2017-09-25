@@ -32,15 +32,11 @@
             <a class="btn btn-logout btn-sm btn-block" href="{{ path('logout') }}" style="width: 100%;">{{ 'logout' | trans }}</a>
         </div>
 
-<<<<<<< HEAD
         {% if not app.user.isSubscribed %}
-            <div class="subsribe"><a href="{{ path('subscribe', {"user": app.user.id}) }}"><strong>Subsribe!</strong></a></div>
+            <div class="subsribe"><a href="{{ path('subscribe', {"user": app.user.id}) }}"><strong>{{ 'subscribe' | trans }}</strong></a></div>
         {% else %}
-            <div class="subsribe"><a href="{{ path('unsubscribe', {"user": app.user.id}) }}"><strong>Unsubsribe!</strong></a></div>
+            <div class="subsribe"><a href="{{ path('unsubscribe', {"user": app.user.id}) }}"><strong>{{ 'unsubscribe' | trans }}</strong></a></div>
         {% endif %}
-=======
-        <div class="subsribe"><a href="{{ path('admin_home') }}"><strong>{{ 'subscribe' | trans }}</strong></a></div>
->>>>>>> e530cc0c6190c25e8816c6d7db4006e49c0a2aad
 
         <hr>
 
