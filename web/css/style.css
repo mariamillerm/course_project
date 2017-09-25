@@ -327,3 +327,7 @@ body {
      width: 100%;
      margin-top: 8px;
  }
+
+ .categories_show_admin a {
+     color: #2E3234;
+ }
