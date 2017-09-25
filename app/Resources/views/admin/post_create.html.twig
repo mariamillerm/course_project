@@ -34,10 +34,22 @@
                 <li><a href="{{ path('categories_show') }}" class="list">Categories</a></li>
             </ul>
         </div>
+        <div class="bottom-sidebar">
+            <script>
+                function setLocale(locale) {
+                    Cookies.set("locale", locale);
+                    location.reload();
+                }
+            </script>
 
-        <div class="language">
-            <img src="{{ asset('../images/usa.jpg') }}">
-            <img src="{{ asset('../images/rus.jpg') }}">
+            <div class="language">
+                <img src="{{ asset('../images/usa.jpg') }}">
+                <img src="{{ asset('../images/rus.jpg') }}">
+
+            </div>
+            <div class="footer">
+                <footer>© 2017, Palina and Maria</footer>
+            </div>
         </div>
     </div>
     {{ form_start(form, {'attr': {'class': 'form-signin'}}) }}

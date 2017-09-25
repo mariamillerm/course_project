@@ -37,9 +37,22 @@
             </ul>
         </div>
 
-        <div class="language">
-            <img src="{{ asset('../images/usa.jpg') }}">
-            <img src="{{ asset('../images/rus.jpg') }}">
+        <div class="bottom-sidebar">
+            <script>
+                function setLocale(locale) {
+                    Cookies.set("locale", locale);
+                    location.reload();
+                }
+            </script>
+
+            <div class="language">
+                <img src="{{ asset('../images/usa.jpg') }}">
+                <img src="{{ asset('../images/rus.jpg') }}">
+
+            </div>
+            <div class="footer">
+                <footer>© 2017, Palina and Maria</footer>
+            </div>
         </div>
     </div>
 
@@ -49,11 +62,11 @@
         {% for post in posts %}
             <div class="row post">
                 <div class="post_title">{{ post.title }}</div>
-                <div class="post_date">{{ post.creationDate | date('h:m:s d M Y') }} ({{ post.rating }})
+                <div class="post_date">{{ post.creationDate | date('h:m:s d M Y') }} ( +{{ post.rating }})
                 </div>
                 <div class="post_show">
                     <div class="post_image">
-                        <img src="{{ asset('../images/' ~ post.image) }}" width="300" height="200">
+                        <img src="{{ path("image", {"filename": post.image}) }}" width="300" height="200">
                     </div>
                     <div class="post_summary">{{ post.summary }}</div>
                     <div style="display: flex; justify-content: flex-end;" class="action-buttons">

@@ -1,6 +1,15 @@
 {% extends ':admin:admin_base.html.twig' %}
 
 {% block body %}
+
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/ajaxgrid.js') }}"></script>
+
+    <script>
+        $('.users-table').ajaxgrid({
+            url: 'http://localhost:8000/admin/users/ajax'
+        });
+    </script>
     <div class="header">
         <a href="{{ path('homepage') }}"><img src="{{ asset('../images/title.jpg') }}"></a>
     </div>
@@ -35,12 +44,24 @@
             </ul>
         </div>
 
-        <div class="language">
-            <img src="{{ asset('../images/usa.jpg') }}">
-            <img src="{{ asset('../images/rus.jpg') }}">
+        <div class="bottom-sidebar">
+            <script>
+                function setLocale(locale) {
+                    Cookies.set("locale", locale);
+                    location.reload();
+                }
+            </script>
+
+            <div class="language">
+                <img src="{{ asset('../images/usa.jpg') }}">
+                <img src="{{ asset('../images/rus.jpg') }}">
+
+            </div>
+            <div class="footer">
+                <footer>© 2017, Palina and Maria</footer>
+            </div>
         </div>
     </div>
-
     </div>
 
     <div class="content_users">
@@ -58,7 +79,11 @@
                 <td><a href="{{ path('edit_user', {'user': user.id}) }}">{{ user.username }}</a></td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.roles[0] }}</td>
+            {% if user.isActive %}
                 <td><a href="{{ path('user_block', {'user': user.id}) }}">Block user</a></td>
+            {% else %}
+                <td><a href="{{ path('user_unblock', {'user': user.id}) }}">Unblock user</a></td>
+            {% endif %}
             </tr>
         {% endfor %}
     </table>
