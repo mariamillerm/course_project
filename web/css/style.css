@@ -371,3 +371,7 @@ body {
  .parent-category li, ul{
      list-style-type: none;
  }
+
+ .error {
+     margin-top: 30px;
+ }
