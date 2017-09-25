@@ -1,28 +1,34 @@
 account:
     confirmed: Ваш аккаунт подтвержден. Пожалуйста, войдите в систему.
+admin:
+    page: Cтраница админа
 categories: Категории
 category:
+    add: Добавить
     create: Создать категорию
     edit: Отредактировать
     name: Название
 delete: Удалить
 edit: Редактировать
+filter: Фильтр
 logout: Выйти
 post:
     category: Категория
     content: Текст статьи
-    create: Создать пост
+    create: Создать статью
     edit: Отредактировать
     image: Изображение
-    similarPosts: Похожие посты
+    similarPosts: Похожие статьи
     summary: Краткое содержание
     title: Заголовок
+posts: Статьи
 rating: Рейтинг
 read_more: Читать далее
 release: Дата создания
 search: Поиск
 sort_by: Сортировать по
 subscribe: Подписаться
+unsubscribe: Отписаться
 user:
     create: Зарегистрироваться
     email: Почта
@@ -35,4 +41,5 @@ user:
         email: Выслать токен
         password: Установить новый пароль
     username: Никнейм
+users: Пользователи
 welcome: Добро пожаловать

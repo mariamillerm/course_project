@@ -31,7 +31,11 @@
                 {% if is_granted('ROLE_ADMIN') %}
                     <li><a href="{{ path('users_show') }}" class="list">Users</a></li>
                 {% endif %}
-                <li><a href="{{ path('posts_show_admin') }}" class="list">Posts</a>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li><a href="{{ path('posts_show_admin') }}" class="list">{{ 'posts' | trans }}</a></li>
+                {% else %}
+                    <li><a href="{{ path('posts_show') }}" class="list">{{ 'posts' | trans }}</a></li>
+                {% endif %}
                     <ul><li><a href="{{ path('create_post') }}" class="list">Add post</a></li></ul></li>
                 <li><a href="{{ path('categories_show') }}" class="list">Categories</a></li>
             </ul>
