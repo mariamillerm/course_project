@@ -60,20 +60,20 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
 
-#fos_elastica:
-#    clients:
-#        default: { host: localhost, port: 9200 }
-#    indexes:
-#        app:
-#            types:
-#                post:
-#                    properties:
-#                        title: { boost: 10, analyzer: english, type: text }
-#                        content: { boost: 10, analyzer: english, type: text }
-#                    persistence:
-#                        driver: orm #the driver can be orm, mongodb, phpcr or propel
-#                        model: AppBundle\Entity\Post
-#                        listener: ~
+fos_elastica:
+    clients:
+        default: { host: localhost, port: 9200 }
+    indexes:
+        app:
+            types:
+                post:
+                    properties:
+                        title: { boost: 10, analyzer: english, type: text }
+                        content: { boost: 10, analyzer: english, type: text }
+                    persistence:
+                        driver: orm #the driver can be orm, mongodb, phpcr or propel
+                        model: AppBundle\Entity\Post
+                        listener: ~
 
 # Swiftmailer Configuration
 swiftmailer:

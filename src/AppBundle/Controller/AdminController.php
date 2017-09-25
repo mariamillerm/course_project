@@ -107,6 +107,28 @@ class AdminController extends Controller
      * @Route(
      *     "/admin/posts",
      *     methods={"GET"},
+     *     name="posts_show",
+     *     requirements={"id": "\d+"}
+     * )
+     *
+     * @return Response
+     */
+    public function postsAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository(Category::class)->findAll();
+        $posts = $em->getRepository(Post::class)->findAll();
+
+        return $this->render(':admin:posts_show.html.twig', [
+            'posts' => $posts,
+            'categories' => $categories,
+        ]);
+    }
+
+    /**
+     * @Route(
+     *     "/admin/ajax_posts",
+     *     methods={"GET"},
      *     name="posts_show_admin",
      *     requirements={"id": "\d+"}
      * )
@@ -116,7 +138,7 @@ class AdminController extends Controller
      *
      * @return Response
      */
-    public function postsAction(Request $request)
+    public function postsAjaxAction(Request $request)
     {
         if ($request->isXmlHttpRequest()) {
             $postRepository = $this
@@ -374,101 +396,84 @@ class AdminController extends Controller
         ]);
     }
 
-    /**
-     * @Route("/admin/posts/columns", name="columns_ajax")
-     *
-     * @return string
-     */
-    public function getColumnNames()
-    {
-        return $this->json([
-            "id",
-            "title",
-            "author",
-            "creationDate",
-        ]);
-    }
-
-
-
-    /**
-     * @Route(path="/admin/users/ajax", name="admin_users_show_ajax")
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function usersShowAction(Request $request)
-    {
-        /** 
-        *@var \Doctrine\ORM\EntityRepository $repository 
-        *
-        */
-        $repository = $this->getDoctrine()->getRepository('AppBundle:User');
-        $queryBuilder = $repository->createQueryBuilder('u');
-
-        $page = $request->get('page');
-        $rows = $request->get('rows');
-        if ($request->getQueryString() === '') {
-            $response = [
-                'cols' => [
-                    [
-                        'name' => 'id',
-                    ],
-                    [
-                        'name' => 'username',
-                    ],
-                    [
-                        'name' => 'role',
-                    ],
-                ],
-                'sortable' => ['id', 'username'],
-                'filterable' => ['role']
-            ];
-
-            return new JsonResponse($response);
-        } else {
-            $em = $this->getDoctrine()->getManager();
-            $repository= $em->getRepository('AppBundle:User');
-            dump($request->get('sortField'));
-            dump($request->get('field'));
-            if (($request->get('sortField') !== null) && ($request->get('field') === null)) {
-                if ($request->get('order') === 'true') {
-                    $order = 'ASC';
-                } else {
-                    $order = 'DESC';
-                }
-
-                $pages = ceil(count($repository->createQueryBuilder('u')
-                    ->orderBy('u.' . $request->get('sortField'), $order)
-                    ->getQuery()->getResult())/$rows);
-
-                $result = $repository->createQueryBuilder('u')
-                    ->orderBy('u.' . $request->get('sortField'), $order)
-                    ->getQuery()->getResult();
-            } else if (($request->get('field') !== null) && ($request->get('sortField') === null)) {
-                $pages = ceil(count($em->getRepository('AppBundle:User')->findAll()) / $rows);
-                $result = $repository->createQueryBuilder('u')
-                    ->where('u.' . $request->get('field') . ' LIKE :pattern')
-                    ->setParameter('pattern', '%' . $request->get('pattern') . '%')
-                    ->getQuery()
-                    ->getResult();
-            } else {
-                $pages = ceil(count($repository->findAll()) / $rows);
-                $result = $repository->createQueryBuilder('u');
-                $result = $result->setFirstResult(($page - 1) * $rows)
-                    ->setMaxResults($rows)->getQuery()->getResult();
-            }
-
-            $response = [];
-            foreach ($result as $user) {
-                $response[] = [$user->getId(), $user->getUsername(), $user->getRole()];
-            }
-
-            return new JsonResponse([
-                'data' => $response,
-                'pages' => $pages
-            ]);
-        }
-    }
+//    /**
+//     * @Route(path="/admin/users/ajax", name="admin_users_show_ajax")
+//     *
+//     * @param Request $request
+//     *
+//     * @return Response
+//     */
+//    public function usersShowAction(Request $request)
+//    {
+//        /**
+//        *@var \Doctrine\ORM\EntityRepository $repository
+//        *
+//        */
+//        $repository = $this->getDoctrine()->getRepository('AppBundle:User');
+//        $queryBuilder = $repository->createQueryBuilder('u');
+//
+//        $page = $request->get('page');
+//        $rows = $request->get('rows');
+//        if ($request->getQueryString() === '') {
+//            $response = [
+//                'cols' => [
+//                    [
+//                        'name' => 'id',
+//                    ],
+//                    [
+//                        'name' => 'username',
+//                    ],
+//                    [
+//                        'name' => 'role',
+//                    ],
+//                ],
+//                'sortable' => ['id', 'username'],
+//                'filterable' => ['role']
+//            ];
+//
+//            return new JsonResponse($response);
+//        } else {
+//            $em = $this->getDoctrine()->getManager();
+//            $repository= $em->getRepository('AppBundle:User');
+//            dump($request->get('sortField'));
+//            dump($request->get('field'));
+//            if (($request->get('sortField') !== null) && ($request->get('field') === null)) {
+//                if ($request->get('order') === 'true') {
+//                    $order = 'ASC';
+//                } else {
+//                    $order = 'DESC';
+//                }
+//
+//                $pages = ceil(count($repository->createQueryBuilder('u')
+//                    ->orderBy('u.' . $request->get('sortField'), $order)
+//                    ->getQuery()->getResult())/$rows);
+//
+//                $result = $repository->createQueryBuilder('u')
+//                    ->orderBy('u.' . $request->get('sortField'), $order)
+//                    ->getQuery()->getResult();
+//            } else if (($request->get('field') !== null) && ($request->get('sortField') === null)) {
+//                $pages = ceil(count($em->getRepository('AppBundle:User')->findAll()) / $rows);
+//                $result = $repository->createQueryBuilder('u')
+//                    ->where('u.' . $request->get('field') . ' LIKE :pattern')
+//                    ->setParameter('pattern', '%' . $request->get('pattern') . '%')
+//                    ->getQuery()
+//                    ->getResult();
+//            } else {
+//                $pages = ceil(count($repository->findAll()) / $rows);
+//                $result = $repository->createQueryBuilder('u');
+//                $result = $result->setFirstResult(($page - 1) * $rows)
+//                    ->setMaxResults($rows)->getQuery()->getResult();
+//            }
+//
+//            $response = [];
+//            foreach ($result as $user) {
+//                $response[] = [$user->getId(), $user->getUsername(), $user->getRole()];
+//            }
+//
+//            return new JsonResponse([
+//                'data' => $response,
+//                'pages' => $pages
+//            ]);
+//        }
+//    }
 }
