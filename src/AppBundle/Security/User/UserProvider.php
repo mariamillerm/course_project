@@ -36,7 +36,8 @@ class UserProvider implements UserProviderInterface
      *
      * @return UserInterface
      *
-     * @throws UsernameNotFoundException if the user is not found
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function loadUserByUsername($username)
     {
