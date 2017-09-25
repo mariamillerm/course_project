@@ -224,10 +224,14 @@ body {
      font-size: 1.2em;
  }
 
- .content_users, .content_posts, .content_categories {
+ .content_posts, .content_categories {
      margin-top: 40px;
      margin-left: 210px;
-     border: solid;
+     border: double;
+ }
+
+ .content_categories li{
+     width: 100%;
  }
 
  .forgot, .signup {
@@ -272,7 +276,7 @@ body {
  .content_username, .content_category {
      margin-top: 40px;
      margin-left: 350px;
-     border: solid;
+     border: double;
      border-radius: 4px;
      width: 20%;
  }
@@ -283,6 +287,9 @@ body {
 
  .content_users {
      width: 40%;
+     border: inset;
+     margin-top: 40px;
+     margin-left: 210px;
  }
 
  .category_row, .category_start, .category_end {
@@ -330,4 +337,35 @@ body {
 
  .categories_show_admin a {
      color: #2E3234;
+ }
+
+ .content_posts_edit {
+     margin-top: 40px;
+     margin-left: 210px;
+     padding-right: 190px;
+     width: 600px;
+     border: double;
+     position: relative;
+ }
+
+ .edit_post {
+     width: 100%;
+ }
+
+ .form-content, .form-summary, .form-title, .form-similar {
+     width: 500px;
+     position: relative;
+ }
+
+ .form-content {
+     height: 250px;
+     position: relative;
+ }
+
+ .form-summary {
+     height: 90px;
+ }
+
+ .parent-category li, ul{
+     list-style-type: none;
  }
