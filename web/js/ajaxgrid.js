@@ -79,11 +79,11 @@ $.fn.ajaxgrid = function(options) {
         }
         var editTd = createElement('td', row);
         var editDiv = createElement('div', editTd).addClass('content-justify');
-        createElement('i', editDiv).addClass('glyphicon glyphicon-pencil glow edit').click(function () {
+        createElement('span', editDiv).addClass('glyphicon glyphicon-pencil edit').click(function () {
             var win = window.open(Routing.generate(options.edit, {id: data.id}), '_blank');
             win.focus();
         });
-        createElement('i', editDiv).addClass('glyphicon glyphicon-remove glow remove').click(function () {
+        createElement('span', editDiv).addClass('glyphicon glyphicon-remove remove').click(function () {
             $.ajax(
                 Routing.generate(options.edit, {id: data.id}),
                 {
