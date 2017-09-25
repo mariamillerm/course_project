@@ -13,6 +13,7 @@ edit: Edit
 filter: Filter
 logout: Log out
 post:
+    add: Add post
     category: Category
     content: Content
     create: Create post

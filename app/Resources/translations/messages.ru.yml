@@ -13,6 +13,7 @@ edit: Редактировать
 filter: Фильтр
 logout: Выйти
 post:
+    add: Добавить статью
     category: Категория
     content: Текст статьи
     create: Создать статью
