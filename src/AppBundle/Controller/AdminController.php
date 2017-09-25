@@ -268,6 +268,22 @@ class AdminController extends Controller
         ]);
     }
 
+    /**
+     * @Route("/admin/posts/columns", name="columns_ajax")
+     *
+     * @return string
+     */
+    public function getColumnNames()
+    {
+        return $this->json([
+            "id",
+            "title",
+            "author",
+            "creationDate",
+        ]);
+    }
+
+
 
     /**
      * @Route(path="/admin/users/ajax", name="admin_users_show_ajax")
