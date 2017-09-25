@@ -322,7 +322,9 @@ class MainController extends Controller
     public function categoryPostsAction(Category $category, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository(Category::class)->categoriesUnderRoot();
+        $categories = $em->
+            getRepository(Category::class)
+            ->categoriesUnderCurrentCategory($category);
         $query = $em->getRepository(Post::class)->getCategoryPostsQuery($category);
 
         $paginator  = $this->get('knp_paginator');
@@ -334,6 +336,7 @@ class MainController extends Controller
 
         return $this->render(':main:show_posts_by_category.html.twig', [
             'pagination' => $pagination,
+            'category' => $category,
             'categories' => $categories,
         ]);
     }
