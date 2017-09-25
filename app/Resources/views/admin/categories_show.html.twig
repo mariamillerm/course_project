@@ -58,9 +58,9 @@
     <table>
     <tr> {% macro recursiveCategory(category) %}
         {% if category.children|length %}
-            <li class="parent-category">
-                <td><div>
-                    <a href="{{ path('edit_category', {'category': category.id} )}}" class="btn" title="Edit category">{{ category.name }}</a>
+            <li class="parent-category" style="border: double">
+                <td><div class="parent-category">
+                        <div class="edit_category"><a href="{{ path('edit_category', {'category': category.id} )}}" class="btn" title="Edit category">{{ category.name }}</a></div>
                     <div style="display: flex; justify-content: flex-end;" class="button_category"><a class="button btn-action" href="{{ path('delete_category', {'category': category.id}) }}">Delete</a></div>
             </div></td>
                 {% for child in category.children %}
@@ -70,8 +70,8 @@
                 {% endfor %}
             </li>
         {% else %}
-            <li class="category">
-               <td> <div >
+            <li class="category" style="border: double">
+               <td> <div class="category">
                     <a href="{{ path('edit_category', {'category': category.id} )}}" class="btn" title="Edit category">{{ category.name }}</a>
                     <div style="display: flex; justify-content: flex-end;" class="button_category"><a class="button btn-action" href="{{ path('delete_category', {'category': category.id}) }}">Delete</a></div>
                    </div></td>
