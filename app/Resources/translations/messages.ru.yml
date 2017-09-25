@@ -1,9 +1,13 @@
 account:
     confirmed: Ваш аккаунт подтвержден. Пожалуйста, войдите в систему.
+categories: Категории
 category:
     create: Создать категорию
     edit: Отредактировать
     name: Название
+delete: Удалить
+edit: Редактировать
+logout: Выйти
 post:
     category: Категория
     content: Текст статьи
@@ -13,6 +17,12 @@ post:
     similarPosts: Похожие посты
     summary: Краткое содержание
     title: Заголовок
+rating: Рейтинг
+read_more: Читать далее
+release: Дата создания
+search: Поиск
+sort_by: Сортировать по
+subscribe: Подписаться
 user:
     create: Зарегистрироваться
     email: Почта

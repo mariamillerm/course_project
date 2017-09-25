@@ -7,3 +7,6 @@ logout:
 
 account:
     path: /account
+
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"

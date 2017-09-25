@@ -4,9 +4,8 @@ namespace AppBundle\Repository;
 
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Post;
-use Doctrine\ORM\EntityRepository;
 
-class PostRepository extends EntityRepository
+class PostRepository extends PaginatedEntityRepository
 {
     /**
      * @param \DateTime $latestExecution
@@ -23,6 +22,20 @@ class PostRepository extends EntityRepository
             ->getQuery()
             ->setParameter(1, $latestExecution)
             ->getResult();
+    }
+
+    /**
+     * @param array $parameters
+     *
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function createQuery(array $parameters)
+    {
+        $parameters['sortbyfield'] = $parameters['sortbyfield'] ?? 'creationDate';
+        $parameters['order'] = $parameters['order'] ?? 'desc';
+        $query = parent::createQuery($parameters);
+
+        return $query;
     }
 
     /**

@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             new Kitpages\SemaphoreBundle\KitpagesSemaphoreBundle(),
             new FOS\ElasticaBundle\FOSElasticaBundle(),
+            new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new AppBundle\AppBundle(),
         ];
 

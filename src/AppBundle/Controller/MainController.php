@@ -218,7 +218,7 @@ class MainController extends Controller
     /**
      * @Route(
      *     "/post/{id}/delete",
-     *     methods={"GET"},
+     *     methods={"GET", "DELETE"},
      *     name="delete_post",
      *     requirements={"id": "\d+"}
      * )
