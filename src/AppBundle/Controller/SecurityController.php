@@ -30,14 +30,6 @@ class SecurityController extends Controller
             ->get('security.authorization_checker')
             ->isGranted('IS_AUTHENTICATED_FULLY');
         if ($hasAccess) {
-
-            /**
-             * @var User $user
-             */
-            $user = $this->getUser();
-            if (!$user->isActive()) {
-                return $this->redirectToRoute('logout');
-            }
             return $this->render('@Twig/Exception/error.html.twig', [
                 'status_code' => Response::HTTP_BAD_GATEWAY,
                 'status_text' => 'You are already in system!',
